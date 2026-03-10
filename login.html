@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Nuvana AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0D0D0D;--white:#F9F8F6;--coral:#FF2D55;--off:#F3F1EE;--light:#E8E5E0;--gray:#888;--mid:#BFBAB4}
+html,body{height:100%}
+body{font-family:'Inter',sans-serif;font-weight:300;background:var(--black);color:var(--white);display:grid;grid-template-columns:1fr 1fr;min-height:100vh;cursor:none}
+
+#cur{position:fixed;width:8px;height:8px;background:var(--coral);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s}
+#curR{position:fixed;width:32px;height:32px;border:1px solid rgba(255,45,85,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s}
+
+/* LEFT — brand panel */
+.brand-panel{
+  background:var(--black);
+  border-right:1px solid rgba(255,255,255,.06);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:48px;
+  position:relative;overflow:hidden;
+}
+.brand-panel::before{
+  content:'';position:absolute;top:-200px;left:-200px;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(255,45,85,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.bp-logo{
+  font-family:'Figtree',sans-serif;font-weight:900;font-size:1.4rem;
+  letter-spacing:-.5px;display:inline-flex;align-items:flex-start;line-height:1;
+}
+.bp-logo .n{color:var(--coral)}
+.bp-logo .s{font-size:.55rem;font-weight:900;color:rgba(249,248,246,.3);margin-top:2px;margin-left:1px}
+
+.bp-center{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0}
+.bp-headline{
+  font-family:'Figtree',sans-serif;font-weight:900;
+  font-size:clamp(3rem,5vw,5rem);line-height:.92;letter-spacing:-3px;
+  color:var(--white);
+}
+.bp-headline em{font-style:normal;color:var(--coral)}
+.bp-sub{font-size:.78rem;font-weight:300;color:rgba(249,248,246,.35);margin-top:24px;line-height:1.7;max-width:320px}
+
+.bp-stats{display:flex;gap:32px}
+.stat-item{}
+.stat-n{font-family:'Figtree';font-weight:900;font-size:2rem;letter-spacing:-1px;color:var(--white)}
+.stat-l{font-size:.52rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:rgba(249,248,246,.3);margin-top:2px}
+
+/* RIGHT — form panel */
+.form-panel{
+  background:var(--white);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:64px 48px;
+}
+.fp-inner{width:100%;max-width:400px}
+
+.fp-greeting{font-size:.6rem;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--mid);margin-bottom:32px}
+.fp-title{font-family:'Figtree';font-weight:900;font-size:2rem;letter-spacing:-1.5px;color:var(--black);margin-bottom:8px}
+.fp-sub{font-size:.74rem;font-weight:300;color:var(--gray);margin-bottom:40px}
+
+/* Form elements */
+.form-group{margin-bottom:18px;position:relative}
+.form-label{display:block;font-size:.5rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--mid);margin-bottom:8px}
+.form-input{
+  width:100%;padding:14px 16px;
+  border:1px solid var(--light);background:var(--off);
+  font-family:'Inter';font-size:.82rem;font-weight:300;color:var(--black);
+  outline:none;transition:border-color .2s,background .2s;
+  -webkit-appearance:none;
+}
+.form-input:focus{border-color:var(--black);background:white}
+.form-input::placeholder{color:var(--mid)}
+.form-input.error{border-color:var(--coral)}
+
+.forgot-link{
+  display:block;text-align:right;margin-top:-10px;margin-bottom:20px;
+  font-size:.6rem;font-weight:400;letter-spacing:.06em;color:var(--mid);text-decoration:none;
+  transition:color .2s;
+}
+.forgot-link:hover{color:var(--black)}
+
+.submit-btn{
+  width:100%;padding:16px;
+  background:var(--black);border:none;
+  font-family:'Inter';font-size:.65rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  color:white;cursor:pointer;transition:background .25s;
+  position:relative;overflow:hidden;
+}
+.submit-btn:hover{background:var(--coral)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.submit-btn .btn-text{transition:opacity .2s}
+.submit-btn.loading .btn-text{opacity:0}
+.btn-spinner{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;
+  border-radius:50%;animation:spin .7s linear infinite;display:none;
+}
+.submit-btn.loading .btn-spinner{display:block}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.divider{display:flex;align-items:center;gap:12px;margin:28px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--light)}
+.divider span{font-size:.52rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+
+.signup-link{
+  text-align:center;font-size:.68rem;font-weight:300;color:var(--gray);
+}
+.signup-link a{color:var(--black);font-weight:500;text-decoration:none;border-bottom:1px solid var(--black)}
+.signup-link a:hover{color:var(--coral);border-color:var(--coral)}
+
+.error-msg{
+  background:rgba(255,45,85,.08);border:1px solid rgba(255,45,85,.2);
+  padding:12px 14px;margin-bottom:20px;
+  font-size:.68rem;font-weight:300;color:var(--coral);
+  display:none;
+}
+.error-msg.show{display:block}
+
+/* Back to site */
+.back-link{
+  position:fixed;top:24px;right:24px;z-index:100;
+  font-size:.55rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gray);text-decoration:none;transition:color .2s;
+  background:var(--white);padding:8px 16px;border:1px solid var(--light);
+}
+.back-link:hover{color:var(--black)}
+
+@media(max-width:768px){
+  body{grid-template-columns:1fr}
+  .brand-panel{display:none}
+  .form-panel{padding:40px 24px}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="curR"></div>
+
+<a href="index.html" class="back-link">← Back to site</a>
+
+<!-- BRAND PANEL -->
+<div class="brand-panel">
+  <div class="bp-logo"><span class="n">n</span>uvana<span class="s">ai</span></div>
+
+  <div class="bp-center">
+    <h1 class="bp-headline">Welcome<br>back to<br>your <em>vault.</em></h1>
+    <p class="bp-sub">500+ curated prompts, new drops every week, and an AI corrector that makes every output better.</p>
+  </div>
+
+  <div class="bp-stats">
+    <div class="stat-item">
+      <div class="stat-n">500+</div>
+      <div class="stat-l">Prompts</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-n">4</div>
+      <div class="stat-l">AI Models</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-n">∞</div>
+      <div class="stat-l">Inspiration</div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM PANEL -->
+<div class="form-panel">
+  <div class="fp-inner">
+    <div class="fp-greeting">Member Access</div>
+    <h2 class="fp-title">Sign in</h2>
+    <p class="fp-sub">Access your prompt vault and saved collection.</p>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="emailInput" class="form-input" placeholder="your@email.com" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="passwordInput" class="form-input" placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <a href="forgot.html" class="forgot-link">Forgot password?</a>
+
+    <button class="submit-btn" id="signInBtn" onclick="handleSignIn()">
+      <span class="btn-text">Sign In →</span>
+      <div class="btn-spinner"></div>
+    </button>
+
+    <div class="divider"><span>or</span></div>
+
+    <div class="signup-link">
+      Don't have an account? <a href="signup.html">Create one →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://nphHgzjofhvboginDcwe.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
+
+async function handleSignIn() {
+  const email = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
+  const btn = document.getElementById('signInBtn');
+  const err = document.getElementById('errorMsg');
+
+  if (!email || !password) { showError('Please enter your email and password.'); return; }
+
+  btn.classList.add('loading'); btn.disabled = true;
+  err.classList.remove('show');
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.error_description || data.msg || 'Invalid email or password.');
+      btn.classList.remove('loading'); btn.disabled = false;
+      return;
+    }
+
+    // Store session
+    localStorage.setItem('nuvana_token', data.access_token);
+    localStorage.setItem('nuvana_refresh', data.refresh_token);
+    localStorage.setItem('nuvana_user', JSON.stringify(data.user));
+
+    // Redirect to dashboard
+    window.location.href = 'dashboard.html';
+
+  } catch(e) {
+    showError('Something went wrong. Please try again.');
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+// Enter key support
+document.addEventListener('keydown', e => { if (e.key === 'Enter') handleSignIn(); });
+
+// Redirect if already logged in
+if (localStorage.getItem('nuvana_token')) window.location.href = 'dashboard.html';
+
+// Cursor
+const cur = document.getElementById('cur'), curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px';
+});
+</script>
+</body>
+</html>

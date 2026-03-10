@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Nuvana AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0D0D0D;--white:#F9F8F6;--coral:#FF2D55;--off:#F3F1EE;--light:#E8E5E0;--gray:#888;--mid:#BFBAB4;--sidebar:260px}
+body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:var(--black);min-height:100vh;cursor:none}
+#cur{position:fixed;width:8px;height:8px;background:var(--coral);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#curR{position:fixed;width:30px;height:30px;border:1px solid rgba(255,45,85,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s}
+
+/* ── AUTH GATE ── */
+#authGate{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9990;flex-direction:column;gap:16px}
+.gate-logo{font-family:'Figtree';font-weight:900;font-size:1.6rem;letter-spacing:-.5px;display:inline-flex;align-items:flex-start}
+.gate-logo .n{color:var(--coral)}
+.gate-logo .s{font-size:.55rem;font-weight:900;color:rgba(249,248,246,.3);margin-top:2px;margin-left:1px}
+.gate-spinner{width:28px;height:28px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--coral);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── LAYOUT ── */
+#appShell{display:none}
+.layout{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--black);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-top{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sb-logo{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px;display:inline-flex;align-items:flex-start;line-height:1;text-decoration:none}
+.sb-logo .n{color:var(--coral)}
+.sb-logo .s{font-size:.45rem;font-weight:900;color:rgba(249,248,246,.28);margin-top:2px;margin-left:1px}
+
+/* user info */
+.sb-user{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sb-avatar{width:36px;height:36px;background:var(--coral);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Figtree';font-weight:900;font-size:.9rem;color:white;margin-bottom:10px}
+.sb-name{font-size:.78rem;font-weight:500;color:var(--white);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-email{font-size:.6rem;font-weight:300;color:rgba(249,248,246,.3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-plan{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;border:1px solid rgba(255,45,85,.3);font-size:.48rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--coral)}
+
+/* nav */
+.sb-nav{padding:16px 12px;flex:1}
+.sb-section{font-size:.45rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:rgba(249,248,246,.2);padding:0 12px;margin:16px 0 6px}
+.sb-link{display:flex;align-items:center;gap:10px;padding:10px 12px;font-size:.68rem;font-weight:300;color:rgba(249,248,246,.45);text-decoration:none;transition:all .2s;border-radius:2px;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.sb-link:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.sb-link.active{background:rgba(255,45,85,.1);color:var(--coral)}
+.sb-link .icon{font-size:.9rem;width:18px;text-align:center}
+
+/* new prompt badge */
+.sb-badge{margin-left:auto;font-size:.46rem;font-weight:600;letter-spacing:.1em;background:var(--coral);color:white;padding:2px 7px}
+
+.sb-bottom{padding:16px 24px;border-top:1px solid rgba(255,255,255,.06)}
+.signout-btn{width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,.1);font-family:'Inter';font-size:.55rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:rgba(249,248,246,.3);cursor:pointer;transition:all .2s}
+.signout-btn:hover{border-color:var(--coral);color:var(--coral)}
+
+/* ── MAIN CONTENT ── */
+.main{min-width:0;overflow:hidden}
+
+/* topbar */
+.topbar{background:var(--white);border-bottom:1px solid var(--light);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.tb-title{font-family:'Figtree';font-weight:900;font-size:1rem;letter-spacing:-.3px}
+.tb-right{display:flex;align-items:center;gap:16px}
+.tb-btn{font-size:.58rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:8px 18px;text-decoration:none;transition:all .2s}
+.tb-primary{background:var(--black);color:white}
+.tb-primary:hover{background:var(--coral)}
+.tb-ghost{border:1px solid var(--light);color:var(--gray)}
+.tb-ghost:hover{border-color:var(--black);color:var(--black)}
+
+/* content area */
+.content{padding:40px}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* welcome header */
+.welcome-h{margin-bottom:40px}
+.welcome-greeting{font-size:.58rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:8px}
+.welcome-title{font-family:'Figtree';font-weight:900;font-size:2rem;letter-spacing:-1.5px}
+.welcome-title em{font-style:normal;color:var(--coral)}
+
+/* stat cards */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px}
+.stat-card{background:white;padding:24px;border:1px solid var(--light)}
+.sc-label{font-size:.5rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:10px}
+.sc-value{font-family:'Figtree';font-weight:900;font-size:2rem;letter-spacing:-1px;color:var(--black)}
+.sc-sub{font-size:.6rem;font-weight:300;color:var(--mid);margin-top:4px}
+.sc-coral{border-top:3px solid var(--coral)}
+
+/* plan card */
+.plan-card-big{background:var(--black);padding:28px 32px;margin-bottom:40px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.pcb-left{}
+.pcb-label{font-size:.5rem;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:rgba(249,248,246,.3);margin-bottom:8px}
+.pcb-plan{font-family:'Figtree';font-weight:900;font-size:1.6rem;letter-spacing:-1px;color:white}
+.pcb-detail{font-size:.68rem;font-weight:300;color:rgba(249,248,246,.4);margin-top:6px}
+.pcb-right{display:flex;gap:10px;flex-shrink:0}
+.pcb-btn{font-size:.58rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:10px 22px;text-decoration:none;transition:all .2s;white-space:nowrap}
+.pcb-primary{background:var(--coral);color:white}
+.pcb-primary:hover{opacity:.85}
+.pcb-ghost{border:1px solid rgba(255,255,255,.15);color:rgba(249,248,246,.4)}
+.pcb-ghost:hover{border-color:rgba(255,255,255,.4);color:white}
+
+/* section title */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px}
+.section-link{font-size:.58rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);text-decoration:none;border-bottom:1px solid var(--light);transition:color .2s}
+.section-link:hover{color:var(--black)}
+
+/* recent prompts grid */
+.prompts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px}
+.mini-card{background:white;border:1px solid var(--light);overflow:hidden;transition:transform .2s,box-shadow .2s}
+.mini-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(13,13,13,.08)}
+.mc-img{width:100%;height:160px;object-fit:cover;display:block;background:var(--off)}
+.mc-body{padding:16px}
+.mc-cat{font-size:.48rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin-bottom:6px}
+.mc-title{font-family:'Figtree';font-weight:900;font-size:.9rem;letter-spacing:-.2px;margin-bottom:8px}
+.mc-prompt{font-size:.62rem;font-weight:300;color:var(--gray);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.mc-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--off);padding-top:10px}
+.mc-model{font-size:.48rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mid)}
+.mc-copy{font-size:.48rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--light);background:transparent;cursor:pointer;transition:all .2s;color:var(--black)}
+.mc-copy:hover{background:var(--black);color:white;border-color:var(--black)}
+.mc-copy.copied{background:var(--coral);border-color:var(--coral);color:white}
+
+/* vault page */
+.vault-empty{text-align:center;padding:80px 40px;background:white;border:1px solid var(--light)}
+.ve-icon{font-size:2.5rem;margin-bottom:16px}
+.ve-title{font-family:'Figtree';font-weight:900;font-size:1.2rem;letter-spacing:-.5px;margin-bottom:8px}
+.ve-sub{font-size:.72rem;font-weight:300;color:var(--gray);margin-bottom:24px}
+.ve-btn{display:inline-block;padding:12px 28px;background:var(--black);color:white;text-decoration:none;font-size:.62rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;transition:background .2s}
+.ve-btn:hover{background:var(--coral)}
+
+/* account page */
+.account-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.acct-card{background:white;border:1px solid var(--light);padding:28px}
+.acct-card-title{font-family:'Figtree';font-weight:900;font-size:.9rem;letter-spacing:-.2px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--off)}
+.acct-field{margin-bottom:16px}
+.acct-label{font-size:.48rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);display:block;margin-bottom:7px}
+.acct-input{width:100%;padding:11px 14px;border:1px solid var(--light);background:var(--off);font-family:'Inter';font-size:.78rem;font-weight:300;color:var(--black);outline:none;transition:border-color .2s}
+.acct-input:focus{border-color:var(--black);background:white}
+.acct-input[readonly]{cursor:default;color:var(--mid)}
+.save-btn{padding:11px 24px;background:var(--black);border:none;font-family:'Inter';font-size:.58rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:white;cursor:pointer;transition:background .2s}
+.save-btn:hover{background:var(--coral)}
+
+/* loading skeleton */
+.skel{background:var(--light);animation:pulse 1.4s ease-in-out infinite}
+.skel-img{height:160px}
+.skel-line{height:12px;margin-bottom:8px;border-radius:2px}
+.skel-line.short{width:60%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* empty / locked states for library */
+.locked-notice{background:var(--black);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}
+.ln-text{font-size:.72rem;font-weight:300;color:rgba(249,248,246,.5)}
+.ln-text strong{color:white}
+.ln-btn{font-size:.58rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:9px 20px;background:var(--coral);color:white;text-decoration:none;white-space:nowrap;transition:opacity .2s}
+.ln-btn:hover{opacity:.85}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="curR"></div>
+
+<!-- AUTH GATE -->
+<div id="authGate">
+  <div class="gate-logo"><span class="n">n</span>uvana<span class="s">ai</span></div>
+  <div class="gate-spinner"></div>
+</div>
+
+<!-- APP -->
+<div id="appShell">
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-top">
+      <a href="index.html" class="sb-logo"><span class="n">n</span>uvana<span class="s">ai</span></a>
+    </div>
+
+    <div class="sb-user">
+      <div class="sb-avatar" id="sbAvatar">?</div>
+      <div class="sb-name" id="sbName">Loading…</div>
+      <div class="sb-email" id="sbEmail"></div>
+      <div class="sb-plan" id="sbPlan">Free</div>
+    </div>
+
+    <div class="sb-nav">
+      <div class="sb-section">Menu</div>
+      <button class="sb-link active" data-page="home" onclick="showPage('home', this)">
+        <span class="icon">⊞</span> Dashboard
+      </button>
+      <button class="sb-link" data-page="library" onclick="showPage('library', this)">
+        <span class="icon">◫</span> Prompt Library
+        <span class="sb-badge" id="newBadge">New</span>
+      </button>
+      <button class="sb-link" data-page="vault" onclick="showPage('vault', this)">
+        <span class="icon">♡</span> My Vault
+      </button>
+
+      <div class="sb-section">Tools</div>
+      <a href="prompt-corrector.html" class="sb-link">
+        <span class="icon">✦</span> AI Corrector
+      </a>
+      <a href="kling3.html" class="sb-link">
+        <span class="icon">◈</span> Kling.3 Prompts
+      </a>
+
+      <div class="sb-section">Account</div>
+      <button class="sb-link" data-page="account" onclick="showPage('account', this)">
+        <span class="icon">◉</span> Settings
+      </button>
+      <a href="index.html#pricing" class="sb-link">
+        <span class="icon">↑</span> Upgrade Plan
+      </a>
+    </div>
+
+    <div class="sb-bottom">
+      <button class="signout-btn" onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tbTitle">Dashboard</div>
+      <div class="tb-right">
+        <a href="library.html" class="tb-btn tb-ghost">Browse All Prompts</a>
+        <a href="index.html#pricing" class="tb-btn tb-primary">Upgrade →</a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- HOME PAGE -->
+      <div class="page active" id="page-home">
+        <div class="welcome-h">
+          <div class="welcome-greeting">Welcome back</div>
+          <h1 class="welcome-title">Good to see you, <em id="firstName">there</em>.</h1>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card sc-coral">
+            <div class="sc-label">Prompts Available</div>
+            <div class="sc-value" id="statPrompts">—</div>
+            <div class="sc-sub">In your plan</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Saved to Vault</div>
+            <div class="sc-value" id="statSaved">0</div>
+            <div class="sc-sub">Your collection</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Prompts Copied</div>
+            <div class="sc-value" id="statCopied">0</div>
+            <div class="sc-sub">This session</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-label">Current Plan</div>
+            <div class="sc-value" style="font-size:1.3rem" id="statPlan">Free</div>
+            <div class="sc-sub"><a href="index.html#pricing" style="color:var(--coral);text-decoration:none;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase">Upgrade →</a></div>
+          </div>
+        </div>
+
+        <!-- Plan banner -->
+        <div class="plan-card-big" id="planBanner">
+          <div class="pcb-left">
+            <div class="pcb-label">Current Plan</div>
+            <div class="pcb-plan" id="planName">Free Access</div>
+            <div class="pcb-detail" id="planDetail">Upgrade to unlock the full vault — 500+ prompts, Kling.3 exclusives, weekly drops.</div>
+          </div>
+          <div class="pcb-right">
+            <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="pcb-btn pcb-primary">Upgrade — from $19/mo</a>
+            <a href="index.html#pricing" class="pcb-btn pcb-ghost">See all plans</a>
+          </div>
+        </div>
+
+        <!-- Latest prompts -->
+        <div class="section-head">
+          <div class="section-title">Latest Prompts</div>
+          <button onclick="showPage('library', document.querySelector('[data-page=library]'))" class="section-link">View all →</button>
+        </div>
+        <div class="prompts-grid" id="latestGrid">
+          <!-- Loaded via JS -->
+          <div class="mini-card"><div class="skel skel-img"></div><div class="mc-body"><div class="skel skel-line short"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div></div>
+          <div class="mini-card"><div class="skel skel-img"></div><div class="mc-body"><div class="skel skel-line short"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div></div>
+          <div class="mini-card"><div class="skel skel-img"></div><div class="mc-body"><div class="skel skel-line short"></div><div class="skel skel-line"></div><div class="skel skel-line short"></div></div></div>
+        </div>
+      </div>
+
+      <!-- LIBRARY PAGE -->
+      <div class="page" id="page-library">
+        <div class="welcome-h">
+          <div class="welcome-greeting">Browse</div>
+          <h1 class="welcome-title">Prompt <em>Library</em></h1>
+        </div>
+        <div class="locked-notice" id="libraryNotice" style="display:none">
+          <div class="ln-text"><strong>You're on the Free plan.</strong> Free prompts shown below — upgrade to unlock everything.</div>
+          <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="ln-btn">Unlock Full Vault →</a>
+        </div>
+        <div class="prompts-grid" id="libraryGrid">
+          <div class="mini-card"><div class="skel skel-img"></div><div class="mc-body"><div class="skel skel-line short"></div><div class="skel skel-line"></div></div></div>
+          <div class="mini-card"><div class="skel skel-img"></div><div class="mc-body"><div class="skel skel-line short"></div><div class="skel skel-line"></div></div></div>
+          <div class="mini-card"><div class="skel skel-img"></div><div class="mc-body"><div class="skel skel-line short"></div><div class="skel skel-line"></div></div></div>
+        </div>
+      </div>
+
+      <!-- VAULT PAGE -->
+      <div class="page" id="page-vault">
+        <div class="welcome-h">
+          <div class="welcome-greeting">Saved</div>
+          <h1 class="welcome-title">My <em>Vault</em></h1>
+        </div>
+        <div class="vault-empty" id="vaultEmpty">
+          <div class="ve-icon">♡</div>
+          <div class="ve-title">Your vault is empty</div>
+          <div class="ve-sub">Save prompts from the library to build your personal collection.</div>
+          <button onclick="showPage('library', document.querySelector('[data-page=library]'))" class="ve-btn">Browse Library →</button>
+        </div>
+        <div class="prompts-grid" id="vaultGrid" style="display:none"></div>
+      </div>
+
+      <!-- ACCOUNT PAGE -->
+      <div class="page" id="page-account">
+        <div class="welcome-h">
+          <div class="welcome-greeting">Settings</div>
+          <h1 class="welcome-title">Your <em>Account</em></h1>
+        </div>
+        <div class="account-grid">
+          <div class="acct-card">
+            <div class="acct-card-title">Profile</div>
+            <div class="acct-field">
+              <label class="acct-label">Full Name</label>
+              <input type="text" id="acctName" class="acct-input" placeholder="Your name">
+            </div>
+            <div class="acct-field">
+              <label class="acct-label">Email</label>
+              <input type="email" id="acctEmail" class="acct-input" readonly>
+            </div>
+            <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+          </div>
+          <div class="acct-card">
+            <div class="acct-card-title">Subscription</div>
+            <div class="acct-field">
+              <label class="acct-label">Current Plan</label>
+              <input type="text" id="acctPlan" class="acct-input" readonly>
+            </div>
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+              <a href="index.html#pricing" class="save-btn" style="text-align:center;display:block;text-decoration:none">Upgrade Plan →</a>
+              <a href="https://billing.stripe.com/p/login/test" style="font-size:.6rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;text-align:center;margin-top:4px">Manage Billing ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://nphHgzjofhvboginDcwe.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
+
+const STRIPE = {
+  starter: 'https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07',
+  pro: 'https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06',
+  automation: 'https://buy.stripe.com/00waEZdcQbubb9gg5Y0oM05',
+  unlimited: 'https://buy.stripe.com/aFa5kF8WAcyf5OWdXQ0oM04'
+};
+
+let currentUser = null;
+let userPlan = 'free';
+let sessionCopies = 0;
+let allPrompts = [];
+let savedPrompts = [];
+
+// ── AUTH CHECK ──
+async function init() {
+  const token = localStorage.getItem('nuvana_token');
+  if (!token) { window.location.href = 'login.html'; return; }
+
+  try {
+    // Verify token
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token }
+    });
+
+    if (!res.ok) {
+      // Try refresh
+      const refreshed = await refreshToken();
+      if (!refreshed) { window.location.href = 'login.html'; return; }
+    } else {
+      currentUser = await res.json();
+    }
+
+    // Show app
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('appShell').style.display = 'block';
+
+    // Populate UI
+    populateUser();
+    loadPrompts();
+    loadSavedPrompts();
+
+  } catch(e) {
+    window.location.href = 'login.html';
+  }
+}
+
+async function refreshToken() {
+  const refresh = localStorage.getItem('nuvana_refresh');
+  if (!refresh) return false;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: refresh })
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    localStorage.setItem('nuvana_token', data.access_token);
+    localStorage.setItem('nuvana_refresh', data.refresh_token);
+    currentUser = data.user;
+    return true;
+  } catch { return false; }
+}
+
+function populateUser() {
+  const meta = currentUser.user_metadata || {};
+  const name = meta.full_name || currentUser.email.split('@')[0];
+  const first = name.split(' ')[0];
+  const email = currentUser.email;
+  const initial = name.charAt(0).toUpperCase();
+
+  document.getElementById('sbAvatar').textContent = initial;
+  document.getElementById('sbName').textContent = name;
+  document.getElementById('sbEmail').textContent = email;
+  document.getElementById('firstName').textContent = first;
+  document.getElementById('acctName').value = name;
+  document.getElementById('acctEmail').value = email;
+
+  // Plan from metadata (set by n8n/Stripe webhook)
+  const plan = meta.plan || 'free';
+  userPlan = plan;
+  const planLabels = { free:'Free', starter:'Starter', pro:'Pro', automation:'Automation Suite', unlimited:'Unlimited' };
+  const label = planLabels[plan] || 'Free';
+  document.getElementById('sbPlan').textContent = label;
+  document.getElementById('statPlan').textContent = label;
+  document.getElementById('planName').textContent = label + ' Plan';
+  document.getElementById('acctPlan').value = label;
+
+  if (plan !== 'free') {
+    document.getElementById('planBanner').style.display = 'none';
+  }
+}
+
+// ── LOAD PROMPTS ──
+async function loadPrompts() {
+  const token = localStorage.getItem('nuvana_token');
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/prompts?select=*&active=eq.true&order=created_at.desc&limit=50`,
+    { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token } }
+  );
+  if (!res.ok) return;
+  allPrompts = await res.json();
+  document.getElementById('statPrompts').textContent = allPrompts.filter(p => canAccess(p)).length;
+
+  // Render latest (first 6 free)
+  const latest = allPrompts.filter(p => p.tier === 'free').slice(0, 6);
+  renderGrid('latestGrid', latest);
+
+  // Render library
+  renderLibrary();
+}
+
+function canAccess(p) {
+  if (p.tier === 'free') return true;
+  if (userPlan === 'unlimited') return true;
+  if (userPlan === 'automation' && ['free','starter','pro','automation'].includes(p.tier)) return true;
+  if (userPlan === 'pro' && ['free','starter','pro'].includes(p.tier)) return true;
+  if (userPlan === 'starter' && ['free','starter'].includes(p.tier)) return true;
+  return false;
+}
+
+function renderLibrary() {
+  const accessible = allPrompts.filter(p => canAccess(p));
+  const locked = allPrompts.filter(p => !canAccess(p));
+  if (userPlan === 'free' && locked.length > 0) {
+    document.getElementById('libraryNotice').style.display = 'flex';
+  }
+  renderGrid('libraryGrid', accessible);
+}
+
+function renderGrid(containerId, prompts) {
+  const grid = document.getElementById(containerId);
+  if (!prompts.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--mid);font-size:.72rem">No prompts found.</div>'; return; }
+  grid.innerHTML = prompts.map(p => miniCard(p)).join('');
+  grid.querySelectorAll('.mc-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.dataset.prompt).then(() => {
+        btn.textContent = 'Copied!'; btn.classList.add('copied');
+        sessionCopies++;
+        document.getElementById('statCopied').textContent = sessionCopies;
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+  });
+  grid.querySelectorAll('.mc-save').forEach(btn => {
+    btn.addEventListener('click', () => saveToVault(btn.dataset.id));
+  });
+}
+
+function miniCard(p) {
+  const img = p.image_url || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&q=70';
+  const isSaved = savedPrompts.includes(p.id);
+  return `<div class="mini-card">
+    <img class="mc-img" src="${img}" alt="${p.title}" loading="lazy">
+    <div class="mc-body">
+      <div class="mc-cat">${p.category||'General'}</div>
+      <div class="mc-title">${p.title}</div>
+      <div class="mc-prompt">${p.prompt}</div>
+      <div class="mc-foot">
+        <span class="mc-model">${p.model||''}</span>
+        <div style="display:flex;gap:6px">
+          <button class="mc-copy" style="padding:5px 8px;font-size:.44rem" data-id="${p.id}" title="${isSaved?'Saved':'Save'}" onclick="saveToVault('${p.id}')">♡</button>
+          <button class="mc-copy" data-prompt="${(p.prompt||'').replace(/"/g,'&quot;')}">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── VAULT ──
+async function loadSavedPrompts() {
+  const token = localStorage.getItem('nuvana_token');
+  if (!currentUser) return;
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/saved_prompts?select=prompt_id&user_id=eq.${currentUser.id}`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token } }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      savedPrompts = data.map(r => r.prompt_id);
+      document.getElementById('statSaved').textContent = savedPrompts.length;
+      renderVault();
+    }
+  } catch(e) {}
+}
+
+function renderVault() {
+  if (!savedPrompts.length) return;
+  const vaultPrompts = allPrompts.filter(p => savedPrompts.includes(p.id));
+  if (vaultPrompts.length) {
+    document.getElementById('vaultEmpty').style.display = 'none';
+    document.getElementById('vaultGrid').style.display = 'grid';
+    renderGrid('vaultGrid', vaultPrompts);
+  }
+}
+
+async function saveToVault(promptId) {
+  const token = localStorage.getItem('nuvana_token');
+  if (!currentUser) return;
+  if (savedPrompts.includes(promptId)) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/saved_prompts`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ user_id: currentUser.id, prompt_id: promptId })
+    });
+    savedPrompts.push(promptId);
+    document.getElementById('statSaved').textContent = savedPrompts.length;
+  } catch(e) {}
+}
+
+// ── NAV ──
+function showPage(pageId, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const titles = { home: 'Dashboard', library: 'Prompt Library', vault: 'My Vault', account: 'Account' };
+  document.getElementById('tbTitle').textContent = titles[pageId] || 'Dashboard';
+}
+
+// ── ACCOUNT ──
+async function saveProfile() {
+  const name = document.getElementById('acctName').value.trim();
+  const token = localStorage.getItem('nuvana_token');
+  if (!name) return;
+  await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    method: 'PUT',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data: { full_name: name } })
+  });
+  document.getElementById('sbName').textContent = name;
+  document.getElementById('firstName').textContent = name.split(' ')[0];
+}
+
+// ── SIGN OUT ──
+function signOut() {
+  localStorage.removeItem('nuvana_token');
+  localStorage.removeItem('nuvana_refresh');
+  localStorage.removeItem('nuvana_user');
+  window.location.href = 'login.html';
+}
+
+// ── CURSOR ──
+const cur = document.getElementById('cur'), curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX+'px'; cur.style.top = e.clientY+'px';
+  curR.style.left = e.clientX+'px'; curR.style.top = e.clientY+'px';
+});
+
+// ── INIT ──
+init();
+</script>
+</body>
+</html>
