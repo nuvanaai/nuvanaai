@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Library — Nuvana AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0D0D0D;--white:#F9F8F6;--gray:#888;--light:#E8E5E0;--coral:#FF2D55;--off:#F3F1EE;--mid:#BFBAB4}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-weight:300;background:var(--white);color:var(--black);overflow-x:hidden;cursor:none}
+#cur{position:fixed;width:8px;height:8px;background:var(--black);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s}
+#curR{position:fixed;width:36px;height:36px;border:1px solid rgba(13,13,13,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s}
+.launch-banner{position:fixed;top:0;left:0;right:0;z-index:600;background:var(--black);border-bottom:1px solid rgba(255,45,85,.2);padding:10px 48px;display:flex;align-items:center;justify-content:center;gap:16px}
+.lb-text{font-size:.65rem;font-weight:400;letter-spacing:.04em;color:rgba(249,248,246,.55)}
+.lb-text strong{color:rgba(249,248,246,.9);font-weight:600}
+.lb-cta{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--coral);padding:5px 16px;text-decoration:none;transition:opacity .2s}
+.lb-cta:hover{opacity:.85}
+nav{position:fixed;top:40px;left:0;right:0;z-index:500;padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(249,248,246,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(13,13,13,.07)}
+.logo{font-family:'Figtree',sans-serif;font-weight:900;font-size:1.25rem;letter-spacing:-.5px;text-decoration:none;color:var(--black);display:inline-flex;align-items:flex-start;line-height:1}
+.logo .nc{color:var(--coral)}
+.logo .ns{font-size:.52rem;font-weight:900;color:rgba(13,13,13,.3);margin-top:2px;margin-left:1px}
+.nav-r{display:flex;align-items:center;gap:36px}
+.nav-r a{font-size:.62rem;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color .2s}
+.nav-r a:hover,.nav-r a.active{color:var(--black)}
+.nav-cta{font-size:.6rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--white)!important;background:var(--black);padding:9px 22px;text-decoration:none;transition:background .2s}
+.nav-cta:hover{background:var(--coral)!important}
+.page-header{padding:140px 48px 52px;border-bottom:1px solid var(--light);display:flex;align-items:flex-end;justify-content:space-between;gap:40px}
+.ph-left h1{font-family:'Figtree',sans-serif;font-weight:900;font-size:clamp(2.5rem,5vw,4.5rem);line-height:.95;letter-spacing:-2px}
+.ph-left h1 em{font-style:normal;color:var(--coral)}
+.ph-left p{margin-top:16px;font-size:.8rem;font-weight:300;color:var(--gray);max-width:480px;line-height:1.6}
+.ph-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.prompt-count{font-family:'Figtree';font-weight:900;font-size:3.5rem;line-height:1;color:var(--black)}
+.count-label{font-size:.55rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--mid)}
+.filter-bar{position:sticky;top:104px;z-index:400;background:rgba(249,248,246,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--light);padding:0 48px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.filter-cats{display:flex;align-items:center;overflow-x:auto;scrollbar-width:none}
+.filter-cats::-webkit-scrollbar{display:none}
+.fc-btn{font-size:.58rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;padding:18px 20px;border:none;background:transparent;cursor:pointer;color:var(--gray);transition:color .2s;white-space:nowrap;border-bottom:2px solid transparent}
+.fc-btn:hover{color:var(--black)}
+.fc-btn.active{color:var(--black);border-bottom-color:var(--black)}
+.filter-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.search-wrap{display:flex;align-items:center;gap:10px;border:1px solid var(--light);padding:8px 14px;background:white}
+.search-wrap input{border:none;outline:none;font-family:'Inter';font-size:.68rem;font-weight:300;width:180px;background:transparent;color:var(--black)}
+.search-wrap input::placeholder{color:var(--mid)}
+.tier-toggle{display:flex;gap:2px}
+.tier-btn{font-size:.52rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--light);background:white;cursor:pointer;color:var(--gray);transition:all .2s}
+.tier-btn.active{background:var(--black);color:white;border-color:var(--black)}
+.library-grid{padding:48px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2px}
+.prompt-card{background:white;position:relative;overflow:hidden;transition:transform .3s;cursor:default}
+.prompt-card:hover{z-index:2;box-shadow:0 8px 40px rgba(13,13,13,.12)}
+.card-img-wrap{position:relative;overflow:hidden;height:260px}
+.card-img{width:100%;height:100%;object-fit:cover;display:block;background:var(--off);transition:transform .6s}
+.prompt-card:hover .card-img{transform:scale(1.04)}
+.tier-badge{position:absolute;top:14px;right:14px;font-size:.48rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:4px 10px}
+.tb-free{background:rgba(13,13,13,.7);color:rgba(255,255,255,.8)}
+.tb-starter{background:var(--coral);color:white}
+.tb-pro{background:rgba(13,13,13,.9);color:var(--coral)}
+.tb-unlimited{background:var(--coral);color:white}
+.locked-overlay{position:absolute;inset:0;backdrop-filter:blur(14px);background:rgba(13,13,13,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.lock-icon{font-size:1.2rem;color:white}
+.lock-label{font-size:.52rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.lock-cta{font-size:.52rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:8px 20px;background:var(--coral);color:white;text-decoration:none;transition:opacity .2s}
+.lock-cta:hover{opacity:.85}
+.card-body{padding:20px 22px 22px}
+.card-cat{font-size:.52rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--coral);margin-bottom:8px}
+.card-title{font-family:'Figtree';font-weight:900;font-size:1rem;line-height:1.2;letter-spacing:-.3px;margin-bottom:10px}
+.card-prompt{font-size:.68rem;font-weight:300;color:var(--gray);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:16px}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--off);padding-top:14px}
+.card-model{font-size:.52rem;font-weight:400;letter-spacing:.1em;color:var(--mid);text-transform:uppercase}
+.copy-btn{font-size:.52rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:7px 18px;border:1px solid var(--black);background:transparent;cursor:pointer;transition:all .2s;color:var(--black)}
+.copy-btn:hover{background:var(--black);color:white}
+.copy-btn.copied{background:var(--coral);border-color:var(--coral);color:white}
+.loading-state{grid-column:1/-1;padding:80px 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.spinner{width:32px;height:32px;border:2px solid var(--light);border-top-color:var(--black);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:.62rem;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--mid)}
+.empty-state{grid-column:1/-1;padding:80px 0;text-align:center;font-size:.72rem;font-weight:300;color:var(--mid)}
+.upgrade-strip{background:var(--black);padding:64px 48px;display:flex;align-items:center;justify-content:space-between;gap:40px}
+.us-left h3{font-family:'Figtree';font-weight:900;font-size:2rem;letter-spacing:-1px;color:var(--white)}
+.us-left p{font-size:.74rem;font-weight:300;color:rgba(249,248,246,.4);margin-top:10px}
+.us-right{display:flex;gap:12px;flex-shrink:0}
+.us-btn{font-size:.6rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:13px 28px;text-decoration:none;transition:all .2s}
+.us-primary{background:var(--coral);color:white}
+.us-primary:hover{opacity:.85}
+.us-outline{border:1px solid rgba(249,248,246,.2);color:rgba(249,248,246,.5)}
+.us-outline:hover{border-color:rgba(249,248,246,.5);color:var(--white)}
+footer{background:var(--black);padding:48px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px}
+.fc h4{font-size:.52rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:rgba(249,248,246,.3);margin-bottom:20px}
+.fc a{display:block;font-size:.68rem;font-weight:300;color:rgba(249,248,246,.4);text-decoration:none;margin-bottom:10px;transition:color .2s}
+.fc a:hover{color:var(--white)}
+.footer-bottom{background:var(--black);padding:20px 48px;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between}
+.fl{font-family:'Figtree';font-weight:900;font-size:.9rem;letter-spacing:-.3px;display:inline-flex;align-items:flex-start}
+.fl .n{color:var(--coral)}
+.fl .s{font-size:.42rem;margin-top:2px;margin-left:1px;color:rgba(249,248,246,.25)}
+.fcopy{font-size:.55rem;font-weight:300;letter-spacing:.08em;color:rgba(249,248,246,.2)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="curR"></div>
+
+<div class="launch-banner">
+  <span class="lb-text">↗ <strong>Launch Offer</strong> — Founding member prices locked forever</span>
+  <a href="nuvana-v5.html#pricing" class="lb-cta">Get Access</a>
+</div>
+
+<nav>
+  <a href="nuvana-v5.html" class="logo"><span class="nc">n</span>uvana<span class="ns">ai</span></a>
+  <div class="nav-r">
+    <a href="nuvana-v5.html#pricing">Pricing</a>
+    <a href="library.html" class="active">Library</a>
+    <a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a>
+    <a href="prompt-corrector.html">Corrector</a>
+    <a href="nuvana-v5.html#pricing" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="ph-left">
+    <h1>The <em>Prompt</em><br>Library</h1>
+    <p>500+ curated AI image &amp; video prompts, ready to copy. Every prompt is tested, refined, and categorized. Free prompts available instantly — full vault with any plan.</p>
+  </div>
+  <div class="ph-right">
+    <div class="prompt-count" id="totalCount">—</div>
+    <div class="count-label">Prompts &amp; counting</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-cats">
+    <button class="fc-btn active" data-cat="all">All</button>
+    <button class="fc-btn" data-cat="Cinematic">Cinematic</button>
+    <button class="fc-btn" data-cat="Editorial">Editorial</button>
+    <button class="fc-btn" data-cat="Product">Product</button>
+    <button class="fc-btn" data-cat="Kling.3">Kling.3</button>
+    <button class="fc-btn" data-cat="Abstract">Abstract</button>
+    <button class="fc-btn" data-cat="Nature">Nature</button>
+    <button class="fc-btn" data-cat="Portrait">Portrait</button>
+    <button class="fc-btn" data-cat="Marketing">Marketing</button>
+  </div>
+  <div class="filter-right">
+    <div class="search-wrap">
+      <span style="color:var(--mid);font-size:.8rem">⌕</span>
+      <input type="text" id="searchInput" placeholder="Search prompts…">
+    </div>
+    <div class="tier-toggle">
+      <button class="tier-btn active" data-tier="all">All</button>
+      <button class="tier-btn" data-tier="free">Free</button>
+      <button class="tier-btn" data-tier="pro">Pro+</button>
+    </div>
+  </div>
+</div>
+
+<div class="library-grid" id="promptGrid">
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading prompts…</div>
+  </div>
+</div>
+
+<div class="upgrade-strip">
+  <div class="us-left">
+    <h3>Unlock the full vault.</h3>
+    <p>500+ prompts, Kling.3 exclusives, new drops every week. Starting at $19/mo.</p>
+  </div>
+  <div class="us-right">
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="us-btn us-primary">Starter — $19/mo</a>
+    <a href="nuvana-v5.html#pricing" class="us-btn us-outline">See all plans</a>
+  </div>
+</div>
+
+<footer>
+  <div class="fc"><h4>Product</h4><a href="library.html">Library</a><a href="academy.html">Academy</a><a href="kling3.html">Kling.3</a><a href="prompt-corrector.html">Prompt Corrector</a><a href="nuvana-v5.html#pricing">Pricing</a></div>
+  <div class="fc"><h4>Company</h4><a href="about.html">About</a><a href="blog.html">Blog</a><a href="contact.html">Contact</a></div>
+  <div class="fc"><h4>Legal</h4><a href="terms.html">Terms</a><a href="terms.html">Privacy</a></div>
+</footer>
+<div class="footer-bottom">
+  <div class="fl"><span class="n">n</span><span style="color:rgba(249,248,246,.4)">uvana</span><span class="s">ai</span></div>
+  <span class="fcopy">© 2025 Nuvana AI. All rights reserved.</span>
+</div>
+
+<script>
+const SUPABASE_URL='https://nphHgzjofhvboginDcwe.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
+const STRIPE={starter:'https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07',pro:'https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06',unlimited:'https://buy.stripe.com/aFa5kF8WAcyf5OWdXQ0oM04'};
+let allPrompts=[],activeCat='all',activeTier='all',searchQuery='';
+
+async function fetchPrompts(){
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/prompts?select=*&active=eq.true&order=created_at.desc`,
+      {headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+    if(!r.ok)throw new Error();
+    allPrompts=await r.json();
+    document.getElementById('totalCount').textContent=allPrompts.length+'+';
+    renderGrid();
+  }catch(e){
+    document.getElementById('promptGrid').innerHTML='<div class="empty-state">Could not load prompts — run the SQL setup first in Supabase.</div>';
+  }
+}
+
+function renderGrid(){
+  const grid=document.getElementById('promptGrid');
+  let f=[...allPrompts];
+  if(activeCat!=='all') f=f.filter(p=>p.category===activeCat);
+  if(activeTier==='free') f=f.filter(p=>p.tier==='free');
+  if(activeTier==='pro') f=f.filter(p=>['pro','unlimited'].includes(p.tier));
+  if(searchQuery){const q=searchQuery.toLowerCase();f=f.filter(p=>p.title.toLowerCase().includes(q)||p.prompt.toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q));}
+  if(!f.length){grid.innerHTML='<div class="empty-state">No prompts found.</div>';return;}
+  grid.innerHTML=f.map(cardHTML).join('');
+  grid.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      if(btn.dataset.tier!=='free'){window.location.href=STRIPE.starter;return;}
+      navigator.clipboard.writeText(btn.dataset.prompt).then(()=>{
+        btn.textContent='Copied!';btn.classList.add('copied');
+        setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+      });
+    });
+  });
+  const obs=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:.08});
+  grid.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+const TIER_LABEL={free:'Free',starter:'Starter+',pro:'Pro',unlimited:'Unlimited'};
+const TIER_CLS={free:'tb-free',starter:'tb-starter',pro:'tb-pro',unlimited:'tb-unlimited'};
+function upgradeLink(t){return t==='pro'?STRIPE.pro:t==='unlimited'?STRIPE.unlimited:STRIPE.starter;}
+
+function cardHTML(p){
+  const locked=p.tier!=='free';
+  const img=p.image_url||'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=600&q=80';
+  return `<div class="prompt-card reveal">
+    <div class="card-img-wrap">
+      <img class="card-img" src="${img}" alt="${p.title}" loading="lazy">
+      <span class="tier-badge ${TIER_CLS[p.tier]||'tb-free'}">${TIER_LABEL[p.tier]||p.tier}</span>
+      ${locked?`<div class="locked-overlay"><div class="lock-icon">⊠</div><div class="lock-label">Members Only</div><a href="${upgradeLink(p.tier)}" class="lock-cta">Unlock — from $19/mo</a></div>`:''}
+    </div>
+    <div class="card-body">
+      <div class="card-cat">${p.category||'General'}</div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-prompt">${p.prompt}</div>
+      <div class="card-foot">
+        <span class="card-model">${p.model||''}</span>
+        <button class="copy-btn" data-prompt="${(p.prompt||'').replace(/"/g,'&quot;')}" data-tier="${p.tier}">${locked?'Unlock':'Copy'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+document.querySelectorAll('.fc-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.fc-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');activeCat=b.dataset.cat;renderGrid();
+}));
+document.querySelectorAll('.tier-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tier-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');activeTier=b.dataset.tier;renderGrid();
+}));
+let st;document.getElementById('searchInput').addEventListener('input',e=>{clearTimeout(st);st=setTimeout(()=>{searchQuery=e.target.value.trim();renderGrid();},300);});
+
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';curR.style.left=e.clientX+'px';curR.style.top=e.clientY+'px';});
+
+fetchPrompts();
+</script>
+</body>
+</html>

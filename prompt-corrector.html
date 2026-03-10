@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Corrector — Nuvana AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@900&family=Outfit:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0D0D0D;
+  --white: #F9F8F6;
+  --gray:  #888;
+  --light: #E8E5E0;
+  --tan:   #FF2D55;
+  --off:   #F3F1EE;
+  --mid:   #BFBAB4;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  background: var(--white);
+  color: var(--black);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+#cur  { position:fixed;width:8px;height:8px;background:var(--black);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s; }
+#curR { position:fixed;width:36px;height:36px;border:1px solid rgba(13,13,13,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s,width .3s,height .3s; }
+
+/* ─── LAUNCH BANNER ─── */
+.launch-banner {
+  position:fixed;top:0;left:0;right:0;z-index:600;
+  background:var(--black);border-bottom:1px solid rgba(255,45,85,.2);padding:11px 48px;
+}
+.lb-inner { display:flex;align-items:center;justify-content:center;gap:20px; }
+.lb-tag { font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tan);border:1px solid rgba(255,45,85,.3);padding:4px 12px; }
+.lb-text { font-size:.68rem;font-weight:400;letter-spacing:.04em;color:rgba(249,248,246,.55); }
+.lb-text strong { color:rgba(249,248,246,.9);font-weight:600; }
+.lb-cta { font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--tan);padding:6px 18px;text-decoration:none;transition:background .2s;white-space:nowrap; }
+.lb-cta:hover { background:rgba(255,45,85,.8); }
+
+/* ─── NAV ─── */
+nav {
+  position:fixed;top:40px;left:0;right:0;z-index:500;
+  padding:0 48px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(249,248,246,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(13,13,13,.07);
+}
+.logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -.5px; color: var(--black); text-decoration: none; display: inline-flex; align-items: flex-start; line-height: 1; }
+.logo-n { color: #FF2D55; }
+.logo-sup { font-size: .52rem; font-weight: 900; color: rgba(13,13,13,.28); margin-top: 2px; margin-left: 1px; }
+.nav-r { display:flex;align-items:center;gap:40px; }
+.nav-r a { font-family:'Inter',sans-serif;font-size:.65rem;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color .2s; }
+.nav-r a:hover { color:var(--black); }
+.nav-cta { color:var(--white)!important;background:var(--black)!important;padding:9px 22px!important; }
+.nav-cta:hover { background:var(--tan)!important; }
+
+/* ─── PAGE HEADER ─── */
+.page-header {
+  padding-top:104px;
+  padding-bottom:80px;
+  padding-left:48px;padding-right:48px;
+  border-bottom:1px solid var(--light);
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;
+}
+.ph-left {}
+.ph-eye { font-size:.58rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--tan);margin-bottom:20px; }
+.ph-h {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(4rem,7vw,9rem);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--black);
+}
+.ph-h em { color:var(--tan);font-style:normal; }
+.ph-right { padding-bottom:8px; }
+.ph-desc { font-size:.82rem;font-weight:300;line-height:1.8;color:var(--gray);margin-bottom:24px; }
+.ph-badges { display:flex;flex-wrap:wrap;gap:8px; }
+.ph-badge {
+  font-size:.5rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--black);border:1px solid var(--light);padding:6px 14px;
+}
+.ph-badge.coral { color:var(--tan);border-color:rgba(255,45,85,.2); }
+
+/* ─── TOOL AREA ─── */
+.tool-area {
+  padding:80px 48px;
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+  min-height:calc(100vh - 300px);
+  background:var(--off);
+}
+
+/* INPUT PANEL */
+.input-panel {
+  background:var(--white);
+  padding:48px;
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--light);
+}
+.panel-label {
+  font-size:.55rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gray);margin-bottom:24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-label span { color:var(--mid); font-weight:300; letter-spacing:.08em; text-transform:none; font-size:.62rem; }
+
+/* MODE TOGGLE */
+.mode-toggle {
+  display:flex;gap:0;margin-bottom:32px;
+  border:1px solid var(--light);
+  width:fit-content;
+}
+.mode-btn {
+  font-family:'Inter',sans-serif;
+  font-size:.55rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  padding:9px 20px;cursor:pointer;border:none;background:transparent;
+  color:var(--gray);transition:all .2s;
+}
+.mode-btn.active { background:var(--black);color:var(--white); }
+
+/* MODEL SELECT */
+.model-row {
+  display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;
+}
+.model-chip {
+  font-family:'Inter',sans-serif;
+  font-size:.52rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 16px;cursor:pointer;border:1px solid var(--light);background:transparent;
+  color:var(--gray);transition:all .2s;
+}
+.model-chip.active { border-color:var(--black);color:var(--black);background:transparent; }
+
+.input-label { font-size:.58rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--black);margin-bottom:10px; }
+.prompt-textarea {
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:300;line-height:1.7;
+  color:var(--black);background:var(--off);border:1px solid var(--light);
+  padding:20px;width:100%;resize:vertical;min-height:180px;
+  outline:none;transition:border-color .2s;
+  flex:1;
+}
+.prompt-textarea:focus { border-color:var(--black); }
+.prompt-textarea::placeholder { color:var(--mid); }
+
+.char-count { font-size:.55rem;color:var(--mid);text-align:right;margin-top:6px;letter-spacing:.06em; }
+
+/* STYLE TAGS */
+.style-label { font-size:.58rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--black);margin-top:24px;margin-bottom:12px; }
+.style-tags { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px; }
+.style-tag {
+  font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 14px;cursor:pointer;border:1px solid var(--light);background:transparent;
+  color:var(--gray);transition:all .2s;
+}
+.style-tag.active { background:var(--black);color:var(--white);border-color:var(--black); }
+
+/* SUBMIT BTN */
+.submit-btn {
+  font-family:'Inter',sans-serif;font-size:.65rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--white);background:var(--black);border:none;
+  padding:16px 40px;cursor:pointer;width:100%;
+  transition:background .2s;margin-top:auto;padding-top:20px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.submit-btn:hover { background:var(--tan); }
+.submit-btn:disabled { background:var(--mid);cursor:not-allowed; }
+
+/* OUTPUT PANEL */
+.output-panel {
+  background:var(--white);
+  padding:48px;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+.output-empty {
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;color:var(--mid);text-align:center;
+}
+.output-empty-icon { font-size:3rem;opacity:.3; }
+.output-empty-text { font-size:.72rem;font-weight:300;letter-spacing:.08em;line-height:1.6; }
+
+/* LOADING */
+.loading-state {
+  display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+}
+.loading-state.visible { display:flex; }
+.loading-dots { display:flex;gap:8px; }
+.dot {
+  width:8px;height:8px;border-radius:50%;background:var(--black);
+  animation:dotpulse 1.4s infinite ease-in-out both;
+}
+.dot:nth-child(1){animation-delay:-.32s;}
+.dot:nth-child(2){animation-delay:-.16s;}
+@keyframes dotpulse { 0%,80%,100%{transform:scale(0);opacity:.3;} 40%{transform:scale(1);opacity:1;} }
+.loading-text { font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gray); }
+
+/* RESULT */
+.result-state { display:none;flex-direction:column;gap:0;flex:1; }
+.result-state.visible { display:flex; }
+
+.result-section { margin-bottom:32px; }
+.rs-label {
+  font-size:.52rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--tan);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.rs-label::after { content:'';flex:1;height:1px;background:rgba(255,45,85,.15); }
+
+.improved-prompt {
+  font-family:'Inter',sans-serif;font-size:.82rem;font-weight:400;line-height:1.8;
+  color:var(--black);background:var(--off);padding:24px;
+  border-left:3px solid var(--tan);
+}
+
+.analysis-grid { display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--light); }
+.analysis-box { background:var(--white);padding:20px 18px; }
+.ab-label { font-size:.5rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);margin-bottom:6px; }
+.ab-val {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:1.6rem;letter-spacing:-.01em;line-height:1;
+}
+.ab-val.good { color:#22c55e; }
+.ab-val.ok { color:#f59e0b; }
+.ab-val.poor { color:var(--tan); }
+
+.tips-list { display:flex;flex-direction:column;gap:8px; }
+.tip-item {
+  font-size:.72rem;font-weight:300;line-height:1.6;color:var(--black);
+  padding:12px 16px;background:var(--off);
+  display:flex;align-items:flex-start;gap:10px;
+}
+.tip-bullet { color:var(--tan);font-weight:700;flex-shrink:0;margin-top:1px; }
+
+.result-actions { display:flex;gap:8px;margin-top:auto;padding-top:24px;border-top:1px solid var(--light); }
+.action-btn {
+  font-family:'Inter',sans-serif;font-size:.6rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;
+  padding:12px 24px;cursor:pointer;border:1px solid var(--light);background:transparent;
+  color:var(--black);transition:all .2s;flex:1;
+}
+.action-btn:hover { background:var(--black);color:var(--white);border-color:var(--black); }
+.action-btn.primary { background:var(--black);color:var(--white);border-color:var(--black); }
+.action-btn.primary:hover { background:var(--tan);border-color:var(--tan); }
+
+/* ─── HOW IT WORKS ─── */
+.how {
+  padding:120px 48px;
+  border-top:1px solid var(--light);
+  display:grid;grid-template-columns:1fr 2fr;gap:80px;align-items:start;
+}
+.how-left {}
+.how-eye { font-size:.58rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--tan);margin-bottom:20px; }
+.how-h { font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2.5rem,4vw,5rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--black); }
+.how-right { display:flex;flex-direction:column;gap:0; }
+.step {
+  padding:36px 0;border-bottom:1px solid var(--light);
+  display:grid;grid-template-columns:48px 1fr;gap:24px;align-items:start;
+}
+.step:first-child { padding-top:0; }
+.step-num { font-family:'Outfit',sans-serif;font-weight:900;font-size:2rem;letter-spacing:-.02em;color:rgba(255,45,85,.2);line-height:1; }
+.step-content {}
+.step-title { font-family:'Outfit',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:-.01em;color:var(--black);margin-bottom:8px; }
+.step-desc { font-size:.75rem;font-weight:300;line-height:1.7;color:var(--gray); }
+
+/* ─── UPGRADE STRIP ─── */
+.upgrade-strip {
+  margin:0 48px 80px;
+  background:var(--black);
+  padding:64px 72px;
+  display:flex;align-items:center;justify-content:space-between;gap:40px;
+}
+.us-left {}
+.us-eye { font-size:.55rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--tan);margin-bottom:16px; }
+.us-h { font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2rem,3.5vw,4rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--white); }
+.us-right { display:flex;flex-direction:column;align-items:flex-end;gap:16px;flex-shrink:0; }
+.us-sub { font-size:.72rem;font-weight:300;color:rgba(255,255,255,.4);text-align:right;line-height:1.7; }
+.btn-coral { font-family:'Inter',sans-serif;font-size:.63rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--white);background:var(--tan);padding:16px 36px;text-decoration:none;transition:opacity .2s;border:none;cursor:pointer; }
+.btn-coral:hover { opacity:.85; }
+
+/* ─── FOOTER ─── */
+footer { background:var(--black);border-top:1px solid rgba(255,255,255,.06);padding:64px 48px 40px; }
+.foot-top { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:56px; }
+.foot-logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: -.3px; display: inline-flex; align-items: flex-start; color: var(--white); }
+.foot-cols { display:flex;gap:80px; }
+.fc h5 { font-size:.55rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:20px; }
+.fc ul { list-style:none; }
+.fc li { margin-bottom:12px; }
+.fc a { font-size:.72rem;font-weight:300;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s; }
+.fc a:hover { color:var(--white); }
+.foot-bottom { display:flex;justify-content:space-between;align-items:center;padding-top:32px;border-top:1px solid rgba(255,255,255,.06);font-size:.62rem;font-weight:300;color:rgba(255,255,255,.2);letter-spacing:.08em; }
+
+.reveal { opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease; }
+.reveal.on { opacity:1;transform:none; }
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div class="lb-inner">
+    <div class="lb-tag">↗ Launch Offer</div>
+    <div class="lb-text">Founding member prices — <strong>locked in forever.</strong></div>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="lb-cta">Join Now</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo"><span class="logo-n">n</span>uvana<span class="logo-sup">ai</span></a>
+  <div class="nav-r">
+    <a href="index.html#pricing">Pricing</a>
+    <a href="library.html">Library</a>
+    <a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-left">
+    <div class="ph-eye">AI-Powered Tool</div>
+    <h1 class="ph-h">Prompt<br><em>Corrector.</em></h1>
+  </div>
+  <div class="ph-right">
+    <p class="ph-desc">Paste any image or video prompt and our AI rewrites it into a professional, high-output version — exclusively available to Nuvanaaï members. Add the right parameters, fix weak language, and get stunning results every time.</p>
+    <div class="ph-badges">
+      <div class="ph-badge coral">✦ Powered by Claude AI</div>
+      <div class="ph-badge">Midjourney</div>
+      <div class="ph-badge">DALL-E 3</div>
+      <div class="ph-badge">Kling.3</div>
+      <div class="ph-badge">Stable Diffusion</div>
+      <div class="ph-badge">Sora</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL AREA -->
+<div class="tool-area">
+
+  <!-- INPUT -->
+  <div class="input-panel">
+    <div class="panel-label">Your Prompt <span id="charCount">0 / 1000</span></div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode(this,'image')">Image</button>
+      <button class="mode-btn" onclick="setMode(this,'video')">Video</button>
+      <button class="mode-btn" onclick="setMode(this,'both')">Both</button>
+    </div>
+
+    <div class="model-row">
+      <button class="model-chip active" onclick="setModel(this,'Image')">Image Prompts</button>
+      <button class="model-chip" onclick="setModel(this,'Video')">Video Prompts</button>
+      <button class="model-chip" onclick="setModel(this,'Kling.3')">Kling.3 Video</button>
+    </div>
+
+    <div class="input-label">Your Prompt</div>
+    <textarea
+      class="prompt-textarea"
+      id="promptInput"
+      placeholder="e.g. a woman standing in a field at sunset with nice lighting..."
+      maxlength="1000"
+      oninput="updateChar(this)"
+    ></textarea>
+    <div class="char-count" id="charCount2">0 / 1000 characters</div>
+
+    <div class="style-label">Style Boost (optional)</div>
+    <div class="style-tags">
+      <button class="style-tag" onclick="toggleStyle(this)">Cinematic</button>
+      <button class="style-tag" onclick="toggleStyle(this)">Editorial</button>
+      <button class="style-tag" onclick="toggleStyle(this)">Luxury</button>
+      <button class="style-tag" onclick="toggleStyle(this)">Minimalist</button>
+      <button class="style-tag" onclick="toggleStyle(this)">Dramatic</button>
+      <button class="style-tag" onclick="toggleStyle(this)">Hyperrealistic</button>
+      <button class="style-tag" onclick="toggleStyle(this)">Abstract</button>
+      <button class="style-tag" onclick="toggleStyle(this)">Dark Moody</button>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="improvePrompt()">
+      <span id="btnText">✦ Improve My Prompt</span>
+    </button>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-panel">
+    <div class="panel-label">Improved Prompt</div>
+
+    <!-- Empty state -->
+    <div class="output-empty" id="emptyState">
+      <div class="output-empty-icon">✦</div>
+      <div class="output-empty-text">Your improved prompt will<br>appear here instantly.</div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" id="loadingState">
+      <div class="loading-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="loading-text">Analyzing & rewriting...</div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-state" id="resultState">
+
+      <div class="result-section">
+        <div class="rs-label">Improved Prompt</div>
+        <div class="improved-prompt" id="improvedPromptText"></div>
+      </div>
+
+      <div class="result-section">
+        <div class="rs-label">Prompt Score</div>
+        <div class="analysis-grid">
+          <div class="analysis-box">
+            <div class="ab-label">Specificity</div>
+            <div class="ab-val" id="scoreSpec">—</div>
+          </div>
+          <div class="analysis-box">
+            <div class="ab-label">Visual Detail</div>
+            <div class="ab-val" id="scoreVis">—</div>
+          </div>
+          <div class="analysis-box">
+            <div class="ab-label">Technical</div>
+            <div class="ab-val" id="scoreTech">—</div>
+          </div>
+          <div class="analysis-box">
+            <div class="ab-label">Overall</div>
+            <div class="ab-val" id="scoreOver">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="rs-label">What We Fixed</div>
+        <div class="tips-list" id="tipsList"></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="action-btn" onclick="copyResult()">Copy Prompt</button>
+        <button class="action-btn" onclick="resetTool()">Try Another</button>
+        <button class="action-btn primary" onclick="window.open('library.html')">Browse Library →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how reveal">
+  <div class="how-left">
+    <div class="how-eye">How It Works</div>
+    <h2 class="how-h">Three<br>Steps.</h2>
+  </div>
+  <div class="how-right">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Paste Your Prompt</div>
+        <div class="step-desc">Drop in whatever you have — even a rough idea. The corrector works with anything from one sentence to a full description. Select image, video, or Kling.3 video so the output is tuned to your creative goal.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">AI Analyzes & Rewrites</div>
+        <div class="step-desc">Claude AI reads your prompt and rewrites it using Nuvanaaï's proven prompt engineering framework — adding the right technical parameters, strengthening visual language, and fixing common mistakes that produce weak outputs.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Copy & Create</div>
+        <div class="step-desc">Get your improved prompt plus a breakdown of exactly what was fixed. One click to copy and paste directly into Midjourney, DALL-E, Kling.3, or any other model. Professional results on the first try.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UPGRADE STRIP -->
+<div class="upgrade-strip reveal">
+  <div class="us-left">
+    <div class="us-eye">Unlock Everything</div>
+    <h2 class="us-h">500+ Ready-Made<br>Prompts.</h2>
+  </div>
+  <div class="us-right">
+    <div class="us-sub">Why correct when you can just use prompts<br>that are already perfect? Starting at $19/mo.</div>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="btn-coral">Browse the Vault →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-logo"><span style="color:#FF2D55">n</span><span>uvana</span><span style="font-size:.45rem;font-weight:900;vertical-align:super;margin-left:1px;opacity:.35">ai</span></div>
+    <div class="foot-cols">
+      <div class="fc">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="library.html">Library</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a></li>
+          <li><a href="prompt-corrector.html">Prompt Corrector</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="terms.html#privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 Nuvanaaï</span>
+    <span>New York City</span>
+  </div>
+</footer>
+
+<script>
+/* ─── CURSOR ─── */
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+  setTimeout(() => { curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px'; }, 70);
+});
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => { curR.style.width='52px';curR.style.height='52px';cur.style.transform='translate(-50%,-50%) scale(0)'; });
+  el.addEventListener('mouseleave', () => { curR.style.width='36px';curR.style.height='36px';cur.style.transform='translate(-50%,-50%) scale(1)'; });
+});
+
+/* ─── SCROLL REVEAL ─── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+
+/* ─── STATE ─── */
+let selectedMode = 'image';
+let selectedModel = 'Midjourney';
+let selectedStyles = [];
+
+function setMode(btn, mode) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedMode = mode;
+}
+function setModel(btn, model) {
+  document.querySelectorAll('.model-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedModel = model;
+}
+function toggleStyle(btn) {
+  btn.classList.toggle('active');
+  const s = btn.textContent;
+  if (btn.classList.contains('active')) {
+    selectedStyles.push(s);
+  } else {
+    selectedStyles = selectedStyles.filter(x => x !== s);
+  }
+}
+function updateChar(el) {
+  const len = el.value.length;
+  document.getElementById('charCount').textContent = len + ' / 1000';
+  document.getElementById('charCount2').textContent = len + ' / 1000 characters';
+}
+
+/* ─── IMPROVE PROMPT ─── */
+async function improvePrompt() {
+  const prompt = document.getElementById('promptInput').value.trim();
+  if (!prompt) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('btnText').textContent = 'Improving...';
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultState').classList.remove('visible');
+  document.getElementById('loadingState').classList.add('visible');
+
+  const styleNote = selectedStyles.length > 0 ? `\nStyle boosts requested: ${selectedStyles.join(', ')}.` : '';
+  const modeNote = selectedMode === 'video' ? 'This is for a VIDEO generation model — include motion, timing, and camera direction.'
+    : selectedMode === 'both' ? 'This prompt should work for both image and video generation.'
+    : 'This is for an IMAGE generation model.';
+
+  const systemPrompt = `You are an expert AI prompt engineer. Your job is to take a user's rough prompt and transform it into a professional, optimized prompt that produces stunning results for AI image and video generation.
+
+You know exactly what parameters, syntax, and language produce the best outputs. You understand composition, lighting terminology, camera specs, style references, and technical parameters.
+
+${modeNote}
+
+Respond ONLY in this exact JSON format (no markdown, no explanation outside the JSON):
+{
+  "improved": "the full improved prompt here",
+  "specificity": "A+ or A or B+ or B or C",
+  "visual_detail": "A+ or A or B+ or B or C",
+  "technical": "A+ or A or B+ or B or C",
+  "overall": "A+ or A or B+ or B or C",
+  "fixes": ["fix 1 in max 12 words", "fix 2 in max 12 words", "fix 3 in max 12 words"]
+}`;
+
+  const userMessage = `Original prompt: "${prompt}"${styleNote}
+
+Rewrite this prompt. Make it specific, vivid, and technically optimized. Add appropriate parameters and professional language. Keep the core idea but elevate everything.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content[0].text.trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    showResult(result);
+  } catch (err) {
+    document.getElementById('loadingState').classList.remove('visible');
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('emptyState').querySelector('.output-empty-text').textContent = 'Something went wrong. Please try again.';
+  }
+
+  btn.disabled = false;
+  document.getElementById('btnText').textContent = '✦ Improve My Prompt';
+}
+
+function getScoreClass(score) {
+  if (score === 'A+' || score === 'A') return 'good';
+  if (score === 'B+' || score === 'B') return 'ok';
+  return 'poor';
+}
+
+function showResult(result) {
+  document.getElementById('loadingState').classList.remove('visible');
+
+  document.getElementById('improvedPromptText').textContent = result.improved;
+
+  const scoreSpec = document.getElementById('scoreSpec');
+  const scoreVis = document.getElementById('scoreVis');
+  const scoreTech = document.getElementById('scoreTech');
+  const scoreOver = document.getElementById('scoreOver');
+  scoreSpec.textContent = result.specificity;
+  scoreSpec.className = 'ab-val ' + getScoreClass(result.specificity);
+  scoreVis.textContent = result.visual_detail;
+  scoreVis.className = 'ab-val ' + getScoreClass(result.visual_detail);
+  scoreTech.textContent = result.technical;
+  scoreTech.className = 'ab-val ' + getScoreClass(result.technical);
+  scoreOver.textContent = result.overall;
+  scoreOver.className = 'ab-val ' + getScoreClass(result.overall);
+
+  const tipsList = document.getElementById('tipsList');
+  tipsList.innerHTML = '';
+  result.fixes.forEach(fix => {
+    const el = document.createElement('div');
+    el.className = 'tip-item';
+    el.innerHTML = `<span class="tip-bullet">✦</span><span>${fix}</span>`;
+    tipsList.appendChild(el);
+  });
+
+  document.getElementById('resultState').classList.add('visible');
+}
+
+function copyResult() {
+  const text = document.getElementById('improvedPromptText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.action-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy Prompt'; }, 2000);
+  });
+}
+
+function resetTool() {
+  document.getElementById('promptInput').value = '';
+  document.getElementById('charCount').textContent = '0 / 1000';
+  document.getElementById('charCount2').textContent = '0 / 1000 characters';
+  document.getElementById('resultState').classList.remove('visible');
+  document.getElementById('loadingState').classList.remove('visible');
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('emptyState').querySelector('.output-empty-text').textContent = 'Your improved prompt will\nappear here instantly.';
+}
+</script>
+</body>
+</html>

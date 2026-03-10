@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Nuvana AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@900&family=Outfit:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0D0D0D;
+  --white: #F9F8F6;
+  --gray:  #888;
+  --light: #E8E5E0;
+  --tan:   #FF2D55;
+  --off:   #F3F1EE;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  background: var(--white);
+  color: var(--black);
+  overflow-x: hidden;
+  cursor: none;
+}
+#cur  { position:fixed;width:8px;height:8px;background:var(--black);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s; }
+#curR { position:fixed;width:36px;height:36px;border:1px solid rgba(13,13,13,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s,width .3s,height .3s; }
+
+/* ─── BANNER ─── */
+.launch-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 600;
+  background: var(--black); border-bottom: 1px solid rgba(255,45,85,.2);
+  padding: 10px 48px;
+}
+.lb-inner { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.lb-tag { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; color: var(--tan); border: 1px solid rgba(255,45,85,.3); padding: 3px 10px; }
+.lb-text { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 200; letter-spacing: .06em; color: rgba(249,248,246,.55); }
+.lb-text strong { color: var(--white); font-weight: 400; }
+.lb-cta { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; color: var(--tan); text-decoration: none; border-bottom: 1px solid rgba(255,45,85,.3); padding-bottom: 1px; transition: color .2s; }
+.lb-cta:hover { color: var(--white); }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 38px; left: 0; right: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  background: rgba(249,248,246,.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--light);
+}
+.logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -.5px; color: var(--black); text-decoration: none; display: inline-flex; align-items: flex-start; line-height: 1; }
+.logo-n { color: #FF2D55; }
+.logo-sup { font-size: .52rem; font-weight: 900; color: rgba(13,13,13,.28); margin-top: 2px; margin-left: 1px; }
+.nav-r { display: flex; align-items: center; gap: 36px; }
+.nav-r a { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 300; letter-spacing: .18em; text-transform: uppercase; color: var(--gray); text-decoration: none; transition: color .2s; }
+.nav-r a:hover, .nav-r a.active { color: var(--black); }
+.nav-cta { font-family: 'Inter', sans-serif; font-size: .62rem; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--white) !important; background: var(--black); padding: 9px 22px; text-decoration: none; transition: background .2s; }
+.nav-cta:hover { background: var(--tan) !important; }
+
+/* ─── HERO ─── */
+.about-hero {
+  margin-top: 96px;
+  min-height: 85vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--light);
+}
+.ah-left {
+  padding: 80px 72px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  border-right: 1px solid var(--light);
+}
+.ah-eye { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 200; letter-spacing: .32em; text-transform: uppercase; color: var(--tan); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+.ah-eye::before { content: ''; width: 24px; height: 1px; background: var(--tan); }
+.ah-h {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(4rem, 7vw, 8.5rem);
+  font-weight: 900; letter-spacing: -.02em; line-height: .9;
+  text-transform: uppercase; margin-bottom: 40px;
+}
+.ah-h span { color: var(--tan); }
+.ah-p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  color: var(--gray); max-width: 420px; margin-bottom: 48px;
+}
+.ah-stat-row { display: flex; gap: 48px; padding-top: 48px; border-top: 1px solid var(--light); }
+.ah-stat-n { font-family: 'Outfit', sans-serif; font-size: 2.2rem; letter-spacing: .02em; line-height: 1; }
+.ah-stat-l { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 200; letter-spacing: .2em; text-transform: uppercase; color: var(--gray); margin-top: 4px; }
+.ah-right {
+  position: relative; overflow: hidden;
+}
+.ah-right img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(1); transition: filter .5s;
+}
+.ah-right:hover img { filter: grayscale(0); }
+.ah-photo-label {
+  position: absolute; bottom: 32px; left: 32px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: .55rem; font-weight: 300; letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(249,248,246,.5);
+}
+
+/* ─── MANIFESTO ─── */
+.manifesto {
+  padding: 120px 48px;
+  border-bottom: 1px solid var(--light);
+  max-width: 880px;
+}
+.manifesto-eye { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 200; letter-spacing: .3em; text-transform: uppercase; color: var(--gray); margin-bottom: 48px; }
+.manifesto-body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  color: var(--black);
+}
+.manifesto-body strong {
+  font-weight: 400; color: var(--black);
+}
+.manifesto-body em {
+  font-style: normal; color: var(--tan);
+}
+
+/* ─── VALUES ─── */
+.values { border-bottom: 1px solid var(--light); }
+.values-header {
+  padding: 64px 48px 48px;
+  border-bottom: 1px solid var(--light);
+}
+.values-h { font-family: 'Inter', sans-serif; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 400; letter-spacing: .02em; text-transform: uppercase; }
+.values-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+}
+.val-item {
+  padding: 56px 48px;
+  border-right: 1px solid var(--light);
+  border-bottom: 1px solid var(--light);
+  transition: background .22s;
+}
+.val-item:hover { background: var(--off); }
+.val-num { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 200; letter-spacing: .3em; text-transform: uppercase; color: var(--tan); margin-bottom: 24px; }
+.val-h { font-family: 'Outfit', sans-serif; font-size: 1.6rem; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 16px; }
+.val-p { font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 200; line-height: 1.9; color: var(--gray); }
+
+/* ─── FOUNDER ─── */
+.founder {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--light);
+}
+.founder-img {
+  position: relative; overflow: hidden; min-height: 600px;
+  border-right: 1px solid var(--light);
+}
+.founder-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
+.founder-img:hover img { filter: grayscale(0); transition: filter .5s; }
+.founder-badge {
+  position: absolute; bottom: 40px; left: 40px;
+  background: var(--black); padding: 20px 28px;
+}
+.fb-name { font-family: 'Inter', sans-serif; font-size: 1.3rem; letter-spacing: .04em; text-transform: uppercase; color: var(--white); }
+.fb-role { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 200; letter-spacing: .2em; text-transform: uppercase; color: var(--tan); margin-top: 4px; }
+.founder-text {
+  padding: 80px 72px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.founder-eye { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 200; letter-spacing: .32em; text-transform: uppercase; color: var(--tan); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+.founder-eye::before { content: ''; width: 24px; height: 1px; background: var(--tan); }
+.founder-h { font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 4vw, 4.5rem); font-weight: 900; letter-spacing: .02em; text-transform: uppercase; margin-bottom: 32px; line-height: .9; }
+.founder-body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+}
+.founder-body p + p { margin-top: 20px; }
+.founder-sig {
+  margin-top: 48px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: .65rem; font-weight: 300; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--black); padding-top: 24px; border-top: 1px solid var(--light);
+}
+
+/* ─── CTA STRIP ─── */
+.about-cta {
+  background: var(--black);
+  padding: 80px 48px;
+  display: flex; align-items: center; justify-content: space-between; gap: 48px;
+}
+.ac-h { font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 5vw, 5rem); letter-spacing: .02em; text-transform: uppercase; color: var(--white); line-height: .9; }
+.ac-h span { color: var(--tan); }
+.ac-right { display: flex; flex-direction: column; align-items: flex-end; gap: 24px; }
+.ac-p { font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 200; color: rgba(255,255,255,.4); max-width: 280px; text-align: right; line-height: 1.7; }
+.ac-btn { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; color: var(--black); background: var(--white); padding: 14px 36px; text-decoration: none; transition: background .2s, color .2s; }
+.ac-btn:hover { background: var(--tan); color: var(--white); }
+
+/* ─── FOOTER ─── */
+footer { background: var(--black); color: rgba(249,248,246,.4); padding: 64px 48px 40px; }
+.foot-top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 56px; border-bottom: 1px solid rgba(255,255,255,.07); }
+.foot-logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: -.3px; display: inline-flex; align-items: flex-start; color: var(--white); }
+.foot-cols { display: flex; gap: 64px; }
+.fc h5 { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 400; letter-spacing: .26em; text-transform: uppercase; color: rgba(249,248,246,.3); margin-bottom: 20px; }
+.fc ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.fc a { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 200; color: rgba(249,248,246,.45); text-decoration: none; transition: color .2s; letter-spacing: .04em; }
+.fc a:hover { color: var(--white); }
+.foot-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 200; letter-spacing: .1em; color: rgba(249,248,246,.2); }
+
+/* ─── REVEAL ─── */
+.reveal { opacity:0; transform:translateY(28px); transition: opacity .9s ease, transform .9s ease; }
+.reveal.on { opacity:1; transform:none; }
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div class="lb-inner">
+    <span class="lb-tag">↗ Launch Offer</span>
+    <span class="lb-text">Founding member prices — locked in forever. <strong>Ends soon.</strong></span>
+    <a href="index.html#pricing" class="lb-cta">Claim Your Price →</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo"><span class="logo-n">n</span>uvana<span class="logo-sup">ai</span></a>
+  <div class="nav-r">
+    <a href="index.html#pricing">Pricing</a>
+    <a href="library.html">Library</a>
+    <a href="about.html" class="active">About</a>
+    <a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a>
+    <a href="prompt-corrector.html">Prompt Corrector</a>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="about-hero">
+  <div class="ah-left">
+    <div class="ah-eye">Our Story</div>
+    <h1 class="ah-h">AI Done<br><em>Differently.</em></h1>
+    <p class="ah-p">Nuvanaaï was built on a simple belief — that the most powerful AI tools in the world are useless without the right words to unlock them. We built the library we wished existed.</p>
+    <div class="ah-stat-row">
+      <div><div class="ah-stat-n">5K+</div><div class="ah-stat-l">Prompts</div></div>
+      <div><div class="ah-stat-n">10</div><div class="ah-stat-l">Industries</div></div>
+      <div><div class="ah-stat-n">2025</div><div class="ah-stat-l">Founded</div></div>
+    </div>
+  </div>
+  <div class="ah-right">
+    <img src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1400&q=90&auto=format&fit=crop" alt="Technology and creativity">
+    <div class="ah-photo-label">New York City</div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<div class="manifesto reveal">
+  <div class="manifesto-eye">Manifesto</div>
+  <div class="manifesto-body">
+    <p>AI is the most significant creative tool of our generation. <strong>And most people are using it wrong.</strong></p>
+    <br>
+    <p>They type vague questions. They get vague answers. They conclude that AI "doesn't really work for them." <em>But the tool isn't broken — the input is.</em></p>
+    <br>
+    <p>The difference between a mediocre AI output and one that stops people mid-scroll, wins the client, or sells the product is not the model. <strong>It's the prompt.</strong></p>
+    <br>
+    <p>Nuvanaaï exists to close that gap. For creators, marketers, builders, and founders who know what they want to achieve but don't have time to become prompt engineers. <em>We did the engineering. You get the results.</em></p>
+  </div>
+</div>
+
+<!-- VALUES -->
+<section class="values reveal">
+  <div class="values-header">
+    <h2 class="values-h">What We<br>Stand For.</h2>
+  </div>
+  <div class="values-grid">
+    <div class="val-item">
+      <div class="val-num">01</div>
+      <div class="val-h">Clarity<br>Over Complexity</div>
+      <p class="val-p">Every prompt in our library was written to be immediately usable. No tutorials, no 30-minute setup. Copy, paste, create.</p>
+    </div>
+    <div class="val-item">
+      <div class="val-num">02</div>
+      <div class="val-h">Results<br>Over Theory</div>
+      <p class="val-p">We don't explain how AI works. We show you what it can do for your business, brand, and creative work — right now.</p>
+    </div>
+    <div class="val-item">
+      <div class="val-num">03</div>
+      <div class="val-h">Access<br>Over Gatekeeping</div>
+      <p class="val-p">Enterprise teams have AI consultants. Independent creators have Nuvanaaï. We believe world-class tools should be accessible to everyone building something real.</p>
+    </div>
+    <div class="val-item">
+      <div class="val-num">04</div>
+      <div class="val-h">Quality<br>Over Volume</div>
+      <p class="val-p">Every single prompt is curated, tested, and refined. We'd rather give you 50 prompts that work than 5,000 that don't.</p>
+    </div>
+    <div class="val-item">
+      <div class="val-num">05</div>
+      <div class="val-h">Speed<br>Over Perfection</div>
+      <p class="val-p">AI moves fast. Nuvanaaï moves faster. New prompts drop weekly, covering the latest models, tools, and techniques as they emerge.</p>
+    </div>
+    <div class="val-item">
+      <div class="val-num">06</div>
+      <div class="val-h">Community<br>Over Competition</div>
+      <p class="val-p">Every member who shares a winning prompt makes the library stronger. We're building this together — creator by creator.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="founder reveal">
+  <div class="founder-img">
+    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&q=90&auto=format&fit=crop" alt="Founder">
+    <div class="founder-badge">
+      <div class="fb-name">Cata</div>
+      <div class="fb-role">Founder & CEO — Nuvanaaï</div>
+    </div>
+  </div>
+  <div class="founder-text">
+    <div class="founder-eye">The Founder</div>
+    <h2 class="founder-h">Built By<br>A Creator,<br>For Creators.</h2>
+    <div class="founder-body">
+      <p>Nuvanaaï was founded in New York City with a mission to make AI genuinely useful for people who create for a living — not just for engineers and researchers.</p>
+      <p>After spending years at the intersection of marketing, content, and technology, I kept running into the same frustration: the AI tools were incredible, but unlocking their full potential required knowledge most creators didn't have time to develop.</p>
+      <p>So I built the resource I desperately needed — a curated, organized, always-growing library of prompts that just work. No fluff. No filler. Just results.</p>
+      <p>Nuvanaaï is for every founder writing their own copy, every marketer doing the work of five people, every creator building something beautiful from scratch. You deserve the best tools. Now you have them.</p>
+    </div>
+    <div class="founder-sig">Cata — Founder, Nuvanaaï &nbsp;·&nbsp; New York City</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="about-cta reveal">
+  <h2 class="ac-h">Ready to<br>Create <span>Better?</span></h2>
+  <div class="ac-right">
+    <p class="ac-p">Join thousands of creators, marketers, and builders who've upgraded how they use AI.</p>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="ac-btn">Get Access — From $19/mo</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-logo"><span style="color:#FF2D55">n</span><span>uvana</span><span style="font-size:.45rem;font-weight:900;vertical-align:super;margin-left:1px;opacity:.35">ai</span></div>
+    <div class="foot-cols">
+      <div class="fc"><h5>Product</h5><ul><li><a href="library.html">Library</a></li><li><a href="index.html#pricing">Pricing</a></li><li><a href="changelog.html">Changelog</a></li>
+          <li><a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a></li>
+          <li><a href="prompt-corrector.html">Prompt Corrector</a></li></ul></div>
+      <div class="fc"><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="blog.html">Blog</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="fc"><h5>Legal</h5><ul><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul></div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 Nuvanaaï</span>
+    <span>New York City</span>
+  </div>
+</footer>
+
+<script>
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  setTimeout(() => { curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px'; }, 70);
+});
+document.querySelectorAll('a,button,.val-item').forEach(el => {
+  el.addEventListener('mouseenter', () => { curR.style.width='52px'; curR.style.height='52px'; cur.style.transform='translate(-50%,-50%) scale(0)'; });
+  el.addEventListener('mouseleave', () => { curR.style.width='36px'; curR.style.height='36px'; cur.style.transform='translate(-50%,-50%) scale(1)'; });
+});
+const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); }); }, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+</script>
+</body>
+</html>

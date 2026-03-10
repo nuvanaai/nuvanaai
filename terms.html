@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Privacy — Nuvana AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@900&family=Outfit:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --black: #0D0D0D; --white: #F9F8F6; --gray: #888; --light: #E8E5E0; --tan: #FF2D55; --off: #F3F1EE; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; font-weight: 200; background: var(--white); color: var(--black); overflow-x: hidden; cursor: none; }
+
+#cur  { position:fixed;width:8px;height:8px;background:var(--black);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s; }
+#curR { position:fixed;width:36px;height:36px;border:1px solid rgba(13,13,13,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s,width .3s,height .3s; }
+
+.launch-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 600; background: var(--black); border-bottom: 1px solid rgba(255,45,85,.2); padding: 10px 48px; }
+.lb-inner { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.lb-tag { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; color: var(--tan); border: 1px solid rgba(255,45,85,.3); padding: 3px 10px; }
+.lb-text { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 200; color: rgba(249,248,246,.55); }
+.lb-text strong { color: var(--white); font-weight: 400; }
+.lb-cta { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; color: var(--tan); text-decoration: none; border-bottom: 1px solid rgba(255,45,85,.3); padding-bottom: 1px; transition: color .2s; }
+.lb-cta:hover { color: var(--white); }
+
+nav { position: fixed; top: 38px; left: 0; right: 0; z-index: 500; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: rgba(249,248,246,.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--light); }
+.logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -.5px; color: var(--black); text-decoration: none; display: inline-flex; align-items: flex-start; line-height: 1; }
+.logo-n { color: #FF2D55; }
+.logo-sup { font-size: .52rem; font-weight: 900; color: rgba(13,13,13,.28); margin-top: 2px; margin-left: 1px; }
+.nav-r { display: flex; align-items: center; gap: 36px; }
+.nav-r a { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 300; letter-spacing: .18em; text-transform: uppercase; color: var(--gray); text-decoration: none; transition: color .2s; }
+.nav-r a:hover { color: var(--black); }
+.nav-cta { font-family: 'Inter', sans-serif; font-size: .62rem; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--white) !important; background: var(--black); padding: 9px 22px; text-decoration: none; transition: background .2s; }
+.nav-cta:hover { background: var(--tan) !important; }
+
+/* ─── LEGAL LAYOUT ─── */
+.legal-page { margin-top: 96px; }
+.legal-header {
+  padding: 80px 48px 56px;
+  border-bottom: 1px solid var(--light);
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+}
+.lh-h { font-family: 'Outfit', sans-serif; font-size: clamp(3rem, 6vw, 6.5rem); font-weight: 900; letter-spacing: -.02em; line-height: .9; text-transform: uppercase; }
+.lh-meta { text-align: right; }
+.lh-updated { font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 200; letter-spacing: .18em; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+.lh-note { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 200; color: var(--gray); max-width: 240px; line-height: 1.7; }
+
+/* ─── TABS ─── */
+.legal-tabs {
+  display: flex; border-bottom: 1px solid var(--light);
+  position: sticky; top: 96px; background: var(--white); z-index: 400;
+}
+.ltab { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 300; letter-spacing: .2em; text-transform: uppercase; color: var(--gray); padding: 20px 48px; border-bottom: 2px solid transparent; cursor: pointer; transition: color .2s, border-color .2s; }
+.ltab.active { color: var(--black); border-color: var(--black); font-weight: 400; }
+
+/* ─── LEGAL CONTENT ─── */
+.legal-body { display: grid; grid-template-columns: 220px 1fr; max-width: 1200px; margin: 0 auto; }
+.legal-sidebar {
+  padding: 56px 40px 80px;
+  border-right: 1px solid var(--light);
+  position: sticky; top: 145px; align-self: start;
+}
+.ls-title { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 300; letter-spacing: .26em; text-transform: uppercase; color: var(--gray); margin-bottom: 20px; }
+.ls-link:hover { color: var(--black); }
+.ls-link.active { color: var(--black); font-weight: 400; }
+
+.legal-main { padding: 56px 64px 120px; }
+.legal-section { display: none; }
+.legal-section.active { display: block; }
+
+.ls-section { margin-bottom: 64px; }
+.ls-section-h { font-family: 'Inter', sans-serif; font-size: 1.6rem; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--light); }
+.ls-section-body { font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 200; line-height: 2; color: var(--gray); }
+.ls-section-body p + p { margin-top: 16px; }
+.ls-section-body strong { font-weight: 400; color: var(--black); }
+.ls-section-body ul { padding-left: 20px; margin: 12px 0; }
+.ls-section-body li { margin-bottom: 8px; }
+.ls-section-body a { color: var(--tan); text-decoration: none; }
+.ls-section-body a:hover { text-decoration: underline; }
+
+/* ─── FOOTER ─── */
+footer { background: var(--black); color: rgba(249,248,246,.4); padding: 64px 48px 40px; }
+.foot-top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 56px; border-bottom: 1px solid rgba(255,255,255,.07); }
+.foot-logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: -.3px; display: inline-flex; align-items: flex-start; color: var(--white); }
+.foot-cols { display: flex; gap: 64px; }
+.fc h5 { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 400; letter-spacing: .26em; text-transform: uppercase; color: rgba(249,248,246,.3); margin-bottom: 20px; }
+.fc ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.fc a { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 200; color: rgba(249,248,246,.45); text-decoration: none; transition: color .2s; letter-spacing: .04em; }
+.fc a:hover { color: var(--white); }
+.foot-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 200; letter-spacing: .1em; color: rgba(249,248,246,.2); }
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+
+<div class="launch-banner">
+  <div class="lb-inner">
+    <span class="lb-tag">↗ Launch Offer</span>
+    <span class="lb-text">Founding member prices — locked in forever. <strong>Ends soon.</strong></span>
+    <a href="index.html#pricing" class="lb-cta">Claim Your Price →</a>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="logo"><span class="logo-n">n</span>uvana<span class="logo-sup">ai</span></a>
+  <div class="nav-r">
+    <a href="index.html#pricing">Pricing</a>
+    <a href="library.html">Library</a>
+    <a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a>
+    <a href="prompt-corrector.html">Prompt Corrector</a>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<div class="legal-page">
+
+  <div class="legal-header">
+    <h1 class="lh-h">Legal<br>Documents.</h1>
+    <div class="lh-meta">
+      <div class="lh-updated">Last Updated: March 2025</div>
+      <div class="lh-note">Questions? Email us at <a href="/cdn-cgi/l/email-protection#4129242d2d2e012f3437202f206c20286f222e2c" style="color:var(--tan)"><span class="__cf_email__" data-cfemail="670f020b0b08270912110609064a060e4904080a">[email&#160;protected]</span></a></div>
+    </div>
+  </div>
+
+  <div class="legal-tabs">
+    <div class="ltab active" data-tab="terms">Terms of Service</div>
+    <div class="ltab" data-tab="privacy">Privacy Policy</div>
+  </div>
+
+  <div class="legal-body">
+    <div class="legal-sidebar">
+      <div class="ls-title">Jump To</div>
+      <div id="sidebarLinks"></div>
+    </div>
+
+    <div class="legal-main">
+
+      <!-- TERMS -->
+      <div class="legal-section active" id="terms">
+
+        <div class="ls-section" data-anchor="agreement">
+          <div class="ls-section-h">Agreement to Terms</div>
+          <div class="ls-section-body">
+            <p>By accessing or using Nuvanaaï ("the Service") at nuvana-ai.com, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Service.</p>
+            <p>Nuvanaaï is operated by its founder based in New York City. These Terms apply to all visitors, users, and subscribers.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="subscriptions">
+          <div class="ls-section-h">Subscriptions & Billing</div>
+          <div class="ls-section-body">
+            <p>Nuvanaaï is a subscription-based service. By subscribing, you agree to the following:</p>
+            <ul>
+              <li>Subscriptions are billed monthly or annually at the rate shown at the time of purchase.</li>
+              <li><strong>Founding member pricing</strong> is locked in for as long as your subscription remains active. Cancellation forfeits the locked rate.</li>
+              <li>Payments are processed securely through Stripe. Nuvanaaï does not store your payment information.</li>
+              <li>Subscriptions renew automatically. You may cancel at any time from your account settings.</li>
+              <li>Refunds are issued at our discretion for technical issues. We do not offer refunds for unused access periods.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="access">
+          <div class="ls-section-h">Acceptable Use</div>
+          <div class="ls-section-body">
+            <p>Your Nuvanaaï subscription grants you a personal, non-transferable license to access and use the prompt library. You agree not to:</p>
+            <ul>
+              <li>Share, resell, redistribute, or sublicense prompt content to others without written permission.</li>
+              <li>Scrape, copy, or systematically extract the library contents.</li>
+              <li>Use the Service for illegal purposes or in violation of any applicable law.</li>
+              <li>Attempt to reverse engineer or copy the structure or methodology of the prompt library.</li>
+            </ul>
+            <p>You <strong>may</strong> use individual prompts freely in your personal or commercial projects, client work, and content creation. That's what they're there for.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="ip">
+          <div class="ls-section-h">Intellectual Property</div>
+          <div class="ls-section-body">
+            <p>All prompt content, copy, design, and materials on Nuvanaaï are owned by or licensed to Nuvanaaï. Accessing the Service does not grant you ownership rights to any content.</p>
+            <p>You retain ownership of any content you create using our prompts. Nuvanaaï makes no claim to work produced by subscribers using the library.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="disclaimer">
+          <div class="ls-section-h">Disclaimer of Warranties</div>
+          <div class="ls-section-body">
+            <p>The Service is provided "as is" and "as available" without warranties of any kind. Nuvanaaï does not guarantee that prompts will produce specific outcomes, as AI model outputs vary and are outside our control.</p>
+            <p>We are not responsible for the outputs generated by third-party AI tools when using our prompts.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="termination">
+          <div class="ls-section-h">Account Termination</div>
+          <div class="ls-section-body">
+            <p>We reserve the right to suspend or terminate accounts that violate these Terms, engage in abusive behavior, or misuse the Service. In such cases, no refund will be issued for the remaining subscription period.</p>
+            <p>You may cancel your subscription at any time. Cancellation takes effect at the end of the current billing period.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="contact-terms">
+          <div class="ls-section-h">Contact</div>
+          <div class="ls-section-body">
+            <p>For any questions about these Terms, contact us at <a href="/cdn-cgi/l/email-protection#761e131a1a19361803001718175b171f5815191b"><span class="__cf_email__" data-cfemail="91f9f4fdfdfed1ffe4e7f0fff0bcf0f8bff2fefc">[email&#160;protected]</span></a>. We're a small team and we respond to every message.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PRIVACY -->
+      <div class="legal-section" id="privacy">
+
+        <div class="ls-section" data-anchor="overview">
+          <div class="ls-section-h">Privacy Overview</div>
+          <div class="ls-section-body">
+            <p>Nuvanaaï takes your privacy seriously. This policy explains what information we collect, how we use it, and your rights regarding your personal data.</p>
+            <p>We collect only what's necessary to provide the Service and communicate with you. We do not sell your data — ever.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="data-collected">
+          <div class="ls-section-h">Data We Collect</div>
+          <div class="ls-section-body">
+            <p>When you use Nuvanaaï, we may collect:</p>
+            <ul>
+              <li><strong>Account data:</strong> Name, email address, and password (hashed and never stored in plain text).</li>
+              <li><strong>Billing data:</strong> Subscription tier and payment status. Full payment details are handled by Stripe and never stored on our servers.</li>
+              <li><strong>Usage data:</strong> Pages visited, prompts viewed, and general interaction data to improve the Service.</li>
+              <li><strong>Communications:</strong> Emails or messages you send us through our contact or agency intake forms.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="data-use">
+          <div class="ls-section-h">How We Use Your Data</div>
+          <div class="ls-section-body">
+            <p>We use your data to:</p>
+            <ul>
+              <li>Authenticate your account and provide access to the Service.</li>
+              <li>Process subscription billing and send receipts.</li>
+              <li>Send you product updates, new prompt drops, and relevant emails. You can unsubscribe at any time.</li>
+              <li>Improve the Service through aggregated, anonymized analytics.</li>
+              <li>Respond to support requests and agency inquiries.</li>
+            </ul>
+            <p>We do not use your data for advertising targeting, do not sell it to third parties, and do not build behavioral profiles for sale.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="third-parties">
+          <div class="ls-section-h">Third-Party Services</div>
+          <div class="ls-section-body">
+            <p>Nuvanaaï uses the following third-party services, each governed by their own privacy policies:</p>
+            <ul>
+              <li><strong>Stripe</strong> — payment processing.</li>
+              <li><strong>Supabase</strong> — user authentication and database.</li>
+              <li><strong>n8n</strong> — workflow automation for subscriber management.</li>
+              <li><strong>Netlify</strong> — website hosting.</li>
+            </ul>
+            <p>We recommend reviewing the privacy policies of these services if you have specific concerns.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="your-rights">
+          <div class="ls-section-h">Your Rights</div>
+          <div class="ls-section-body">
+            <p>You have the right to:</p>
+            <ul>
+              <li>Access the personal data we hold about you.</li>
+              <li>Request correction of inaccurate data.</li>
+              <li>Request deletion of your account and associated data.</li>
+              <li>Opt out of marketing communications at any time.</li>
+            </ul>
+            <p>To exercise any of these rights, email us at <a href="/cdn-cgi/l/email-protection#7d15181111123d13080b1c131c501c14531e1210"><span class="__cf_email__" data-cfemail="bfd7dad3d3d0ffd1cac9ded1de92ded691dcd0d2">[email&#160;protected]</span></a>.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="cookies">
+          <div class="ls-section-h">Cookies</div>
+          <div class="ls-section-body">
+            <p>We use essential cookies to maintain your session and keep you logged in. We may use analytics cookies to understand aggregate usage patterns. We do not use third-party advertising cookies.</p>
+          </div>
+        </div>
+
+        <div class="ls-section" data-anchor="contact-privacy">
+          <div class="ls-section-h">Contact</div>
+          <div class="ls-section-body">
+            <p>For any privacy-related questions or data requests, contact us at <a href="/cdn-cgi/l/email-protection#177f727b7b78577962617679763a767e3974787a"><span class="__cf_email__" data-cfemail="254d4049494a654b5053444b4408444c0b464a48">[email&#160;protected]</span></a>.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-logo"><span style="color:#FF2D55">n</span><span>uvana</span><span style="font-size:.45rem;font-weight:900;vertical-align:super;margin-left:1px;opacity:.35">ai</span></div>
+    <div class="foot-cols">
+      <div class="fc"><h5>Product</h5><ul><li><a href="library.html">Library</a></li><li><a href="index.html#pricing">Pricing</a></li></ul></div>
+      <div class="fc"><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="blog.html">Blog</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="fc"><h5>Legal</h5><ul><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul></div>
+    </div>
+  </div>
+  <div class="foot-bottom"><span>© 2025 Nuvanaaï</span><span>New York City</span></div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  setTimeout(() => { curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px'; }, 70);
+});
+document.querySelectorAll('a,button,.ltab').forEach(el => {
+  el.addEventListener('mouseenter', () => { curR.style.width='52px'; curR.style.height='52px'; cur.style.transform='translate(-50%,-50%) scale(0)'; });
+  el.addEventListener('mouseleave', () => { curR.style.width='36px'; curR.style.height='36px'; cur.style.transform='translate(-50%,-50%) scale(1)'; });
+});
+
+function buildSidebar(tabId) {
+  const sections = document.querySelectorAll(`#${tabId} .ls-section`);
+  const sidebar = document.getElementById('sidebarLinks');
+  sidebar.innerHTML = '';
+  sections.forEach((sec, i) => {
+    const anchor = sec.dataset.anchor;
+    const title = sec.querySelector('.ls-section-h').textContent;
+    const link = document.createElement('a');
+    link.className = 'ls-link' + (i === 0 ? ' active' : '');
+    link.href = '#';
+    link.textContent = title;
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.ls-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    sidebar.appendChild(link);
+  });
+}
+
+document.querySelectorAll('.ltab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.ltab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.legal-section').forEach(s =

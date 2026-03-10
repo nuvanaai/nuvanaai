@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kling.3 — Nuvana AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@900&family=Outfit:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0D0D0D;
+  --white: #F9F8F6;
+  --gray:  #888;
+  --light: #E8E5E0;
+  --tan:   #FF2D55;
+  --off:   #F3F1EE;
+  --mid:   #BFBAB4;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+#cur  { position:fixed;width:8px;height:8px;background:var(--tan);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s; }
+#curR { position:fixed;width:36px;height:36px;border:1px solid rgba(255,45,85,.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s,width .3s,height .3s; }
+
+/* ─── LAUNCH BANNER ─── */
+.launch-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 600;
+  background: var(--black);
+  border-bottom: 1px solid rgba(255,45,85,.2);
+  padding: 11px 48px;
+}
+.lb-inner { display:flex;align-items:center;justify-content:center;gap:20px; }
+.lb-tag { font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tan);border:1px solid rgba(255,45,85,.3);padding:4px 12px; }
+.lb-text { font-size:.68rem;font-weight:400;letter-spacing:.04em;color:rgba(249,248,246,.55); }
+.lb-text strong { color:rgba(249,248,246,.9);font-weight:600; }
+.lb-cta { font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--tan);padding:6px 18px;text-decoration:none;transition:background .2s;white-space:nowrap; }
+.lb-cta:hover { background:rgba(255,45,85,.8); }
+
+/* ─── NAV ─── */
+nav {
+  position:fixed;top:40px;left:0;right:0;z-index:500;
+  padding:0 48px;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(13,13,13,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -.5px; color: var(--white); text-decoration: none; display: inline-flex; align-items: flex-start; line-height: 1; }
+.logo-n { color: #FF2D55; }
+.logo-sup { font-size: .52rem; font-weight: 900; color: rgba(249,248,246,.3); margin-top: 2px; margin-left: 1px; }
+.nav-r { display:flex;align-items:center;gap:40px; }
+.nav-r a { font-family:'Inter',sans-serif;font-size:.65rem;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s; }
+.nav-r a:hover { color:var(--white); }
+.nav-cta { color:var(--white)!important;background:var(--tan)!important;padding:9px 22px!important; }
+.nav-cta:hover { background:rgba(255,45,85,.8)!important; }
+
+/* ─── HERO ─── */
+.hero {
+  padding-top: 104px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+.hero-left {
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 64px 80px;
+  position:relative;z-index:2;
+  border-right:1px solid rgba(255,255,255,.06);
+}
+.hero-right {
+  position:relative;overflow:hidden;
+  background:#0a0a0a;
+}
+.hero-right-bg {
+  position:absolute;inset:0;
+  background: radial-gradient(ellipse 80% 80% at 60% 40%, rgba(255,45,85,.12) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 50% at 80% 70%, rgba(255,45,85,.06) 0%, transparent 50%);
+}
+.hero-video-grid {
+  position:absolute;inset:0;padding:40px;
+  display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:12px;
+  opacity:.7;
+}
+.hvg-item {
+  background:#141414;border:1px solid rgba(255,255,255,.05);
+  position:relative;overflow:hidden;
+}
+.hvg-item img { width:100%;height:100%;object-fit:cover;filter:grayscale(.4) brightness(.7);transition:all .5s ease; }
+.hvg-item:hover img { filter:grayscale(0) brightness(.9);transform:scale(1.04); }
+.hvg-label {
+  position:absolute;bottom:12px;left:12px;
+  font-family:'Inter',sans-serif;font-size:.5rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);background:rgba(13,13,13,.7);padding:4px 10px;
+}
+.hero-badge {
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:.58rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--tan);margin-bottom:28px;
+}
+.hero-badge-dot { width:6px;height:6px;border-radius:50%;background:var(--tan);animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(1.4);} }
+
+.hero-h1 {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(5rem,9vw,11rem);
+  line-height:.88;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--white);margin-bottom:32px;
+}
+.hero-h1 em { color:var(--tan);font-style:normal; }
+.hero-sub {
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:300;line-height:1.7;
+  color:rgba(255,255,255,.5);max-width:400px;margin-bottom:40px;
+}
+.hero-cta-row { display:flex;gap:14px;align-items:center; }
+.btn-coral {
+  font-family:'Inter',sans-serif;font-size:.63rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--white);background:var(--tan);padding:14px 36px;text-decoration:none;
+  transition:opacity .2s;
+}
+.btn-coral:hover { opacity:.85; }
+.btn-ghost {
+  font-family:'Inter',sans-serif;font-size:.63rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);
+  padding:14px 28px;text-decoration:none;transition:all .2s;
+}
+.btn-ghost:hover { color:var(--white);border-color:rgba(255,255,255,.3); }
+
+/* ─── WHAT IS KLING ─── */
+.what {
+  padding:140px 48px;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.what-left {}
+.what-eye { font-size:.58rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--tan);margin-bottom:20px; }
+.what-h {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(3rem,5vw,6rem);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--white);margin-bottom:32px;
+}
+.what-p { font-size:.82rem;font-weight:300;line-height:1.8;color:rgba(255,255,255,.5);margin-bottom:20px; }
+.what-right {
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  padding:48px;
+}
+.stat-row { display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06); }
+.stat-box { background:var(--black);padding:36px 32px; }
+.stat-n {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(2.5rem,4vw,4rem);line-height:1;
+  color:var(--white);margin-bottom:8px;
+}
+.stat-n span { color:var(--tan); }
+.stat-l { font-size:.58rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--gray); }
+
+/* ─── PROMPT TYPES ─── */
+.types { padding:0 48px 140px; }
+.types-top {
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:60px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.types-h {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(2.5rem,4vw,5rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--white);
+}
+.types-sub { font-size:.72rem;font-weight:300;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);max-width:280px;text-align:right;line-height:1.8; }
+.types-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.06); }
+.type-card {
+  background:var(--black);padding:48px 40px;
+  transition:background .25s;cursor:default;
+}
+.type-card:hover { background:#111; }
+.tc-num { font-family:'Outfit',sans-serif;font-size:.62rem;font-weight:900;letter-spacing:.2em;color:rgba(255,45,85,.4);margin-bottom:20px; }
+.tc-icon { font-size:2rem;margin-bottom:20px; }
+.tc-name {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:1.4rem;letter-spacing:-.01em;
+  color:var(--white);margin-bottom:14px;
+}
+.tc-desc { font-size:.72rem;font-weight:300;line-height:1.7;color:rgba(255,255,255,.4); }
+.tc-tags { display:flex;flex-wrap:wrap;gap:6px;margin-top:20px; }
+.tc-tag { font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--tan);border:1px solid rgba(255,45,85,.2);padding:4px 10px; }
+
+/* ─── SAMPLE PROMPTS ─── */
+.samples { padding:0 48px 140px; }
+.samples-h {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(2.5rem,4vw,5rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--white);margin-bottom:60px;
+}
+.samples-h em { color:var(--tan);font-style:normal; }
+.prompt-list { display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.06); }
+.prompt-item {
+  background:var(--black);padding:32px 40px;
+  display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:32px;
+  transition:background .2s;cursor:pointer;
+}
+.prompt-item:hover { background:#111; }
+.pi-num { font-family:'Outfit',sans-serif;font-size:.6rem;font-weight:900;color:rgba(255,45,85,.35);letter-spacing:.1em; }
+.pi-text { font-family:'Inter',sans-serif;font-size:.8rem;font-weight:300;line-height:1.6;color:rgba(255,255,255,.65); }
+.pi-text strong { color:var(--white);font-weight:500; }
+.pi-cat { font-size:.5rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,45,85,.6);white-space:nowrap;border:1px solid rgba(255,45,85,.15);padding:5px 12px; }
+.pi-copy {
+  font-size:.52rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--white);background:rgba(255,255,255,.06);border:none;padding:8px 18px;cursor:pointer;
+  transition:background .2s;white-space:nowrap;
+}
+.pi-copy:hover { background:var(--tan);color:var(--white); }
+.prompt-item { grid-template-columns: 40px 1fr 100px 90px; }
+
+/* ─── COMING SOON ─── */
+.coming { padding:0 48px 140px; }
+.coming-h {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(2rem,3.5vw,4rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--white);margin-bottom:48px;
+}
+.coming-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:16px; }
+.coming-card {
+  border:1px solid rgba(255,255,255,.06);padding:40px 32px;
+  position:relative;overflow:hidden;
+}
+.coming-card.live { border-color:rgba(255,45,85,.3);background:rgba(255,45,85,.04); }
+.cc-badge {
+  font-size:.5rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  padding:4px 12px;margin-bottom:24px;display:inline-block;
+}
+.cc-badge.live-b { color:var(--tan);border:1px solid rgba(255,45,85,.3); }
+.cc-badge.soon-b { color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1); }
+.cc-logo {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:2.5rem;letter-spacing:-.02em;color:var(--white);margin-bottom:12px;
+}
+.cc-logo.dim { color:rgba(255,255,255,.2); }
+.cc-name { font-size:.72rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4); }
+
+/* ─── CTA STRIP ─── */
+.cta-strip {
+  margin:0 48px 80px;
+  background:var(--tan);
+  padding:80px 80px;
+  display:flex;align-items:center;justify-content:space-between;gap:40px;
+}
+.cs-h {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(2.5rem,4vw,5rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--white);
+}
+.cs-right { display:flex;flex-direction:column;align-items:flex-end;gap:16px; }
+.cs-sub { font-size:.72rem;font-weight:300;color:rgba(255,255,255,.7);text-align:right; }
+.btn-white { font-family:'Inter',sans-serif;font-size:.63rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--tan);background:var(--white);padding:16px 40px;text-decoration:none;transition:opacity .2s; }
+.btn-white:hover { opacity:.9; }
+
+/* ─── FOOTER ─── */
+footer { background:var(--black);border-top:1px solid rgba(255,255,255,.06);padding:64px 48px 40px; }
+.foot-top { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:56px; }
+.foot-logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: -.3px; display: inline-flex; align-items: flex-start; color: var(--white); }
+.foot-cols { display:flex;gap:80px; }
+.fc h5 { font-size:.55rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:20px; }
+.fc ul { list-style:none; }
+.fc li { margin-bottom:12px; }
+.fc a { font-size:.72rem;font-weight:300;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s; }
+.fc a:hover { color:var(--white); }
+.foot-bottom { display:flex;justify-content:space-between;align-items:center;padding-top:32px;border-top:1px solid rgba(255,255,255,.06);font-size:.62rem;font-weight:300;color:rgba(255,255,255,.2);letter-spacing:.08em; }
+
+/* ─── REVEAL ─── */
+.reveal { opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease; }
+.reveal.on { opacity:1;transform:none; }
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div class="lb-inner">
+    <div class="lb-tag">↗ Launch Offer</div>
+    <div class="lb-text">Founding member prices — <strong>locked in forever.</strong></div>
+    <a href="https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06" class="lb-cta">Join Now</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo"><span class="logo-n">n</span>uvana<span class="logo-sup">ai</span></a>
+  <div class="nav-r">
+    <a href="index.html#pricing">Pricing</a>
+    <a href="library.html">Library</a>
+    <a href="https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Live Integration
+    </div>
+    <h1 class="hero-h1">Kling<em>.</em>3<br>Prompt<br>Vault.</h1>
+    <p class="hero-sub">The only prompt library engineered specifically for Kling.3 — exclusively on Nuvanaaï. Cinematic motion, perfect outputs, zero guesswork. Copy. Paste. Create.</p>
+    <div class="hero-cta-row">
+      <a href="https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06" class="btn-coral">Get Access</a>
+      <a href="#prompts" class="btn-ghost">See Prompts</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-bg"></div>
+    <div class="hero-video-grid">
+      <div class="hvg-item">
+        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="hvg-label">Cinematic</div>
+      </div>
+      <div class="hvg-item">
+        <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="hvg-label">Motion</div>
+      </div>
+      <div class="hvg-item">
+        <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="hvg-label">Portrait</div>
+      </div>
+      <div class="hvg-item">
+        <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="hvg-label">Abstract</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS KLING -->
+<section class="what reveal">
+  <div class="what-left">
+    <div class="what-eye">What is Kling.3</div>
+    <h2 class="what-h">Next‑gen<br>AI Video.</h2>
+    <p class="what-p">Kling.3 by Kuaishou is one of the most advanced AI video generation models available — producing hyper-realistic, cinematic footage from text prompts. But to get great outputs, your prompts need to be built specifically for Kling's architecture.</p>
+    <p class="what-p">That's exactly what we've done. Every prompt in the Nuvanaaï Kling.3 vault has been tested, refined, and validated to produce professional-grade video on the first try.</p>
+  </div>
+  <div class="what-right">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-n">200<span>+</span></div>
+        <div class="stat-l">Kling Prompts</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-n">8</div>
+        <div class="stat-l">Categories</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-n">1<span>st</span></div>
+        <div class="stat-l">Try Success Rate</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-n">K3<span>.</span></div>
+        <div class="stat-l">Optimized Model</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMPT TYPES -->
+<section class="types reveal">
+  <div class="types-top">
+    <h2 class="types-h">Prompt<br>Categories.</h2>
+    <div class="types-sub">Every category engineered for Kling.3's unique motion + scene pipeline</div>
+  </div>
+  <div class="types-grid">
+    <div class="type-card">
+      <div class="tc-num">01</div>
+      <div class="tc-icon">⬡</div>
+      <div class="tc-name">Cinematic</div>
+      <div class="tc-desc">Film-grade scene composition, dramatic lighting, camera movement, and color grading direction. Built for ads, trailers, and brand videos.</div>
+      <div class="tc-tags"><span class="tc-tag">Camera</span><span class="tc-tag">Lighting</span><span class="tc-tag">Scene</span></div>
+    </div>
+    <div class="type-card">
+      <div class="tc-num">02</div>
+      <div class="tc-icon">◈</div>
+      <div class="tc-name">Motion & Flow</div>
+      <div class="tc-desc">Fluid motion direction, particle systems, liquid dynamics, and organic movement patterns. Perfect for brand intros and loops.</div>
+      <div class="tc-tags"><span class="tc-tag">Fluid</span><span class="tc-tag">Particle</span><span class="tc-tag">Loop</span></div>
+    </div>
+    <div class="type-card">
+      <div class="tc-num">03</div>
+      <div class="tc-icon">◉</div>
+      <div class="tc-name">Portrait & People</div>
+      <div class="tc-desc">Hyper-realistic human subjects, expressions, movement, and lighting for fashion, lifestyle, and portrait video content.</div>
+      <div class="tc-tags"><span class="tc-tag">People</span><span class="tc-tag">Fashion</span><span class="tc-tag">Realism</span></div>
+    </div>
+    <div class="type-card">
+      <div class="tc-num">04</div>
+      <div class="tc-icon">⊞</div>
+      <div class="tc-name">Environment</div>
+      <div class="tc-desc">Architectural walkthroughs, natural landscapes, urban exploration, and immersive world-building for real estate and travel brands.</div>
+      <div class="tc-tags"><span class="tc-tag">Architecture</span><span class="tc-tag">Nature</span><span class="tc-tag">Urban</span></div>
+    </div>
+    <div class="type-card">
+      <div class="tc-num">05</div>
+      <div class="tc-icon">◻️</div>
+      <div class="tc-name">Product Showcase</div>
+      <div class="tc-desc">360° product reveals, macro close-ups, luxury unboxing sequences, and e-commerce video formats that convert.</div>
+      <div class="tc-tags"><span class="tc-tag">Product</span><span class="tc-tag">E-commerce</span><span class="tc-tag">Luxury</span></div>
+    </div>
+    <div class="type-card">
+      <div class="tc-num">06</div>
+      <div class="tc-icon">⋆</div>
+      <div class="tc-name">Abstract & Art</div>
+      <div class="tc-desc">Generative art sequences, geometric transformations, surreal dreamscapes, and visual effects for artistic and experimental content.</div>
+      <div class="tc-tags"><span class="tc-tag">Abstract</span><span class="tc-tag">Surreal</span><span class="tc-tag">VFX</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE PROMPTS -->
+<section class="samples reveal" id="prompts">
+  <h2 class="samples-h">Sample <em>Prompts.</em></h2>
+  <div class="prompt-list">
+    <div class="prompt-item">
+      <div class="pi-num">01</div>
+      <div class="pi-text"><strong>Cinematic luxury car reveal</strong> — slow dolly push on matte black sports car, wet asphalt reflection, volumetric fog, golden hour backlighting, ultra-shallow depth of field, 4K film grain, anamorphic lens flare</div>
+      <div class="pi-cat">Cinematic</div>
+      <button class="pi-copy" onclick="copyPrompt(this, 'Cinematic luxury car reveal — slow dolly push on matte black sports car, wet asphalt reflection, volumetric fog, golden hour backlighting, ultra-shallow depth of field, 4K film grain, anamorphic lens flare')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="pi-num">02</div>
+      <div class="pi-text"><strong>Fluid ink dispersion in water</strong> — macro shot, crimson ink slowly expanding in crystal clear water, backlit white studio, ultra slow motion 240fps, photorealistic, seamless loop-ready</div>
+      <div class="pi-cat">Motion</div>
+      <button class="pi-copy" onclick="copyPrompt(this, 'Fluid ink dispersion in water — macro shot, crimson ink slowly expanding in crystal clear water, backlit white studio, ultra slow motion 240fps, photorealistic, seamless loop-ready')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="pi-num">03</div>
+      <div class="pi-text"><strong>Fashion model runway walk</strong> — close-up tracking shot on model in minimal white look, stark studio lighting, marble floor reflection, slow motion hair movement, high fashion editorial, Vogue campaign style</div>
+      <div class="pi-cat">Portrait</div>
+      <button class="pi-copy" onclick="copyPrompt(this, 'Fashion model runway walk — close-up tracking shot on model in minimal white look, stark studio lighting, marble floor reflection, slow motion hair movement, high fashion editorial, Vogue campaign style')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="pi-num">04</div>
+      <div class="pi-text"><strong>NYC aerial hyperlapse at twilight</strong> — drone descending into Times Square, city lights bloom, light trails, HDR sky gradient from orange to deep indigo, cinematic wide angle, 8K ultra detail</div>
+      <div class="pi-cat">Environment</div>
+      <button class="pi-copy" onclick="copyPrompt(this, 'NYC aerial hyperlapse at twilight — drone descending into Times Square, city lights bloom, light trails, HDR sky gradient from orange to deep indigo, cinematic wide angle, 8K ultra detail')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="pi-num">05</div>
+      <div class="pi-text"><strong>Luxury perfume bottle product reveal</strong> — 360° orbit around glass perfume bottle on black obsidian surface, prismatic light refraction, caustic light patterns, studio macro photography quality, brand campaign</div>
+      <div class="pi-cat">Product</div>
+      <button class="pi-copy" onclick="copyPrompt(this, 'Luxury perfume bottle product reveal — 360° orbit around glass perfume bottle on black obsidian surface, prismatic light refraction, caustic light patterns, studio macro photography quality, brand campaign')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="pi-num">06</div>
+      <div class="pi-text"><strong>Abstract geometric morphing</strong> — crystalline geometric shapes slowly morphing and fractaling, deep space background, bioluminescent cyan and coral colors, smooth transitions, perfect seamless loop, digital art</div>
+      <div class="pi-cat">Abstract</div>
+      <button class="pi-copy" onclick="copyPrompt(this, 'Abstract geometric morphing — crystalline geometric shapes slowly morphing and fractaling, deep space background, bioluminescent cyan and coral colors, smooth transitions, perfect seamless loop, digital art')">Copy</button>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section class="coming reveal">
+  <h2 class="coming-h">Exclusively<br>On Nuvanaaï.</h2>
+  <div class="coming-grid" style="grid-template-columns:1fr 1fr;">
+    <div class="coming-card live">
+      <div class="cc-badge live-b">● Live Now</div>
+      <div class="cc-logo">K3</div>
+      <div class="cc-name">Kling.3 — AI Video by Kuaishou</div>
+    </div>
+    
+    
+      <div class="coming-card" style="border-color:rgba(255,45,85,.15);background:rgba(255,45,85,.02);">
+      <div class="cc-badge" style="color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.08);">Only Here</div>
+      <div class="cc-logo" style="color:rgba(255,45,85,.3);font-family:'Outfit',sans-serif;font-weight:900;font-size:2.5rem;">✦</div>
+      <div class="cc-name" style="color:rgba(255,255,255,.35);">Kling.3 prompts are exclusive to Nuvanaaï — not available anywhere else.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="cta-strip reveal">
+  <h2 class="cs-h">Get the<br>full vault.</h2>
+  <div class="cs-right">
+    <div class="cs-sub">200+ Kling.3 prompts included in Pro Vault and above.<br>Starting at $39/mo.</div>
+    <a href="https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06" class="btn-white">Get Pro Vault →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-logo"><span style="color:#FF2D55">n</span><span>uvana</span><span style="font-size:.45rem;font-weight:900;vertical-align:super;margin-left:1px;opacity:.35">ai</span></div>
+    <div class="foot-cols">
+      <div class="fc">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="library.html">Library</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a></li>
+          <li><a href="prompt-corrector.html">Prompt Corrector</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="terms.html#privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 Nuvanaaï</span>
+    <span>New York City</span>
+  </div>
+</footer>
+
+<script>
+/* cursor */
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+  setTimeout(() => { curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px'; }, 70);
+});
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => { curR.style.width='52px';curR.style.height='52px';cur.style.transform='translate(-50%,-50%) scale(0)'; });
+  el.addEventListener('mouseleave', () => { curR.style.width='36px';curR.style.height='36px';cur.style.transform='translate(-50%,-50%) scale(1)'; });
+});
+
+/* scroll reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+
+/* copy prompt */
+function copyPrompt(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = 'var(--tan)';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>

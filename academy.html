@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academy — Nuvana AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@900&family=Outfit:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0D0D0D;
+  --white: #F9F8F6;
+  --gray:  #888;
+  --light: #E8E5E0;
+  --tan:   #FF2D55;
+  --off:   #F3F1EE;
+  --mid:   #BFBAB4;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  background: var(--white);
+  color: var(--black);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+#cur  { position:fixed;width:8px;height:8px;background:var(--black);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s; }
+#curR { position:fixed;width:36px;height:36px;border:1px solid rgba(13,13,13,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s,width .3s,height .3s; }
+
+/* ─── LAUNCH BANNER ─── */
+.launch-banner { position:fixed;top:0;left:0;right:0;z-index:600;background:var(--black);border-bottom:1px solid rgba(255,45,85,.2);padding:11px 48px; }
+.lb-inner { display:flex;align-items:center;justify-content:center;gap:20px; }
+.lb-tag { font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--tan);border:1px solid rgba(255,45,85,.3);padding:4px 12px; }
+.lb-text { font-size:.68rem;font-weight:400;letter-spacing:.04em;color:rgba(249,248,246,.55); }
+.lb-text strong { color:rgba(249,248,246,.9);font-weight:600; }
+.lb-cta { font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--tan);padding:6px 18px;text-decoration:none;transition:background .2s;white-space:nowrap; }
+.lb-cta:hover { background:rgba(255,45,85,.8); }
+
+/* ─── NAV ─── */
+nav { position:fixed;top:40px;left:0;right:0;z-index:500;padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(249,248,246,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(13,13,13,.07); }
+.logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -.5px; color: var(--black); text-decoration: none; display: inline-flex; align-items: flex-start; line-height: 1; }
+.logo-n { color: #FF2D55; }
+.logo-sup { font-size: .52rem; font-weight: 900; color: rgba(13,13,13,.28); margin-top: 2px; margin-left: 1px; }
+.nav-r { display:flex;align-items:center;gap:40px; }
+.nav-r a { font-family:'Inter',sans-serif;font-size:.65rem;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color .2s; }
+.nav-r a:hover, .nav-r a.active { color:var(--black); }
+.nav-cta { color:var(--white)!important;background:var(--black)!important;padding:9px 22px!important; }
+.nav-cta:hover { background:var(--tan)!important; }
+
+/* ─── PAGE HEADER ─── */
+.page-header {
+  padding-top: 104px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 52vh;
+  border-bottom: 1px solid var(--light);
+}
+.ph-left {
+  padding: 64px 48px 64px;
+  border-right: 1px solid var(--light);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  background: var(--black);
+}
+.ph-eye { font-size:.58rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--tan);margin-bottom:20px; }
+.ph-h {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:clamp(4.5rem,8vw,10rem);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;
+  color:var(--white);
+}
+.ph-h em { color:var(--tan);font-style:normal; }
+.ph-right {
+  padding: 64px 64px 64px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  background: var(--off);
+}
+.ph-desc { font-size:.88rem;font-weight:300;line-height:1.8;color:var(--gray);margin-bottom:40px;max-width:420px; }
+.ph-stats { display:flex;gap:48px; }
+.ph-stat-n { font-family:'Outfit',sans-serif;font-weight:900;font-size:2.5rem;letter-spacing:-.02em;color:var(--black); }
+.ph-stat-n span { color:var(--tan); }
+.ph-stat-l { font-size:.55rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-top:4px; }
+
+/* ─── FILTERS ─── */
+.filters-bar {
+  padding: 0 48px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--light);
+  position: sticky;
+  top: 104px;
+  z-index: 100;
+  background: rgba(249,248,246,.97);
+  backdrop-filter: blur(12px);
+}
+.filter-tabs { display:flex;gap:0; }
+.filter-tab {
+  font-family:'Inter',sans-serif;font-size:.58rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;
+  padding:0 24px;height:60px;line-height:60px;
+  color:var(--gray);cursor:pointer;border:none;background:transparent;
+  border-bottom:2px solid transparent;transition:all .2s;
+}
+.filter-tab:hover { color:var(--black); }
+.filter-tab.active { color:var(--black);border-bottom-color:var(--tan);font-weight:500; }
+.filter-right { display:flex;align-items:center;gap:16px; }
+.level-filter {
+  font-family:'Inter',sans-serif;font-size:.55rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;
+  padding:7px 16px;border:1px solid var(--light);background:transparent;color:var(--gray);
+  cursor:pointer;transition:all .2s;
+}
+.level-filter.active { background:var(--black);color:var(--white);border-color:var(--black); }
+.video-count { font-size:.58rem;font-weight:300;letter-spacing:.08em;color:var(--mid); }
+
+/* ─── VIDEO GRID ─── */
+.academy-body { padding: 60px 48px 100px; }
+
+.section-label {
+  font-size:.55rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--tan);margin-bottom:32px;
+  display:flex;align-items:center;gap:16px;
+}
+.section-label::after { content:'';flex:1;height:1px;background:var(--light); }
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-bottom: 80px;
+  background: var(--light);
+}
+
+/* ─── VIDEO CARD ─── */
+.vc {
+  background: var(--white);
+  cursor: pointer;
+  transition: background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.vc:hover { background: var(--off); }
+.vc:hover .vc-thumb img { transform: scale(1.04); }
+.vc:hover .vc-play { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+
+.vc-thumb {
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  position: relative;
+  background: var(--black);
+}
+.vc-thumb img { width:100%;height:100%;object-fit:cover;filter:brightness(.85);transition:transform .5s ease; }
+
+.vc-play {
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);
+  width:52px;height:52px;border-radius:50%;
+  background:var(--tan);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:all .3s ease;
+}
+.vc-play svg { margin-left:4px; }
+
+.vc-duration {
+  position:absolute;bottom:10px;right:10px;
+  font-family:'Inter',sans-serif;font-size:.52rem;font-weight:500;letter-spacing:.08em;
+  background:rgba(13,13,13,.75);color:var(--white);padding:3px 8px;
+  backdrop-filter:blur(4px);
+}
+
+.vc-free-badge {
+  position:absolute;top:10px;left:10px;
+  font-size:.48rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  background:var(--tan);color:var(--white);padding:4px 10px;
+}
+
+.vc-body { padding:24px 24px 28px; }
+.vc-meta {
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
+}
+.vc-cat {
+  font-size:.48rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--tan);
+}
+.vc-dot { width:3px;height:3px;border-radius:50%;background:var(--mid); }
+.vc-level {
+  font-size:.48rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gray);
+}
+.vc-title {
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:1rem;letter-spacing:-.01em;line-height:1.2;
+  color:var(--black);margin-bottom:10px;
+}
+.vc-desc { font-size:.68rem;font-weight:300;line-height:1.6;color:var(--gray); }
+
+/* ─── LOCKED CARD ─── */
+.vc.locked { cursor:default; }
+.vc.locked:hover { background:var(--white); }
+.vc.locked .vc-thumb img { filter:brightness(.4) blur(2px); }
+.vc.locked:hover .vc-thumb img { transform:none; }
+.vc-lock-overlay {
+  display:none;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  flex-direction:column;align-items:center;gap:10px;text-align:center;
+}
+.vc.locked .vc-lock-overlay { display:flex; }
+.vlo-icon { font-size:1.4rem;opacity:.8; }
+.vlo-text { font-size:.52rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--white);line-height:1.5; }
+.vc.locked .vc-title { color:var(--mid); }
+.vc.locked .vc-desc { color:var(--light); }
+.vc-upgrade-btn {
+  display:block;width:100%;
+  font-family:'Inter',sans-serif;font-size:.58rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--white);background:var(--black);border:none;padding:12px;
+  margin-top:16px;cursor:pointer;transition:background .2s;text-align:center;text-decoration:none;
+}
+.vc-upgrade-btn:hover { background:var(--tan); }
+
+/* ─── VIDEO MODAL ─── */
+.modal-overlay {
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(13,13,13,.92);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+  padding:40px;
+}
+.modal-overlay.open { display:flex; }
+.modal-inner {
+  width:100%;max-width:960px;
+  background:var(--black);
+  position:relative;
+}
+.modal-close {
+  position:absolute;top:-44px;right:0;
+  font-family:'Inter',sans-serif;font-size:.6rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;
+  transition:color .2s;display:flex;align-items:center;gap:8px;
+}
+.modal-close:hover { color:var(--white); }
+.modal-video {
+  aspect-ratio:16/9;
+  width:100%;background:#000;
+  position:relative;
+}
+.modal-video iframe { width:100%;height:100%;border:none; }
+.modal-info {
+  padding:28px 32px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:24px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.mi-left {}
+.mi-meta { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
+.mi-cat { font-size:.5rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--tan); }
+.mi-dot { width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2); }
+.mi-dur { font-size:.5rem;font-weight:300;letter-spacing:.1em;color:rgba(255,255,255,.3); }
+.mi-title { font-family:'Outfit',sans-serif;font-weight:900;font-size:1.3rem;letter-spacing:-.01em;color:var(--white); }
+.mi-right { display:flex;gap:8px;flex-shrink:0; }
+.mi-btn {
+  font-family:'Inter',sans-serif;font-size:.55rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;
+  padding:10px 20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);
+  cursor:pointer;transition:all .2s;
+}
+.mi-btn:hover { border-color:rgba(255,255,255,.3);color:var(--white); }
+.mi-btn.primary { background:var(--tan);border-color:var(--tan);color:var(--white); }
+.mi-btn.primary:hover { opacity:.85; }
+
+/* ─── UPGRADE STRIP ─── */
+.upgrade-strip {
+  background:var(--black);padding:80px 80px;
+  display:flex;align-items:center;justify-content:space-between;gap:40px;
+  margin-bottom:0;
+}
+.us-eye { font-size:.55rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--tan);margin-bottom:16px; }
+.us-h { font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(2.5rem,4vw,5rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:var(--white); }
+.us-right { display:flex;flex-direction:column;align-items:flex-end;gap:16px;flex-shrink:0; }
+.us-sub { font-size:.72rem;font-weight:300;color:rgba(255,255,255,.4);text-align:right;line-height:1.7; }
+.btn-coral { font-family:'Inter',sans-serif;font-size:.63rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--white);background:var(--tan);padding:16px 36px;text-decoration:none;transition:opacity .2s;border:none;cursor:pointer; }
+.btn-coral:hover { opacity:.85; }
+
+/* ─── FOOTER ─── */
+footer { background:var(--black);border-top:1px solid rgba(255,255,255,.06);padding:64px 48px 40px; }
+.foot-top { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:56px; }
+.foot-logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: -.3px; display: inline-flex; align-items: flex-start; color: var(--white); }
+.foot-cols { display:flex;gap:80px; }
+.fc h5 { font-size:.55rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:20px; }
+.fc ul { list-style:none; }
+.fc li { margin-bottom:12px; }
+.fc a { font-size:.72rem;font-weight:300;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s; }
+.fc a:hover { color:var(--white); }
+.foot-bottom { display:flex;justify-content:space-between;padding-top:32px;border-top:1px solid rgba(255,255,255,.06);font-size:.62rem;font-weight:300;color:rgba(255,255,255,.2);letter-spacing:.08em; }
+
+.reveal { opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease; }
+.reveal.on { opacity:1;transform:none; }
+
+/* hidden cards for filtering */
+.vc[data-cat].hidden { display:none; }
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+
+<!-- LAUNCH BANNER -->
+<div class="launch-banner">
+  <div class="lb-inner">
+    <div class="lb-tag">↗ Launch Offer</div>
+    <div class="lb-text">Founding member prices — <strong>locked in forever.</strong></div>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="lb-cta">Join Now</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo"><span class="logo-n">n</span>uvana<span class="logo-sup">ai</span></a>
+  <div class="nav-r">
+    <a href="index.html#pricing">Pricing</a>
+    <a href="library.html">Library</a>
+    <a href="academy.html" class="active">Academy</a>
+    <a href="kling3.html">Kling.3</a>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-left">
+    <div class="ph-eye">Learn AI Prompting</div>
+    <h1 class="ph-h">Nuvanaaï<br><em>Academy</em></h1>
+  </div>
+  <div class="ph-right">
+    <p class="ph-desc">Step-by-step video tutorials on AI image prompting, video generation, and building AI-powered content workflows. From beginner to advanced — all in one place.</p>
+    <div class="ph-stats">
+      <div>
+        <div class="ph-stat-n">24<span>+</span></div>
+        <div class="ph-stat-l">Tutorials</div>
+      </div>
+      <div>
+        <div class="ph-stat-n">6</div>
+        <div class="ph-stat-l">Categories</div>
+      </div>
+      <div>
+        <div class="ph-stat-n">3<span>h</span></div>
+        <div class="ph-stat-l">Total Content</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters-bar">
+  <div class="filter-tabs">
+    <button class="filter-tab active" data-filter="all">All</button>
+    <button class="filter-tab" data-filter="getting-started">Getting Started</button>
+    <button class="filter-tab" data-filter="image">Image Prompts</button>
+    <button class="filter-tab" data-filter="video">Video & Kling.3</button>
+    <button class="filter-tab" data-filter="marketing">Marketing</button>
+    <button class="filter-tab" data-filter="workflow">Workflows</button>
+  </div>
+  <div class="filter-right">
+    <button class="level-filter active" data-level="all">All Levels</button>
+    <button class="level-filter" data-level="beginner">Beginner</button>
+    <button class="level-filter" data-level="intermediate">Intermediate</button>
+    <button class="level-filter" data-level="advanced">Advanced</button>
+    <div class="video-count" id="videoCount">24 videos</div>
+  </div>
+</div>
+
+<!-- VIDEOS -->
+<div class="academy-body">
+
+  <!-- FREE SECTION -->
+  <div class="section-label">Free to Watch</div>
+  <div class="video-grid" id="videoGrid">
+
+    <!-- FREE CARD 1 -->
+    <div class="vc" data-cat="getting-started" data-level="beginner"
+      onclick="openModal('dQw4w9WgXcQ','Getting Started — What is AI Prompting?','Getting Started','5:42')">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1591696205602-2f950c417cb9?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-play">
+          <svg width="16" height="18" viewBox="0 0 16 18" fill="none"><path d="M1 1L15 9L1 17V1Z" fill="white"/></svg>
+        </div>
+        <div class="vc-duration">5:42</div>
+        <div class="vc-free-badge">Free</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Getting Started</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Beginner</span>
+        </div>
+        <div class="vc-title">What is AI Prompting?</div>
+        <div class="vc-desc">Understand what a prompt actually is, why it matters, and how the right words produce dramatically different results from any AI model.</div>
+      </div>
+    </div>
+
+    <!-- FREE CARD 2 -->
+    <div class="vc" data-cat="getting-started" data-level="beginner"
+      onclick="openModal('dQw4w9WgXcQ','How to Use the Nuvanaaï Library','Getting Started','8:15')">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-play">
+          <svg width="16" height="18" viewBox="0 0 16 18" fill="none"><path d="M1 1L15 9L1 17V1Z" fill="white"/></svg>
+        </div>
+        <div class="vc-duration">8:15</div>
+        <div class="vc-free-badge">Free</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Getting Started</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Beginner</span>
+        </div>
+        <div class="vc-title">How to Use the Nuvanaaï Library</div>
+        <div class="vc-desc">A full walkthrough of the prompt vault — how to search, filter by category, copy prompts, and get your first image output in under 2 minutes.</div>
+      </div>
+    </div>
+
+    <!-- FREE CARD 3 -->
+    <div class="vc" data-cat="image" data-level="beginner"
+      onclick="openModal('dQw4w9WgXcQ','Your First Image Prompt — From Blank to Beautiful','Image Prompts','11:03')">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-play">
+          <svg width="16" height="18" viewBox="0 0 16 18" fill="none"><path d="M1 1L15 9L1 17V1Z" fill="white"/></svg>
+        </div>
+        <div class="vc-duration">11:03</div>
+        <div class="vc-free-badge">Free</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Image Prompts</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Beginner</span>
+        </div>
+        <div class="vc-title">From Blank to Beautiful</div>
+        <div class="vc-desc">Watch me build a product photography prompt from scratch — starting with just a subject and layering in lighting, mood, and technical parameters step by step.</div>
+      </div>
+    </div>
+
+    <!-- LOCKED CARD 1 -->
+    <div class="vc locked" data-cat="image" data-level="intermediate">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-lock-overlay">
+          <div class="vlo-icon">⊠</div>
+          <div class="vlo-text">Members Only</div>
+        </div>
+        <div class="vc-duration">14:27</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Image Prompts</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Intermediate</span>
+        </div>
+        <div class="vc-title">Lighting Masterclass</div>
+        <div class="vc-desc">Golden hour, studio strobes, neon, volumetric fog — learn how to describe any lighting scenario to get cinematic results every time.</div>
+        <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="vc-upgrade-btn">Unlock — From $19/mo →</a>
+      </div>
+    </div>
+
+    <!-- LOCKED CARD 2 -->
+    <div class="vc locked" data-cat="image" data-level="intermediate">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-lock-overlay">
+          <div class="vlo-icon">⊠</div>
+          <div class="vlo-text">Members Only</div>
+        </div>
+        <div class="vc-duration">9:58</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Image Prompts</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Intermediate</span>
+        </div>
+        <div class="vc-title">Fashion & Product Photography</div>
+        <div class="vc-desc">Build prompts that look like high-budget editorial shoots — model direction, wardrobe, set design, and camera spec all in one prompt.</div>
+        <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="vc-upgrade-btn">Unlock — From $19/mo →</a>
+      </div>
+    </div>
+
+    <!-- LOCKED CARD 3 -->
+    <div class="vc locked" data-cat="video" data-level="beginner">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-lock-overlay">
+          <div class="vlo-icon">⊠</div>
+          <div class="vlo-text">Members Only</div>
+        </div>
+        <div class="vc-duration">13:11</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Video & Kling.3</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Beginner</span>
+        </div>
+        <div class="vc-title">Intro to Kling.3 Video Prompts</div>
+        <div class="vc-desc">How Kling.3 differs from image models — why motion direction, camera movement, and scene duration change everything.</div>
+        <a href="https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06" class="vc-upgrade-btn">Unlock — From $39/mo →</a>
+      </div>
+    </div>
+
+    <!-- LOCKED CARD 4 -->
+    <div class="vc locked" data-cat="video" data-level="intermediate">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-lock-overlay">
+          <div class="vlo-icon">⊠</div>
+          <div class="vlo-text">Members Only</div>
+        </div>
+        <div class="vc-duration">16:40</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Video & Kling.3</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Intermediate</span>
+        </div>
+        <div class="vc-title">Cinematic Kling.3 — Camera Work</div>
+        <div class="vc-desc">Dolly shots, aerial drones, slow motion, rack focus — how to write camera direction that Kling.3 actually follows consistently.</div>
+        <a href="https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06" class="vc-upgrade-btn">Unlock — From $39/mo →</a>
+      </div>
+    </div>
+
+    <!-- LOCKED CARD 5 -->
+    <div class="vc locked" data-cat="marketing" data-level="intermediate">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-lock-overlay">
+          <div class="vlo-icon">⊠</div>
+          <div class="vlo-text">Members Only</div>
+        </div>
+        <div class="vc-duration">18:22</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Marketing</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Intermediate</span>
+        </div>
+        <div class="vc-title">Build a Full AI Ad Campaign</div>
+        <div class="vc-desc">From brief to final visuals — how to use Nuvanaaï prompts to build an entire ad campaign including hero images, social content, and video.</div>
+        <a href="https://buy.stripe.com/00w9AV4Gkbub9187zs0oM06" class="vc-upgrade-btn">Unlock — From $39/mo →</a>
+      </div>
+    </div>
+
+    <!-- LOCKED CARD 6 -->
+    <div class="vc locked" data-cat="workflow" data-level="advanced">
+      <div class="vc-thumb">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop" alt="">
+        <div class="vc-lock-overlay">
+          <div class="vlo-icon">⊠</div>
+          <div class="vlo-text">Members Only</div>
+        </div>
+        <div class="vc-duration">24:05</div>
+      </div>
+      <div class="vc-body">
+        <div class="vc-meta">
+          <span class="vc-cat">Workflows</span>
+          <div class="vc-dot"></div>
+          <span class="vc-level">Advanced</span>
+        </div>
+        <div class="vc-title">Automate Your Content Pipeline</div>
+        <div class="vc-desc">Connect Nuvanaaï prompts to n8n automation — build a workflow that generates, saves, and schedules AI content with zero manual steps.</div>
+        <a href="https://buy.stripe.com/00waEZdcQbubb9gg5Y0oM05" class="vc-upgrade-btn">Unlock — From $79/mo →</a>
+      </div>
+    </div>
+
+  </div><!-- /video-grid -->
+
+</div><!-- /academy-body -->
+
+<!-- UPGRADE STRIP -->
+<div class="upgrade-strip reveal">
+  <div>
+    <div class="us-eye">Unlock All 24 Tutorials</div>
+    <h2 class="us-h">Start Learning<br>Today.</h2>
+  </div>
+  <div class="us-right">
+    <div class="us-sub">Full Academy access included in every<br>Nuvanaaï plan. Starting at $19/mo.</div>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="btn-coral">Get Access →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-logo"><span style="color:#FF2D55">n</span><span>uvana</span><span style="font-size:.45rem;font-weight:900;vertical-align:super;margin-left:1px;opacity:.35">ai</span></div>
+    <div class="foot-cols">
+      <div class="fc">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="library.html">Library</a></li>
+          <li><a href="academy.html">Academy</a></li>
+          <li><a href="kling3.html">Kling.3</a></li>
+          <li><a href="prompt-corrector.html">Prompt Corrector</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="terms.html#privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 Nuvanaaï</span>
+    <span>New York City</span>
+  </div>
+</footer>
+
+<!-- VIDEO MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-inner" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">⊠ Close</button>
+    <div class="modal-video">
+      <iframe id="modalIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div class="modal-info">
+      <div class="mi-left">
+        <div class="mi-meta">
+          <span class="mi-cat" id="modalCat"></span>
+          <div class="mi-dot"></div>
+          <span class="mi-dur" id="modalDur"></span>
+        </div>
+        <div class="mi-title" id="modalTitle"></div>
+      </div>
+      <div class="mi-right">
+        <button class="mi-btn" onclick="closeModal()">Close</button>
+        <a href="library.html" class="mi-btn primary">Browse Library →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── CURSOR ─── */
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  setTimeout(() => { curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px'; }, 70);
+});
+document.querySelectorAll('a,button,.vc:not(.locked)').forEach(el => {
+  el.addEventListener('mouseenter', () => { curR.style.width='52px';curR.style.height='52px';cur.style.transform='translate(-50%,-50%) scale(0)'; });
+  el.addEventListener('mouseleave', () => { curR.style.width='36px';curR.style.height='36px';cur.style.transform='translate(-50%,-50%) scale(1)'; });
+});
+
+/* ─── SCROLL REVEAL ─── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+
+/* ─── FILTERS ─── */
+let activeCat = 'all';
+let activeLevel = 'all';
+
+function applyFilters() {
+  const cards = document.querySelectorAll('.vc');
+  let visible = 0;
+  cards.forEach(card => {
+    const cat   = card.dataset.cat;
+    const level = card.dataset.level;
+    const catOk   = activeCat === 'all' || cat === activeCat;
+    const levelOk = activeLevel === 'all' || level === activeLevel;
+    if (catOk && levelOk) { card.classList.remove('hidden'); visible++; }
+    else card.classList.add('hidden');
+  });
+  document.getElementById('videoCount').textContent = visible + ' video' + (visible !== 1 ? 's' : '');
+}
+
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeCat = tab.dataset.filter;
+    applyFilters();
+  });
+});
+
+document.querySelectorAll('.level-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.level-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeLevel = btn.dataset.level;
+    applyFilters();
+  });
+});
+
+/* ─── MODAL ─── */
+function openModal(videoId, title, cat, dur) {
+  document.getElementById('modalIframe').src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalCat').textContent = cat;
+  document.getElementById('modalDur').textContent = dur;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay') && e.type === 'click') return;
+  document.getElementById('modalIframe').src = '';
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

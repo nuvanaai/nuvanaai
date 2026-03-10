@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Nuvana AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@900&family=Outfit:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --black: #0D0D0D; --white: #F9F8F6; --gray: #888; --light: #E8E5E0; --tan: #FF2D55; --off: #F3F1EE; --mid: #BFBAB4; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; font-weight: 200; background: var(--white); color: var(--black); overflow-x: hidden; cursor: none; }
+
+#cur  { position:fixed;width:8px;height:8px;background:var(--black);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s; }
+#curR { position:fixed;width:36px;height:36px;border:1px solid rgba(13,13,13,.2);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s,width .3s,height .3s; }
+
+.launch-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 600; background: var(--black); border-bottom: 1px solid rgba(255,45,85,.2); padding: 10px 48px; }
+.lb-inner { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.lb-tag { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; color: var(--tan); border: 1px solid rgba(255,45,85,.3); padding: 3px 10px; }
+.lb-text { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 200; color: rgba(249,248,246,.55); }
+.lb-text strong { color: var(--white); font-weight: 400; }
+.lb-cta { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; color: var(--tan); text-decoration: none; border-bottom: 1px solid rgba(255,45,85,.3); padding-bottom: 1px; transition: color .2s; }
+.lb-cta:hover { color: var(--white); }
+
+nav { position: fixed; top: 38px; left: 0; right: 0; z-index: 500; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: rgba(249,248,246,.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--light); }
+.logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: -.5px; color: var(--black); text-decoration: none; display: inline-flex; align-items: flex-start; line-height: 1; }
+.logo-n { color: #FF2D55; }
+.logo-sup { font-size: .52rem; font-weight: 900; color: rgba(13,13,13,.28); margin-top: 2px; margin-left: 1px; }
+.nav-r { display: flex; align-items: center; gap: 36px; }
+.nav-r a { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 300; letter-spacing: .18em; text-transform: uppercase; color: var(--gray); text-decoration: none; transition: color .2s; }
+.nav-r a:hover, .nav-r a.active { color: var(--black); }
+.nav-cta { font-family: 'Inter', sans-serif; font-size: .62rem; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: var(--white) !important; background: var(--black); padding: 9px 22px; text-decoration: none; transition: background .2s; }
+.nav-cta:hover { background: var(--tan) !important; }
+
+/* ─── CONTACT HERO ─── */
+.contact-hero {
+  margin-top: 96px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 70vh;
+  border-bottom: 1px solid var(--light);
+}
+.ch-left {
+  padding: 80px 72px;
+  border-right: 1px solid var(--light);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.ch-eye { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 200; letter-spacing: .32em; text-transform: uppercase; color: var(--tan); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+.ch-eye::before { content: ''; width: 24px; height: 1px; background: var(--tan); }
+.ch-h { font-family: 'Outfit', sans-serif; font-size: clamp(4rem, 7vw, 8rem); font-weight: 900; letter-spacing: -.02em; line-height: .9; text-transform: uppercase; margin-bottom: 36px; }
+.ch-p { font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 200; line-height: 1.9; color: var(--gray); max-width: 380px; }
+
+/* ─── CONTACT OPTIONS ─── */
+.contact-options { display: flex; flex-direction: column; }
+.co-item {
+  padding: 36px 72px;
+  border-bottom: 1px solid var(--light);
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  transition: background .22s; cursor: pointer;
+}
+.co-item:last-child { border-bottom: none; }
+.co-item:hover { background: var(--off); }
+.co-left {}
+.co-label { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 200; letter-spacing: .28em; text-transform: uppercase; color: var(--tan); margin-bottom: 10px; }
+.co-title { font-family: 'Inter', sans-serif; font-size: 1.4rem; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 8px; }
+.co-desc { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 200; color: var(--gray); line-height: 1.7; }
+.co-arrow { font-size: 1.5rem; color: var(--light); transition: color .2s, transform .2s; }
+.co-item:hover .co-arrow { color: var(--tan); transform: translateX(4px); }
+
+/* ─── CONTACT FORM ─── */
+.contact-form-section {
+  padding: 80px 48px;
+  border-bottom: 1px solid var(--light);
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start;
+}
+.cfs-left .cfs-eye { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 200; letter-spacing: .32em; text-transform: uppercase; color: var(--tan); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.cfs-left .cfs-eye::before { content: ''; width: 24px; height: 1px; background: var(--tan); }
+.cfs-h { font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 4vw, 4rem); letter-spacing: .02em; text-transform: uppercase; line-height: .9; margin-bottom: 24px; }
+.cfs-info { font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 200; color: var(--gray); line-height: 1.9; margin-bottom: 36px; }
+.cfs-detail { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.cfs-detail-label { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 300; letter-spacing: .22em; text-transform: uppercase; color: var(--gray); min-width: 60px; }
+.cfs-detail-val a { color: var(--tan); text-decoration: none; }
+.cfs-detail-val a:hover { text-decoration: underline; }
+
+.contact-form { display: flex; flex-direction: column; gap: 20px; }
+.cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cf-field { display: flex; flex-direction: column; gap: 7px; }
+.cf-field label { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 300; letter-spacing: .22em; text-transform: uppercase; color: var(--gray); }
+.cf-field input, .cf-field select, .cf-field textarea {
+  font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 200;
+  color: var(--black); background: var(--off); border: 1px solid var(--light);
+  padding: 14px 16px; outline: none; transition: border-color .2s;
+  appearance: none; -webkit-appearance: none; resize: none; width: 100%;
+}
+.cf-field input::placeholder, .cf-field textarea::placeholder { color: var(--mid); }
+.cf-field input:focus, .cf-field select:focus, .cf-field textarea:focus { border-color: var(--black); background: var(--white); }
+.cf-submit { font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 400; letter-spacing: .2em; text-transform: uppercase; color: var(--white); background: var(--black); padding: 16px; border: none; cursor: pointer; transition: background .22s; }
+.cf-submit:hover { background: var(--tan); }
+.cf-success { display: none; flex-direction: column; align-items: flex-start; gap: 12px; padding: 48px 0; }
+.cf-success-icon { width: 48px; height: 48px; border: 1px solid var(--black); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.cf-success-title { font-family: 'Outfit', sans-serif; font-size: 1.8rem; letter-spacing: .04em; text-transform: uppercase; }
+.cf-success-sub { font-family: 'Inter', sans-serif; font-size: .75rem; font-weight: 200; color: var(--gray); line-height: 1.7; }
+
+/* ─── FOOTER ─── */
+footer { background: var(--black); color: rgba(249,248,246,.4); padding: 64px 48px 40px; }
+.foot-top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 56px; border-bottom: 1px solid rgba(255,255,255,.07); }
+.foot-logo { font-family: 'Figtree', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: -.3px; display: inline-flex; align-items: flex-start; color: var(--white); }
+.foot-cols { display: flex; gap: 64px; }
+.fc h5 { font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 400; letter-spacing: .26em; text-transform: uppercase; color: rgba(249,248,246,.3); margin-bottom: 20px; }
+.fc ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.fc a { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 200; color: rgba(249,248,246,.45); text-decoration: none; transition: color .2s; letter-spacing: .04em; }
+.fc a:hover { color: var(--white); }
+.foot-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 200; letter-spacing: .1em; color: rgba(249,248,246,.2); }
+
+.reveal { opacity:0; transform:translateY(28px); transition: opacity .9s ease, transform .9s ease; }
+.reveal.on { opacity:1; transform:none; }
+
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+
+<div class="launch-banner">
+  <div class="lb-inner">
+    <span class="lb-tag">↗ Launch Offer</span>
+    <span class="lb-text">Founding member prices — locked in forever. <strong>Ends soon.</strong></span>
+    <a href="index.html#pricing" class="lb-cta">Claim Your Price →</a>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="logo"><span class="logo-n">n</span>uvana<span class="logo-sup">ai</span></a>
+  <div class="nav-r">
+    <a href="index.html#pricing">Pricing</a>
+    <a href="library.html">Library</a>
+    <a href="contact.html" class="active">Contact</a>
+    <a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a>
+    <a href="prompt-corrector.html">Prompt Corrector</a>
+    <a href="https://buy.stripe.com/aFaaEZb4Ibubdho0700oM07" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="contact-hero">
+  <div class="ch-left">
+    <div>
+      <div class="ch-eye">Get In Touch</div>
+      <h1 class="ch-h">Let's<br>Talk.</h1>
+      <p class="ch-p">Whether you have a question, want to start a project, or just want to say hi — we're a real team and we actually respond.</p>
+    </div>
+    <div>
+      <div style="font-family:'Commissioner',sans-serif;font-size:.6rem;font-weight:200;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);">Response time: within 24 hours &nbsp;·&nbsp; Based in New York City</div>
+    </div>
+  </div>
+
+  <div class="contact-options">
+    <a class="co-item" href="/cdn-cgi/l/email-protection#f49c9198989bb49a8182959a95d9959dda979b99">
+      <div class="co-left">
+        <div class="co-label">General Inquiries</div>
+        <div class="co-title">Email Us</div>
+        <div class="co-desc"><span class="__cf_email__" data-cfemail="4129242d2d2e012f3437202f206c20286f222e2c">[email&#160;protected]</span> — questions, feedback, partnership ideas.</div>
+      </div>
+      <div class="co-arrow">→</div>
+    </a>
+    <a class="co-item" href="index.html#dfy">
+      <div class="co-left">
+        <div class="co-label">Nuvanaaï Agency</div>
+        <div class="co-title">Done For You</div>
+        <div class="co-desc">Hire us to build your AI-powered campaigns end to end.</div>
+      </div>
+      <div class="co-arrow">→</div>
+    </a>
+    <a class="co-item" href="/cdn-cgi/l/email-protection#f1828481819e8385b19f8487909f90dc9098df929e9c">
+      <div class="co-left">
+        <div class="co-label">Account & Billing</div>
+        <div class="co-title">Support</div>
+        <div class="co-desc"><span class="__cf_email__" data-cfemail="d9aaaca9a9b6abad99b7acafb8b7b8f4b8b0f7bab6b4">[email&#160;protected]</span> — billing, access, or technical issues.</div>
+      </div>
+      <div class="co-arrow">→</div>
+    </a>
+    <a class="co-item" href="/cdn-cgi/l/email-protection#047476617777446a7172656a6529656d2a676b69">
+      <div class="co-left">
+        <div class="co-label">Journalists & Creators</div>
+        <div class="co-title">Press</div>
+        <div class="co-desc"><span class="__cf_email__" data-cfemail="a2d2d0c7d1d1e2ccd7d4c3ccc38fc3cb8cc1cdcf">[email&#160;protected]</span> — media, press kit, and collaboration requests.</div>
+      </div>
+      <div class="co-arrow">→</div>
+    </a>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="contact-form-section reveal">
+  <div class="cfs-left">
+    <div class="cfs-eye">Send a Message</div>
+    <h2 class="cfs-h">Drop Us<br>A Line.</h2>
+    <p class="cfs-info">Fill out the form and we'll get back to you within 24 hours. For urgent matters, email us directly.</p>
+    <div class="cfs-detail"><div class="cfs-detail-label">Email</div><div class="cfs-detail-val"><a href="/cdn-cgi/l/email-protection#523a373e3e3d123c2724333c337f333b7c313d3f"><span class="__cf_email__" data-cfemail="8ee6ebe2e2e1cee0fbf8efe0efa3efe7a0ede1e3">[email&#160;protected]</span></a></div></div>
+    <div class="cfs-detail"><div class="cfs-detail-label">Location</div><div class="cfs-detail-val">New York City, USA</div></div>
+    <div class="cfs-detail"><div class="cfs-detail-label">Response</div><div class="cfs-detail-val">Within 24 hours</div></div>
+  </div>
+
+  <div>
+    <div class="contact-form" id="contactForm">
+      <div class="cf-row">
+        <div class="cf-field"><label>Name</label><input type="text" id="cfName" placeholder="Your name"></div>
+        <div class="cf-field"><label>Email</label><input type="email" id="cfEmail" placeholder="your@email.com"></div>
+      </div>
+      <div class="cf-field">
+        <label>Subject</label>
+        <select id="cfSubject">
+          <option value="" disabled selected>What is this about?</option>
+          <option>General question</option>
+          <option>Subscription / billing</option>
+          <option>Agency / Done For You</option>
+          <option>Partnership or collaboration</option>
+          <option>Press inquiry</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="cf-field"><label>Message</label><textarea id="cfMessage" rows="5" placeholder="Tell us what's on your mind…"></textarea></div>
+      <button class="cf-submit" onclick="submitContact()">Send Message →</button>
+    </div>
+    <div class="cf-success" id="cfSuccess">
+      <div class="cf-success-icon">✓</div>
+      <div class="cf-success-title">Message Sent.</div>
+      <div class="cf-success-sub">We've received your message and will respond within 24 hours. Thanks for reaching out.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-logo"><span style="color:#FF2D55">n</span><span>uvana</span><span style="font-size:.45rem;font-weight:900;vertical-align:super;margin-left:1px;opacity:.35">ai</span></div>
+    <div class="foot-cols">
+      <div class="fc"><h5>Product</h5><ul><li><a href="library.html">Library</a></li><li><a href="index.html#pricing">Pricing</a></li><li><a href="changelog.html">Changelog</a></li>
+          <li><a href="academy.html">Academy</a>
+    <a href="kling3.html">Kling.3</a></li>
+          <li><a href="prompt-corrector.html">Prompt Corrector</a></li></ul></div>
+      <div class="fc"><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="blog.html">Blog</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="fc"><h5>Legal</h5><ul><li><a href="terms.html">Terms</a></li><li><a href="terms.html#privacy">Privacy</a></li></ul></div>
+    </div>
+  </div>
+  <div class="foot-bottom"><span>© 2025 Nuvanaaï</span><span>New York City</span></div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const cur = document.getElementById('cur');
+const curR = document.getElementById('curR');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  setTimeout(() => { curR.style.left = e.clientX + 'px'; curR.style.top = e.clientY + 'px'; }, 70);
+});
+document.querySelectorAll('a,button,.co-item').forEach(el => {
+  el.addEventListener('mouseenter', () => { curR.style.width='52px'; curR.style.height='52px'; cur.style.transform='translate(-50%,-50%) scale(0)'; });
+  el.addEventListener('mouseleave', () => { curR.style.width='36px'; curR.style.height='36px'; cur.style.transform='translate(-50%,-50%) scale(1)'; });
+});
+
+function submitContact() {
+  const name = document.getElementById('cfName').value.trim();
+  const email = document.getElementById('cfEmail').value.trim();
+  const message = document.getElementById('cfMessage').value.trim();
+  const subject = document.getElementById('cfSubject').value;
+  if (!name || !email || !message) {
+    [['cfName',name],['cfEmail',email],['cfMessage',message]].forEach(([id,v]) => {
+      document.getElementById(id).style.borderColor = v ? '' : '#C8784A';
+    
