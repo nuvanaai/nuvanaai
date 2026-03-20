@@ -1,534 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin — Nuvana AI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    *,::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--black:#0D0D0D;--white:#F9F8F6;--coral:#FF2D55;--off:#F3F1EE;--light:#E8E5E0;--gray:#888;--mid:#BFBAB4}
-    body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:var(--black);min-height:100vh}
-    #loginScreen{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9999}
-    .login-box{width:100%;max-width:420px;padding:48px}
-    .login-logo{font-family:'Figtree';font-weight:900;font-size:1.4rem;letter-spacing:-.5px;margin-bottom:40px}
-    .login-logo .n{color:var(--coral)}
-    .login-logo .s{font-size:.6rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
-    .login-label{font-size:.52rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,248,246,.4);margin-bottom:10px;display:block}
-    .login-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-family:'Inter';font-size:.85rem;font-weight:300;color:white;outline:none;margin-bottom:12px}
-    .login-input::placeholder{color:rgba(255,255,255,.2)}
-    .login-input:focus{border-color:var(--coral)}
-    .login-btn{width:100%;padding:14px;background:var(--coral);border:none;font-family:'Inter';font-size:.65rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer;transition:opacity .2s;margin-top:4px}
-    .login-btn:hover{opacity:.85}
-    .login-error{font-size:.62rem;color:var(--coral);margin-top:8px;display:none}
-    #adminApp{display:none}
-    .topbar{background:var(--black);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-    .tb-logo{font-family:'Figtree';font-weight:900;font-size:1rem;letter-spacing:-.3px}
-    .tb-logo .n{color:var(--coral)}
-    .tb-logo .s{font-size:.48rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
-    .tb-right{display:flex;align-items:center;gap:20px}
-    .tb-link{font-size:.55rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:rgba(249,248,246,.35);text-decoration:none;transition:color .2s}
-    .tb-link:hover{color:white}
-    .tb-count{font-size:.58rem;font-weight:300;color:rgba(249,248,246,.3)}
-    .logout-btn{font-size:.52rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(249,248,246,.4);cursor:pointer;transition:all .2s}
-    .logout-btn:hover{background:var(--coral);border-color:var(--coral);color:white}
-    .main{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 56px)}
-    .add-panel{background:white;padding:36px;border-right:1px solid var(--light);position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
-    .panel-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--light)}
-    .panel-title span{color:var(--coral)}
-    .form-group{margin-bottom:18px}
-    label{display:block;font-size:.5rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:7px}
-    input[type=text],input[type=url],textarea,select{width:100%;padding:11px 14px;border:1px solid var(--light);font-family:'Inter';font-size:.78rem;font-weight:300;color:var(--black);outline:none;background:var(--off);transition:border-color .2s;resize:none}
-    input:focus,textarea:focus,select:focus{border-color:var(--black)}
-               textarea{height:100px;line-height:1.55}
-    select{appearance:none;cursor:pointer}
-    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .img-preview{width:100%;height:160px;object-fit:cover;display:none;margin-top:8px;border:1px solid var(--light)}
-    .img-preview.show{display:block}
-    .submit-btn{width:100%;padding:14px;background:var(--black);border:none;font-family:'Inter';font-size:.62rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer;transition:background .2s;margin-top:4px}
-    .submit-btn:hover{background:var(--coral)}
-    .submit-btn:disabled{opacity:.4;cursor:not-allowed}
-    .form-msg{font-size:.62rem;font-weight:400;margin-top:10px;padding:10px 14px;display:none}
-    .form-msg.success{background:#e8f5e9;color:#2e7d32;display:block}
-    .form-msg.error{background:#fce4ec;color:#c62828;display:block}
-    .edit-indicator{background:var(--coral);color:white;padding:8px 14px;font-size:.58rem;font-weight:400;letter-spacing:.1em;margin-bottom:20px;display:none;align-items:center;justify-content:space-between}
-    .cancel-edit{background:transparent;border:1px solid rgba(255,255,255,.4);color:white;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;cursor:pointer}
-    .list-panel{padding:36px}
-    .list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-    .list-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px}
-    .list-search{display:flex;align-items:center;gap:10px;border:1px solid var(--light);padding:8px 14px;background:white}
-    .list-search input{border:none;outline:none;font-size:.72rem;font-weight:300;width:200px;background:transparent}
-    .prompt-table{width:100%;border-collapse:collapse;background:white}
-    .prompt-table th{font-size:.48rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);padding:12px 16px;text-align:left;border-bottom:2px solid var(--light);white-space:nowrap}
-    .prompt-table td{padding:16px;border-bottom:1px solid var(--off);font-size:.75rem;font-weight:300;vertical-align:middle}
-    .prompt-table tr:hover td{background:var(--off)}
-    .pt-img{width:60px;height:44px;object-fit:cover;display:block}
-    .pt-title{font-weight:500;font-size:.78rem;margin-bottom:3px}
-    .pt-prompt{color:var(--mid);font-size:.68rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:320px;line-height:1.5}
-    .pt-cat{font-size:.52rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
-    .pt-tier{font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px}
-    .tier-free{background:rgba(13,13,13,.07);color:var(--black)}
-    .tier-starter{background:rgba(255,45,85,.1);color:var(--coral)}
-    .tier-pro{background:rgba(13,13,13,.07);color:var(--black)}
-    .tier-unlimited{background:rgba(255,45,85,.15);color:var(--coral)}
-    .row-actions{display:flex;gap:8px;white-space:nowrap}
-    .edit-btn,.del-btn{font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border:none;cursor:pointer;transition:all .2s}
-    .edit-btn{border:1px solid var(--light);background:white;color:var(--black)}
-    .edit-btn:hover{background:var(--black);color:white;border-color:var(--black)}
-    .del-btn{border:1px solid rgba(255,45,85,.2);background:transparent;color:var(--coral)}
-    .del-btn:hover{background:var(--coral);color:white;border-color:var(--coral)}
-    .toggle-active{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.65rem;color:var(--mid)}
-    .toggle-dot{width:28px;height:16px;border-radius:8px;background:var(--light);position:relative;transition:background .2s}
-    .toggle-dot::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:white;transition:transform .2s}
-    .toggle-active.on .toggle-dot{background:var(--black)}
-    .toggle-active.on .toggle-dot::after{transform:translateX(12px)}
-    #uploadZone{border:2px dashed var(--light);padding:24px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--off)}
-    #uploadZone:hover{border-color:var(--black);background:white}
-    #uploadZone.dragover{border-color:var(--coral);background:rgba(255,45,85,.04)}
-    #uploadZone.done{border-color:#2e7d32;border-style:solid;background:#f1f8e9}
-    .upload-icon{font-size:1.4rem;color:var(--mid);margin-bottom:6px}
-    .upload-text{font-size:.68rem;font-weight:400;color:var(--gray)}
-    .upload-sub{font-size:.58rem;font-weight:300;color:var(--mid);margin-top:4px}
-    .upload-spinner{width:24px;height:24px;border:2px solid var(--light);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 8px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .or-divider{display:flex;align-items:center;gap:10px;margin:12px 0 10px}
-    .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--light)}
-    .or-divider span{font-size:.52rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--mid)}
-    .img-preview{width:100%;height:160px;object-fit:cover;display:block;border:1px solid var(--light)}
-    .remove-img-btn{position:absolute;top:8px;right:8px;background:rgba(13,13,13,.7);color:white;border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
-    .remove-img-btn:hover{background:var(--coral)}
-    .table-empty{text-align:center;padding:60px;color:var(--mid);font-size:.75rem}
-    .table-loading{text-align:center;padding:40px;color:var(--mid);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase}
-    </style>
-  </head>
-  <body>
-
-    <!-- LOGIN -->
-    <div id="loginScreen">
-        <div class="login-box">
-              <div class="login-logo"><span class="n">n</span>span>uvana<span class="s">ai</span>span> <span style="font-size:.65rem;font-weight:300;color:rgba(249,248,246,.25);margin-left:8px;font-family:'Inter'">admin</span>span></div>div>
-              <label class="login-label">Password</label>label>
-              <input type="password" id="pwInput" class="login-input" placeholder="Enter admin password" autocomplete="current-password">
-              <button class="login-btn" onclick="tryLogin()">Enter Admin</button>button>
-              <div class="login-error" id="loginError">Incorrect password.</div>div>
-        </div>div>
-    </div>div>
-
-    <!-- ADMIN APP -->
-    <div id="adminApp">
-        <div class="topbar">
-              <div class="tb-logo"><span class="n">n</span>span>uvana<span class="s">ai</span>span></div>div>
-              <div class="tb-right">
-                      <span class="tb-count" id="tbCount"></span>span>
-                      <a href="library.html" target="_blank" class="tb-link">View Library ↗</a>a>
-                      <button class="logout-btn" onclick="logout()">Logout</button>button>
-              </div>div>
-        </div>div>
-
-        <div class="main">
-              <div class="add-panel">
-                      <div class="panel-title">Add <span>Prompt</span></div>div>
-              
-                    <div class="edit-indicator" id="editIndicator">
-                            <span>Editing prompt…</span>
-                            <button class="cancel-edit" onclick="cancelEdit()">Cancel</button>button>
-                    </div>div>
-              
-                    <div class="form-group">
-                            <label>Title</label>
-                            <input type="text" id="f-title" placeholder="e.g. Golden Hour Editorial">
-                    </div>div>
-              
-                    <div class="form-group">
-                            <label>Prompt Text</label>
-                            <textarea id="f-prompt" placeholder="The full AI prompt text…"></textarea>
-                    </div>div>
-              
-                    <div class="form-group">
-                            <label>Image</label>
-                            <div id="uploadZone" onclick="document.getElementById('fileInput').click()">
-                                      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
-                                      <div id="uploadIdle">
-                                                  <div class="upload-icon">↑</div>div>
-                                                  <div class="upload-text">Click to upload from computer</div>div>
-                                                  <div class="upload-sub">JPG, PNG, WEBP — max 5MB</div>div>
-                                      </div>div>
-                                      <div id="uploadProgress" style="display:none">
-                                                  <div class="upload-spinner"></div>div>
-                                                  <div class="upload-text" id="uploadStatusText">Uploading…</div>div>
-                                      </div>div>
-                            </div>div>
-                            <div class="or-divider"><span>or paste URL</span></div>div>
-                            <input type="url" id="f-image" placeholder="https://… (Unsplash, etc)" oninput="previewImg(this.value)">
-                            <div id="imgPreviewWrap" style="display:none;margin-top:10px;position:relative;">
-                                      <img id="imgPreview" class="img-preview show" alt="preview">
-                                      <button class="remove-img-btn" onclick="removeImage()" title="Remove image">✕</button>button>
-                            </div>div>
-                    </div>div>
-              
-                    <div class="form-row">
-                            <div class="form-group">
-                                      <label>Category</label>
-                                      <select id="f-category">
-                                                  <option>Cinematic</option>
-                                                  <option>Editorial</option>
-                                                  <option>Product</option>
-                                                  <option>Kling.3</option>
-                                                  <option>Abstract</option>
-                                                  <option>Nature</option>
-                                                  <option>Portrait</option>
-                                                  <option>Marketing</option>
-                                                  <option>General</option>
-                                      </select>select>
-                            </div>div>
-                            <div class="form-group">
-                                      <label>Tier</label>
-                                      <select id="f-tier">
-                                                  <option value="free">Free</option>
-                                                  <option value="starter">Starter+</option>
-                                                  <option value="pro">Pro</option>
-                                                  <option value="unlimited">Unlimited</option>
-                                      </select>select>
-                            </div>div>
-                    </div>div>
-              
-                    <div class="form-group">
-                            <label>AI Model</label>
-                            <select id="f-model">
-                                      <option>Midjourney</option>
-                                      <option>Kling.3</option>
-                                      <option>Stable Diffusion</option>
-                                      <option>DALL·E 3</option>
-                                      <option>Firefly</option>
-                                      <option>Runway</option>
-                                      <option>General</option>
-                            </select>select>
-                    </div>div>
-              
-                    <button class="submit-btn" id="submitBtn" onclick="submitPrompt()">Add Prompt</button>button>
-                    <div class="form-msg" id="formMsg"></div>div>
-              </div>div>
-        
-            <div class="list-panel">
-                  <div class="list-header">
-                          <div class="list-title">All Prompts</div>div>
-                          <div class="list-search">
-                                    <span style="color:var(--mid)">⌕</span>
-                                    <input type="text" id="listSearch" placeholder="Filter…" oninput="filterList(this.value)">
-                          </div>div>
-                  </div>div>
-                  <table class="prompt-table">
-                          <thead>
-                                      <tr>
-                                                    <th>Image</th>
-                                      <th>Title / Prompt</th>
-                                      <th>Category</th>
-                                      <th>Tier</th>
-                                      <th>Model</th>
-                                      <th>Active</th>
-                                      <th>Actions</th>
-                                      </tr>
-                          </thead>
-                          <tbody id="promptTableBody">
-                            <tr><td colspan="7" class="table-loading">Loading…</td>td></tr>
-                          </tbody>tbody>
-                  </table>table>
-            </div>div>
-        </div>div>
-    </div>div>
-  
-  <script>
-    // CONFIG
-    const SUPABASE_URL = 'https://nphHgzjofhvboginDcwe.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
-    const ADMIN_PASSWORD = 'nuvana2025';
-
-    // AUTH
-    function tryLogin() {
-        const pw = document.getElementById('pwInput').value;
-        if (pw === ADMIN_PASSWORD) {
-              sessionStorage.setItem('nuvana_admin', '1');
-              document.getElementById('loginScreen').style.display = 'none';
-              document.getElementById('adminApp').style.display = 'block';
-              loadPrompts();
-        } else {
-              document.getElementById('loginError').style.display = 'block';
-        }
-    }
-
-    function logout() {
-        sessionStorage.removeItem('nuvana_admin');
-        location.reload();
-    }
-
-    document.getElementById('pwInput').addEventListener('keydown', e => {
-        if (e.key === 'Enter') tryLogin();
-    });
-
-    // DATA
-    let allPrompts = [];
-    let editingId = null;
-    const headers = {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-    };
-
-    if (sessionStorage.getItem('nuvana_admin') === '1') {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('adminApp').style.display = 'block';
-        loadPrompts();
-    }
-
-    async function loadPrompts() {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/prompts?select=*&order=created_at.desc`, { headers });
-        allPrompts = await res.json();
-        document.getElementById('tbCount').textContent = allPrompts.length + ' prompts';
-        renderTable(allPrompts);
-    }
-
-    function renderTable(data) {
-        const tbody = document.getElementById('promptTableBody');
-        if (!data.length) {
-              tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No prompts yet. Add your first one →</td></tr>';
-              return;
-        }
-        tbody.innerHTML = data.map(p => `
-            <tr id="row-${p.id}">
-                  <td><img class="pt-img" src="${p.image_url || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&q=60'}" alt="" onerror="this.style.display='none'"></td>
-                        <td>
-                                <div class="pt-title">${p.title}</div>
-                                        <div class="pt-prompt">${p.prompt}</div>
-                                              </td>
-                                                    <td><span class="pt-cat">${p.category || '—'}</span></td>
-                                                          <td><span class="pt-tier tier-${p.tier}">${p.tier}</span></td>
-                                                                <td style="font-size:.68rem;color:var(--mid)">${p.model || '—'}</td>
-                                                                      <td>
-                                                                              <label class="toggle-active ${p.active ? 'on' : ''}" onclick="toggleActive('${p.id}', ${p.active})">
-                                                                                        <div class="toggle-dot"></div>
-                                                                                                </label>
-                                                                                                      </td>
-                                                                                                            <td>
-                                                                                                                    <div class="row-actions">
-                                                                                                                              <button class="edit-btn" onclick="startEdit('${p.id}')">Edit</button>
-                                                                                                                                        <button class="del-btn" onclick="deletePrompt('${p.id}', '${p.title.replace(/'/g,"\\'")}')">Delete</button>
-                                                                                                                                                </div>
-                                                                                                                                                      </td>
-                                                                                                                                                          </tr>
-                                                                                                                                                            `).join('');
-    }
-
-    function filterList(q) {
-        if (!q) { renderTable(allPrompts); return; }
-        const lq = q.toLowerCase();
-        renderTable(allPrompts.filter(p =>
-              p.title.toLowerCase().includes(lq) ||
-              p.prompt.toLowerCase().includes(lq) ||
-              (p.category || '').toLowerCase().includes(lq) ||
-              (p.tier || '').toLowerCase().includes(lq)
-                                        ));
-    }
-
-    // ADD / EDIT
-    async function submitPrompt() {
-        const title = document.getElementById('f-title').value.trim();
-        const prompt = document.getElementById('f-prompt').value.trim();
-        const image_url = document.getElementById('f-image').value.trim();
-        const category = document.getElementById('f-category').value;
-        const tier = document.getElementById('f-tier').value;
-        const model = document.getElementById('f-model').value;
-
-        if (!title || !prompt) { showMsg('Title and prompt text are required.', 'error'); return; }
-
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        btn.textContent = editingId ? 'Saving…' : 'Adding…';
-
-        const body = JSON.stringify({ title, prompt, image_url: image_url || null, category, tier, model });
-        let res;
-
-        if (editingId) {
-              res = await fetch(`${SUPABASE_URL}/rest/v1/prompts?id=eq.${editingId}`, {
-                      method: 'PATCH', headers: { ...headers, 'Prefer': 'return=minimal' }, body
-              });
-        } else {
-              res = await fetch(`${SUPABASE_URL}/rest/v1/prompts`, {
-                      method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' }, body
-              });
-        }
-
-        btn.disabled = false;
-        if (res.ok) {
-              showMsg(editingId ? 'Prompt updated!' : 'Prompt added!', 'success');
-              cancelEdit();
-              clearForm();
-              loadPrompts();
-        } else {
-              const err = await res.text();
-              showMsg('Error: ' + err, 'error');
-        }
-        btn.textContent = editingId ? 'Save Changes' : 'Add Prompt';
-    }
-
-    function startEdit(id) {
-        const p = allPrompts.find(x => x.id === id);
-        if (!p) return;
-        editingId = id;
-        document.getElementById('f-title').value = p.title || '';
-        document.getElementById('f-prompt').value = p.prompt || '';
-        document.getElementById('f-image').value = p.image_url || '';
-        document.getElementById('f-category').value = p.category || 'General';
-        document.getElementById('f-tier').value = p.tier || 'free';
-        document.getElementById('f-model').value = p.model || 'General';
-        previewImg(p.image_url);
-        document.getElementById('editIndicator').style.display = 'flex';
-        document.getElementById('submitBtn').textContent = 'Save Changes';
-        document.querySelector('.panel-title').innerHTML = 'Edit <span>Prompt</span>';
-        document.querySelector('.add-panel').scrollTop = 0;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cancelEdit() {
-        editingId = null;
-        document.getElementById('editIndicator').style.display = 'none';
-        document.getElementById('submitBtn').textContent = 'Add Prompt';
-        document.querySelector('.panel-title').innerHTML = 'Add <span>Prompt</span>';
-        clearForm();
-    }
-
-    function clearForm() {
-        ['f-title','f-prompt','f-image'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('imgPreviewWrap').style.display = 'none';
-        document.getElementById('uploadZone').classList.remove('done');
-        document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Click to upload from computer';
-        document.getElementById('formMsg').style.display = 'none';
-    }
-
-    async function deletePrompt(id, title) {
-        if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/prompts?id=eq.${id}`, {
-              method: 'DELETE', headers
-        });
-        if (res.ok) { loadPrompts(); }
-        else { alert('Delete failed. Check Supabase RLS policies.'); }
-    }
-
-    async function toggleActive(id, current) {
-        await fetch(`${SUPABASE_URL}/rest/v1/prompts?id=eq.${id}`, {
-              method: 'PATCH',
-              headers: { ...headers, 'Prefer': 'return=minimal' },
-              body: JSON.stringify({ active: !current })
-        });
-        loadPrompts();
-    }
-
-    // IMAGE UPLOAD
-    async function handleFileUpload(input) {
-        const file = input.files[0];
-        if (!file) return;
-        if (file.size > 5 * 1024 * 1024) {
-              showMsg('Image must be under 5MB.', 'error');
-              return;
-        }
-
-        document.getElementById('uploadIdle').style.display = 'none';
-        document.getElementById('uploadProgress').style.display = 'block';
-        document.getElementById('uploadStatusText').textContent = 'Uploading…';
-        document.getElementById('uploadZone').classList.remove('done');
-
-        const ext = file.name.split('.').pop().toLowerCase();
-        const fileName = `prompt-${Date.now()}.${ext}`;
-
-        try {
-              const res = await fetch(
-                      `${SUPABASE_URL}/storage/v1/object/prompt-images/${fileName}`,
-                {
-                          method: 'POST',
-                          headers: {
-                                      'apikey': SUPABASE_KEY,
-                                      'Authorization': 'Bearer ' + SUPABASE_KEY,
-                                      'Content-Type': file.type,
-                                      'x-upsert': 'true'
-                          },
-                          body: file
-                }
-                    );
-
-              if (!res.ok) {
-                      const err = await res.text();
-                      throw new Error(err);
-              }
-
-              const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/prompt-images/${fileName}`;
-              document.getElementById('f-image').value = publicUrl;
-              previewImg(publicUrl);
-
-              document.getElementById('uploadStatusText').textContent = 'Uploaded!';
-              document.getElementById('uploadZone').classList.add('done');
-              setTimeout(() => {
-                      document.getElementById('uploadProgress').style.display = 'none';
-                      document.getElementById('uploadIdle').style.display = 'block';
-                      document.getElementById('uploadIdle').querySelector('.upload-text').textContent = '✓ ' + file.name;
-              }, 1200);
-
-        } catch (e) {
-              document.getElementById('uploadProgress').style.display = 'none';
-              document.getElementById('uploadIdle').style.display = 'block';
-              showMsg('Upload failed. Make sure the "prompt-images" bucket exists and is public in Supabase Storage.', 'error');
-        }
-
-        input.value = '';
-    }
-
-    // Drag and drop
-    const zone = document.getElementById('uploadZone');
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => {
-        e.preventDefault();
-        zone.classList.remove('dragover');
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-              const dt = new DataTransfer();
-              dt.items.add(file);
-              const input = document.getElementById('fileInput');
-              input.files = dt.files;
-              handleFileUpload(input);
-        }
-    });
-
-    function removeImage() {
-        document.getElementById('f-image').value = '';
-        document.getElementById('imgPreviewWrap').style.display = 'none';
-        document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Click to upload from computer';
-        document.getElementById('uploadZone').classList.remove('done');
-    }
-
-    function previewImg(url) {
-        const wrap = document.getElementById('imgPreviewWrap');
-        const img = document.getElementById('imgPreview');
-        if (url && url.startsWith('http')) {
-              img.src = url;
-              wrap.style.display = 'block';
-              img.onerror = () => { wrap.style.display = 'none'; };
-        } else {
-              wrap.style.display = 'none';
-        }
-    }
-
-    function showMsg(text, type) {
-        const el = document.getElementById('formMsg');
-        el.textContent = text;
-        el.className = 'form-msg ' + type;
-        setTimeout(() => { el.style.display = 'none'; }, 4000);
-    }
-  </script>
-  </body>
-</html>html>
-  </script></tr></th></th>
-                                      </tr>
-                          </thead></option></option></label></label></span></span>
-  </body>
-  </style></title>
-  </head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Nuvana AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0D0D0D;--white:#F9F8F6;--coral:#FF2D55;--off:#F3F1EE;--light:#E8E5E0;--gray:#888;--mid:#BFBAB4}
+body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:var(--black);min-height:100vh}
+#loginScreen{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{width:100%;max-width:420px;padding:48px}
+.login-logo{font-family:'Figtree';font-weight:900;font-size:1.4rem;letter-spacing:-.5px;margin-bottom:40px}
+.login-logo .n{color:var(--coral)}
+.login-logo .s{font-size:.6rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
+.login-label{font-size:.52rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,248,246,.4);margin-bottom:10px;display:block}
+.login-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-family:'Inter';font-size:.85rem;font-weight:300;color:white;outline:none;margin-bottom:12px}
+.login-input::placeholder{color:rgba(255,255,255,.2)}
+.login-input:focus{border-color:var(--coral)}
+.login-btn{width:100%;padding:14px;background:var(--coral);border:none;font-family:'Inter';font-size:.65rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer;transition:opacity .2s;margin-top:4px}
+.login-btn:hover{opacity:.85}
+.login-error{font-size:.62rem;color:var(--coral);margin-top:8px;display:none}
+#adminApp{display:none}
+.topbar{background:var(--black);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.tb-logo{font-family:'Figtree';font-weight:900;font-size:1rem;letter-spacing:-.3px}
+.tb-logo .n{color:var(--coral)}
+.tb-logo .s{font-size:.48rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
+.tb-right{display:flex;align-items:center;gap:20px}
+.tb-link{font-size:.55rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:rgba(249,248,246,.35);text-decoration:none;transition:color .2s}
+.tb-link:hover{color:white}
+.tb-count{font-size:.58rem;font-weight:300;color:rgba(249,248,246,.3)}
+.logout-btn{font-size:.52rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(249,248,246,.4);cursor:pointer;transition:all .2s}
+.logout-btn:hover{background:var(--coral);border-color:var(--coral);color:white}
+.main{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 56px)}
+.add-panel{background:white;padding:36px;border-right:1px solid var(--light);position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.panel-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--light)}
+.panel-title span{color:var(--coral)}
+.form-group{margin-bottom:18px}
+label{display:block;font-size:.5rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:7px}
+input[type=text],input[type=url],textarea,select{width:100%;padding:11px 14px;border:1px solid var(--light);font-family:'Inter';font-size:.78rem;font-weight:300;color:var(--black);outline:none;background:var(--off);transition:border-color .2s;resize:none}
+input:focus,textarea:focus,select:focus{border-color:var(--black)}
+textarea{height:100px;line-height:1.55}
+select{appearance:none;cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.submit-btn{width:100%;padding:14px;background:var(--black);border:none;font-family:'Inter';font-size:.62rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer;transition:background .2s;margin-top:4px}
+.submit-btn:hover{background:var(--coral)}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed}
+.form-msg{font-size:.62rem;font-weight:400;margin-top:10px;padding:10px 14px;display:none}
+.form-msg.success{background:#e8f5e9;color:#2e7d32;display:block}
+.form-msg.error{background:#fce4ec;color:#c62828;display:block}
+.edit-indicator{background:var(--coral);color:white;padding:8px 14px;font-size:.58rem;font-weight:400;letter-spacing:.1em;margin-bottom:20px;display:none;align-items:center;justify-content:space-between}
+.cancel-edit{background:transparent;border:1px solid rgba(255,255,255,.4);color:white;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;cursor:pointer}
+.list-panel{padding:36px}
+.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.list-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px}
+.list-search{display:flex;align-items:center;gap:10px;border:1px solid var(--light);padding:8px 14px;background:white}
+.list-search input{border:none;outline:none;font-size:.72rem;font-weight:300;width:200px;background:transparent}
+.prompt-table{width:100%;border-collapse:collapse;background:white}
+.prompt-table th{font-size:.48rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);padding:12px 16px;text-align:left;border-bottom:2px solid var(--light);white-space:nowrap}
+.prompt-table td{padding:16px;border-bottom:1px solid var(--off);font-size:.75rem;font-weight:300;vertical-align:middle}
+.prompt-table tr:hover td{background:var(--off)}
+.pt-img{width:60px;height:44px;object-fit:cover;display:block}
+.pt-title{font-weight:500;font-size:.78rem;margin-bottom:3px}
+.pt-prompt{color:var(--mid);font-size:.68rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:320px;line-height:1.5}
+.pt-cat{font-size:.52rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
+.pt-tier{font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px}
+.tier-free{background:rgba(13,13,13,.07);color:var(--black)}
+.tier-starter{background:rgba(255,45,85,.1);color:var(--coral)}
+.tier-pro{background:rgba(13,13,13,.07);color:var(--black)}
+.tier-unlimited{background:rgba(255,45,85,.15);color:var(--coral)}
+.row-actions{display:flex;gap:8px;white-space:nowrap}
+.edit-btn,.del-btn{font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border:none;cursor:pointer;transition:all .2s}
+.edit-btn{border:1px solid var(--light);background:white;color:var(--black)}
+.edit-btn:hover{background:var(--black);color:white;border-color:var(--black)}
+.del-btn{border:1px solid rgba(255,45,85,.2);background:transparent;color:var(--coral)}
+.del-btn:hover{background:var(--coral);color:white;border-color:var(--coral)}
+.toggle-active{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.65rem;color:var(--mid)}
+.toggle-dot{width:28px;height:16px;border-radius:8px;background:var(--light);position:relative;transition:background .2s}
+.toggle-dot::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:white;transition:transform .2s}
+.toggle-active.on .toggle-dot{background:var(--black)}
+.toggle-active.on .toggle-dot::after{transform:translateX(12px)}
+#uploadZone{border:2px dashed var(--light);padding:24px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--off)}
+#uploadZone:hover{border-color:var(--black);background:white}
+#uploadZone.dragover{border-color:var(--coral);background:rgba(255,45,85,.04)}
+#uploadZone.done{border-color:#2e7d32;border-style:solid;background:#f1f8e9}
+.upload-icon{font-size:1.4rem;color:var(--mid);margin-bottom:6px}
+.upload-text{font-size:.68rem;font-weight:400;color:var(--gray)}
+.upload-sub{font-size:.58rem;font-weight:300;color:var(--mid);margin-top:4px}
+.upload-spinner{width:24px;height:24px;border:2px solid var(--light);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.or-divider{display:flex;align-items:center;gap:10px;margin:12px 0 10px}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--light)}
+.or-divider span{font-size:.52rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--mid)}
+.img-preview{width:100%;height:160px;object-fit:cover;display:block;border:1px solid var(--light)}
+.remove-img-btn{position:absolute;top:8px;right:8px;background:rgba(13,13,13,.7);color:white;border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.remove-img-btn:hover{background:var(--coral)}
+.table-empty{text-align:center;padding:60px;color:var(--mid);font-size:.75rem}
+.table-loading{text-align:center;padding:40px;color:var(--mid);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo"><span class="n">n</span>uvana<span class="s">ai</span> <span style="font-size:.65rem;font-weight:300;color:rgba(249,248,246,.25);margin-left:8px;font-family:'Inter'">admin</span></div>
+    <label class="login-label">Password</label>
+    <input type="password" id="pwInput" class="login-input" placeholder="Enter admin password" autocomplete="current-password">
+    <button class="login-btn" onclick="tryLogin()">Enter Admin</button>
+    <div class="login-error" id="loginError">Incorrect password.</div>
+  </div>
+</div>
+<div id="adminApp">
+  <div class="topbar">
+    <div class="tb-logo"><span class="n">n</span>uvana<span class="s">ai</span></div>
+    <div class="tb-right">
+      <span class="tb-count" id="tbCount"></span>
+      <a href="library.html" target="_blank" class="tb-link">View Library ↗</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="add-panel">
+      <div class="panel-title">Add <span>Prompt</span></div>
+      <div class="edit-indicator" id="editIndicator">
+        <span>Editing prompt…</span>
+        <button class="cancel-edit" onclick="cancelEdit()">Cancel</button>
+      </div>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="f-title" placeholder="e.g. Golden Hour Editorial">
+      </div>
+      <div class="form-group">
+        <label>Prompt Text</label>
+        <textarea id="f-prompt" placeholder="The full AI prompt text…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Image</label>
+        <div id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+          <div id="uploadIdle">
+            <div class="upload-icon">↑</div>
+            <div class="upload-text">Click to upload from computer</div>
+            <div class="upload-sub">JPG, PNG, WEBP — max 5MB</div>
+          </div>
+          <div id="uploadProgress" style="display:none">
+            <div class="upload-spinner"></div>
+            <div class="upload-text" id="uploadStatusText">Uploading…</div>
+          </div>
+        </div>
+        <div class="or-divider"><span>or paste URL</span></div>
+        <input type="url" id="f-image" placeholder="https://… (Unsplash, etc)" oninput="previewImg(this.value)">
+        <div id="imgPreviewWrap" style="display:none;margin-top:10px;position:relative;">
+          <img id="imgPreview" class="img-preview show" alt="preview">
+          <button class="remove-img-btn" onclick="removeImage()" title="Remove image">✕</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="f-category">
+            <option>Cinematic</option><option>Editorial</option><option>Product</option>
+            <option>Kling.3</option><option>Abstract</option><option>Nature</option>
+            <option>Portrait</option><option>Marketing</option><option>General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tier</label>
+          <select id="f-tier">
+            <option value="free">Free</option><option value="starter">Starter+</option>
+            <option value="pro">Pro</option><option value="unlimited">Unlimited</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>AI Model</label>
+        <select id="f-model">
+          <option>Midjourney</option><option>Kling.3</option><option>Stable Diffusion</option>
+          <option>DALL·E 3</option><option>Firefly</option><option>Runway</option><option>General</option>
+        </select>
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="submitPrompt()">Add Prompt</button>
+      <div class="form-msg" id="formMsg"></div>
+    </div>
+    <div class="list-panel">
+      <div class="list-header">
+        <div class="list-title">All Prompts</div>
+        <div class="list-search">
+          <span style="color:var(--mid)">⌕</span>
+          <input type="text" id="listSearch" placeholder="Filter…" oninput="filterList(this.value)">
+        </div>
+      </div>
+      <table class="prompt-table">
+        <thead>
+          <tr>
+            <th>Image</th><th>Title / Prompt</th><th>Category</th>
+            <th>Tier</th><th>Model</th><th>Active</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="promptTableBody">
+          <tr><td colspan="7" class="table-loading">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+const SUPABASE_URL = 'https://nphHgzjofhvboginDcwe.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
+const ADMIN_PASSWORD = 'nuvana2025';
+function tryLogin(){const pw=document.getElementById('pwInput').value;if(pw===ADMIN_PASSWORD){sessionStorage.setItem('nuvana_admin','1');document.getElementById('loginScreen').style.display='none';document.getElementById('adminApp').style.display='block';loadPrompts();}else{document.getElementById('loginError').style.display='block';}}
+function logout(){sessionStorage.removeItem('nuvana_admin');location.reload();}
+document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+let allPrompts=[];
+let editingId=null;
+const headers={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
+if(sessionStorage.getItem('nuvana_admin')==='1'){document.getElementById('loginScreen').style.display='none';document.getElementById('adminApp').style.display='block';loadPrompts();}
+async function loadPrompts(){const res=await fetch(SUPABASE_URL+'/rest/v1/prompts?select=*&order=created_at.desc',{headers});allPrompts=await res.json();document.getElementById('tbCount').textContent=allPrompts.length+' prompts';renderTable(allPrompts);}
+function renderTable(data){const tbody=document.getElementById('promptTableBody');if(!data.length){tbody.innerHTML='<tr><td colspan="7" class="table-empty">No prompts yet. Add your first one.</td></tr>';return;}tbody.innerHTML=data.map(p=>'<tr id="row-'+p.id+'"><td><img class="pt-img" src="'+(p.image_url||'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&q=60')+'" alt="" onerror="this.style.display='none'"></td><td><div class="pt-title">'+p.title+'</div><div class="pt-prompt">'+p.prompt+'</div></td><td><span class="pt-cat">'+(p.category||'—')+'</span></td><td><span class="pt-tier tier-'+p.tier+'">'+p.tier+'</span></td><td style="font-size:.68rem;color:var(--mid)">'+(p.model||'—')+'</td><td><label class="toggle-active '+(p.active?'on':'')+'" onclick="toggleActive(''+p.id+'','+p.active+')"><div class="toggle-dot"></div></label></td><td><div class="row-actions"><button class="edit-btn" onclick="startEdit(''+p.id+'')">Edit</button><button class="del-btn" onclick="deletePrompt(''+p.id+'',''+p.title.replace(/'/g,"\'")+'')">Delete</button></div></td></tr>').join('');}
+function filterList(q){if(!q){renderTable(allPrompts);return;}const lq=q.toLowerCase();renderTable(allPrompts.filter(p=>p.title.toLowerCase().includes(lq)||p.prompt.toLowerCase().includes(lq)||(p.category||'').toLowerCase().includes(lq)||(p.tier||'').toLowerCase().includes(lq)));}
+async function submitPrompt(){const title=document.getElementById('f-title').value.trim();const prompt=document.getElementById('f-prompt').value.trim();const image_url=document.getElementById('f-image').value.trim();const category=document.getElementById('f-category').value;const tier=document.getElementById('f-tier').value;const model=document.getElementById('f-model').value;if(!title||!prompt){showMsg('Title and prompt text are required.','error');return;}const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent=editingId?'Saving…':'Adding…';const body=JSON.stringify({title,prompt,image_url:image_url||null,category,tier,model});let res;if(editingId){res=await fetch(SUPABASE_URL+'/rest/v1/prompts?id=eq.'+editingId,{method:'PATCH',headers:Object.assign({},headers,{'Prefer':'return=minimal'}),body});}else{res=await fetch(SUPABASE_URL+'/rest/v1/prompts',{method:'POST',headers:Object.assign({},headers,{'Prefer':'return=minimal'}),body});}btn.disabled=false;if(res.ok){showMsg(editingId?'Prompt updated!':'Prompt added!','success');cancelEdit();clearForm();loadPrompts();}else{const err=await res.text();showMsg('Error: '+err,'error');}btn.textContent=editingId?'Save Changes':'Add Prompt';}
+function startEdit(id){const p=allPrompts.find(x=>x.id===id);if(!p)return;editingId=id;document.getElementById('f-title').value=p.title||'';document.getElementById('f-prompt').value=p.prompt||'';document.getElementById('f-image').value=p.image_url||'';document.getElementById('f-category').value=p.category||'General';document.getElementById('f-tier').value=p.tier||'free';document.getElementById('f-model').value=p.model||'General';previewImg(p.image_url);document.getElementById('editIndicator').style.display='flex';document.getElementById('submitBtn').textContent='Save Changes';document.querySelector('.panel-title').innerHTML='Edit <span>Prompt</span>';document.querySelector('.add-panel').scrollTop=0;window.scrollTo({top:0,behavior:'smooth'});}
+function cancelEdit(){editingId=null;document.getElementById('editIndicator').style.display='none';document.getElementById('submitBtn').textContent='Add Prompt';document.querySelector('.panel-title').innerHTML='Add <span>Prompt</span>';clearForm();}
+function clearForm(){['f-title','f-prompt','f-image'].forEach(id=>document.getElementById(id).value='');document.getElementById('imgPreviewWrap').style.display='none';document.getElementById('uploadZone').classList.remove('done');document.getElementById('uploadIdle').querySelector('.upload-text').textContent='Click to upload from computer';document.getElementById('formMsg').style.display='none';}
+async function deletePrompt(id,title){if(!confirm('Delete "'+title+'"? This cannot be undone.'))return;const res=await fetch(SUPABASE_URL+'/rest/v1/prompts?id=eq.'+id,{method:'DELETE',headers});if(res.ok){loadPrompts();}else{alert('Delete failed. Check Supabase RLS policies.');}}
+async function toggleActive(id,current){await fetch(SUPABASE_URL+'/rest/v1/prompts?id=eq.'+id,{method:'PATCH',headers:Object.assign({},headers,{'Prefer':'return=minimal'}),body:JSON.stringify({active:!current})});loadPrompts();}
+async function handleFileUpload(input){const file=input.files[0];if(!file)return;if(file.size>5*1024*1024){showMsg('Image must be under 5MB.','error');return;}document.getElementById('uploadIdle').style.display='none';document.getElementById('uploadProgress').style.display='block';document.getElementById('uploadStatusText').textContent='Uploading…';document.getElementById('uploadZone').classList.remove('done');const ext=file.name.split('.').pop().toLowerCase();const fileName='prompt-'+Date.now()+'.'+ext;try{const res=await fetch(SUPABASE_URL+'/storage/v1/object/prompt-images/'+fileName,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':file.type,'x-upsert':'true'},body:file});if(!res.ok){const err=await res.text();throw new Error(err);}const publicUrl=SUPABASE_URL+'/storage/v1/object/public/prompt-images/'+fileName;document.getElementById('f-image').value=publicUrl;previewImg(publicUrl);document.getElementById('uploadStatusText').textContent='Uploaded!';document.getElementById('uploadZone').classList.add('done');setTimeout(()=>{document.getElementById('uploadProgress').style.display='none';document.getElementById('uploadIdle').style.display='block';document.getElementById('uploadIdle').querySelector('.upload-text').textContent='✓ '+file.name;},1200);}catch(e){document.getElementById('uploadProgress').style.display='none';document.getElementById('uploadIdle').style.display='block';showMsg('Upload failed. Make sure the prompt-images bucket exists and is public in Supabase Storage.','error');}input.value='';}
+const zone=document.getElementById('uploadZone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover');});
+zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));
+zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');const file=e.dataTransfer.files[0];if(file&&file.type.startsWith('image/')){const dt=new DataTransfer();dt.items.add(file);const input=document.getElementById('fileInput');input.files=dt.files;handleFileUpload(input);}});
+function removeImage(){document.getElementById('f-image').value='';document.getElementById('imgPreviewWrap').style.display='none';document.getElementById('uploadIdle').querySelector('.upload-text').textContent='Click to upload from computer';document.getElementById('uploadZone').classList.remove('done');}
+function previewImg(url){const wrap=document.getElementById('imgPreviewWrap');const img=document.getElementById('imgPreview');if(url&&url.startsWith('http')){img.src=url;wrap.style.display='block';img.onerror=()=>{wrap.style.display='none'};}else{wrap.style.display='none';}}
+function showMsg(text,type){const el=document.getElementById('formMsg');el.textContent=text;el.className='form-msg '+type;setTimeout(()=>{el.style.display='none';},4000);}
+</script>
+</body>
+</html>
