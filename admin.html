@@ -102,7 +102,7 @@ select{appearance:none;cursor:pointer}
 <body>
 <div id="loginScreen">
   <div class="login-box">
-    <div class="login-logo"><span class="n">n</span>uvana<span class="s">ai</span> <span style="font-size:.65rem;font-weight:300;color:rgba(249,248,246,.25);margin-left:8px;font-family:'Inter'">admin</span></div>
+    <div class="login-logo"><span class="n">n</span>uvana<span class="s">ai</span> <span style="font-size:.65rem;font-weight:300;color:rgba(249,248,246,.25);margin-left:8px;font-family:Inter">admin</span></div>
     <label class="login-label">Password</label>
     <input type="password" id="pwInput" class="login-input" placeholder="Enter admin password" autocomplete="current-password">
     <button class="login-btn" onclick="tryLogin()">Enter Admin</button>
@@ -114,7 +114,7 @@ select{appearance:none;cursor:pointer}
     <div class="tb-logo"><span class="n">n</span>uvana<span class="s">ai</span></div>
     <div class="tb-right">
       <span class="tb-count" id="tbCount"></span>
-      <a href="library.html" target="_blank" class="tb-link">View Library ↗</a>
+      <a href="library.html" target="_blank" class="tb-link">View Library</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
@@ -122,7 +122,7 @@ select{appearance:none;cursor:pointer}
     <div class="add-panel">
       <div class="panel-title">Add <span>Prompt</span></div>
       <div class="edit-indicator" id="editIndicator">
-        <span>Editing prompt…</span>
+        <span>Editing prompt</span>
         <button class="cancel-edit" onclick="cancelEdit()">Cancel</button>
       </div>
       <div class="form-group">
@@ -131,27 +131,27 @@ select{appearance:none;cursor:pointer}
       </div>
       <div class="form-group">
         <label>Prompt Text</label>
-        <textarea id="f-prompt" placeholder="The full AI prompt text…"></textarea>
+        <textarea id="f-prompt" placeholder="The full AI prompt text"></textarea>
       </div>
       <div class="form-group">
         <label>Image</label>
         <div id="uploadZone" onclick="document.getElementById('fileInput').click()">
           <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
           <div id="uploadIdle">
-            <div class="upload-icon">↑</div>
+            <div class="upload-icon">up</div>
             <div class="upload-text">Click to upload from computer</div>
-            <div class="upload-sub">JPG, PNG, WEBP — max 5MB</div>
+            <div class="upload-sub">JPG, PNG, WEBP max 5MB</div>
           </div>
           <div id="uploadProgress" style="display:none">
             <div class="upload-spinner"></div>
-            <div class="upload-text" id="uploadStatusText">Uploading…</div>
+            <div class="upload-text" id="uploadStatusText">Uploading</div>
           </div>
         </div>
         <div class="or-divider"><span>or paste URL</span></div>
-        <input type="url" id="f-image" placeholder="https://… (Unsplash, etc)" oninput="previewImg(this.value)">
+        <input type="url" id="f-image" placeholder="https://" oninput="previewImg(this.value)">
         <div id="imgPreviewWrap" style="display:none;margin-top:10px;position:relative;">
           <img id="imgPreview" class="img-preview show" alt="preview">
-          <button class="remove-img-btn" onclick="removeImage()" title="Remove image">✕</button>
+          <button class="remove-img-btn" onclick="removeImage()">X</button>
         </div>
       </div>
       <div class="form-row">
@@ -175,7 +175,7 @@ select{appearance:none;cursor:pointer}
         <label>AI Model</label>
         <select id="f-model">
           <option>Midjourney</option><option>Kling.3</option><option>Stable Diffusion</option>
-          <option>DALL·E 3</option><option>Firefly</option><option>Runway</option><option>General</option>
+          <option>DALL-E 3</option><option>Firefly</option><option>Runway</option><option>General</option>
         </select>
       </div>
       <button class="submit-btn" id="submitBtn" onclick="submitPrompt()">Add Prompt</button>
@@ -185,8 +185,8 @@ select{appearance:none;cursor:pointer}
       <div class="list-header">
         <div class="list-title">All Prompts</div>
         <div class="list-search">
-          <span style="color:var(--mid)">⌕</span>
-          <input type="text" id="listSearch" placeholder="Filter…" oninput="filterList(this.value)">
+          <span style="color:var(--mid)">Search</span>
+          <input type="text" id="listSearch" placeholder="Filter" oninput="filterList(this.value)">
         </div>
       </div>
       <table class="prompt-table">
@@ -197,40 +197,256 @@ select{appearance:none;cursor:pointer}
           </tr>
         </thead>
         <tbody id="promptTableBody">
-          <tr><td colspan="7" class="table-loading">Loading…</td></tr>
+          <tr><td colspan="7" class="table-loading">Loading</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
 <script>
-const SUPABASE_URL = 'https://nphHgzjofhvboginDcwe.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
-const ADMIN_PASSWORD = 'nuvana2025';
-function tryLogin(){const pw=document.getElementById('pwInput').value;if(pw===ADMIN_PASSWORD){sessionStorage.setItem('nuvana_admin','1');document.getElementById('loginScreen').style.display='none';document.getElementById('adminApp').style.display='block';loadPrompts();}else{document.getElementById('loginError').style.display='block';}}
-function logout(){sessionStorage.removeItem('nuvana_admin');location.reload();}
-document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
-let allPrompts=[];
-let editingId=null;
-const headers={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
-if(sessionStorage.getItem('nuvana_admin')==='1'){document.getElementById('loginScreen').style.display='none';document.getElementById('adminApp').style.display='block';loadPrompts();}
-async function loadPrompts(){const res=await fetch(SUPABASE_URL+'/rest/v1/prompts?select=*&order=created_at.desc',{headers});allPrompts=await res.json();document.getElementById('tbCount').textContent=allPrompts.length+' prompts';renderTable(allPrompts);}
-function renderTable(data){const tbody=document.getElementById('promptTableBody');if(!data.length){tbody.innerHTML='<tr><td colspan="7" class="table-empty">No prompts yet. Add your first one.</td></tr>';return;}tbody.innerHTML=data.map(p=>'<tr id="row-'+p.id+'"><td><img class="pt-img" src="'+(p.image_url||'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&q=60')+'" alt="" onerror="this.style.display='none'"></td><td><div class="pt-title">'+p.title+'</div><div class="pt-prompt">'+p.prompt+'</div></td><td><span class="pt-cat">'+(p.category||'—')+'</span></td><td><span class="pt-tier tier-'+p.tier+'">'+p.tier+'</span></td><td style="font-size:.68rem;color:var(--mid)">'+(p.model||'—')+'</td><td><label class="toggle-active '+(p.active?'on':'')+'" onclick="toggleActive(''+p.id+'','+p.active+')"><div class="toggle-dot"></div></label></td><td><div class="row-actions"><button class="edit-btn" onclick="startEdit(''+p.id+'')">Edit</button><button class="del-btn" onclick="deletePrompt(''+p.id+'',''+p.title.replace(/'/g,"\'")+'')">Delete</button></div></td></tr>').join('');}
-function filterList(q){if(!q){renderTable(allPrompts);return;}const lq=q.toLowerCase();renderTable(allPrompts.filter(p=>p.title.toLowerCase().includes(lq)||p.prompt.toLowerCase().includes(lq)||(p.category||'').toLowerCase().includes(lq)||(p.tier||'').toLowerCase().includes(lq)));}
-async function submitPrompt(){const title=document.getElementById('f-title').value.trim();const prompt=document.getElementById('f-prompt').value.trim();const image_url=document.getElementById('f-image').value.trim();const category=document.getElementById('f-category').value;const tier=document.getElementById('f-tier').value;const model=document.getElementById('f-model').value;if(!title||!prompt){showMsg('Title and prompt text are required.','error');return;}const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent=editingId?'Saving…':'Adding…';const body=JSON.stringify({title,prompt,image_url:image_url||null,category,tier,model});let res;if(editingId){res=await fetch(SUPABASE_URL+'/rest/v1/prompts?id=eq.'+editingId,{method:'PATCH',headers:Object.assign({},headers,{'Prefer':'return=minimal'}),body});}else{res=await fetch(SUPABASE_URL+'/rest/v1/prompts',{method:'POST',headers:Object.assign({},headers,{'Prefer':'return=minimal'}),body});}btn.disabled=false;if(res.ok){showMsg(editingId?'Prompt updated!':'Prompt added!','success');cancelEdit();clearForm();loadPrompts();}else{const err=await res.text();showMsg('Error: '+err,'error');}btn.textContent=editingId?'Save Changes':'Add Prompt';}
-function startEdit(id){const p=allPrompts.find(x=>x.id===id);if(!p)return;editingId=id;document.getElementById('f-title').value=p.title||'';document.getElementById('f-prompt').value=p.prompt||'';document.getElementById('f-image').value=p.image_url||'';document.getElementById('f-category').value=p.category||'General';document.getElementById('f-tier').value=p.tier||'free';document.getElementById('f-model').value=p.model||'General';previewImg(p.image_url);document.getElementById('editIndicator').style.display='flex';document.getElementById('submitBtn').textContent='Save Changes';document.querySelector('.panel-title').innerHTML='Edit <span>Prompt</span>';document.querySelector('.add-panel').scrollTop=0;window.scrollTo({top:0,behavior:'smooth'});}
-function cancelEdit(){editingId=null;document.getElementById('editIndicator').style.display='none';document.getElementById('submitBtn').textContent='Add Prompt';document.querySelector('.panel-title').innerHTML='Add <span>Prompt</span>';clearForm();}
-function clearForm(){['f-title','f-prompt','f-image'].forEach(id=>document.getElementById(id).value='');document.getElementById('imgPreviewWrap').style.display='none';document.getElementById('uploadZone').classList.remove('done');document.getElementById('uploadIdle').querySelector('.upload-text').textContent='Click to upload from computer';document.getElementById('formMsg').style.display='none';}
-async function deletePrompt(id,title){if(!confirm('Delete "'+title+'"? This cannot be undone.'))return;const res=await fetch(SUPABASE_URL+'/rest/v1/prompts?id=eq.'+id,{method:'DELETE',headers});if(res.ok){loadPrompts();}else{alert('Delete failed. Check Supabase RLS policies.');}}
-async function toggleActive(id,current){await fetch(SUPABASE_URL+'/rest/v1/prompts?id=eq.'+id,{method:'PATCH',headers:Object.assign({},headers,{'Prefer':'return=minimal'}),body:JSON.stringify({active:!current})});loadPrompts();}
-async function handleFileUpload(input){const file=input.files[0];if(!file)return;if(file.size>5*1024*1024){showMsg('Image must be under 5MB.','error');return;}document.getElementById('uploadIdle').style.display='none';document.getElementById('uploadProgress').style.display='block';document.getElementById('uploadStatusText').textContent='Uploading…';document.getElementById('uploadZone').classList.remove('done');const ext=file.name.split('.').pop().toLowerCase();const fileName='prompt-'+Date.now()+'.'+ext;try{const res=await fetch(SUPABASE_URL+'/storage/v1/object/prompt-images/'+fileName,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':file.type,'x-upsert':'true'},body:file});if(!res.ok){const err=await res.text();throw new Error(err);}const publicUrl=SUPABASE_URL+'/storage/v1/object/public/prompt-images/'+fileName;document.getElementById('f-image').value=publicUrl;previewImg(publicUrl);document.getElementById('uploadStatusText').textContent='Uploaded!';document.getElementById('uploadZone').classList.add('done');setTimeout(()=>{document.getElementById('uploadProgress').style.display='none';document.getElementById('uploadIdle').style.display='block';document.getElementById('uploadIdle').querySelector('.upload-text').textContent='✓ '+file.name;},1200);}catch(e){document.getElementById('uploadProgress').style.display='none';document.getElementById('uploadIdle').style.display='block';showMsg('Upload failed. Make sure the prompt-images bucket exists and is public in Supabase Storage.','error');}input.value='';}
-const zone=document.getElementById('uploadZone');
-zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover');});
-zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));
-zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');const file=e.dataTransfer.files[0];if(file&&file.type.startsWith('image/')){const dt=new DataTransfer();dt.items.add(file);const input=document.getElementById('fileInput');input.files=dt.files;handleFileUpload(input);}});
-function removeImage(){document.getElementById('f-image').value='';document.getElementById('imgPreviewWrap').style.display='none';document.getElementById('uploadIdle').querySelector('.upload-text').textContent='Click to upload from computer';document.getElementById('uploadZone').classList.remove('done');}
-function previewImg(url){const wrap=document.getElementById('imgPreviewWrap');const img=document.getElementById('imgPreview');if(url&&url.startsWith('http')){img.src=url;wrap.style.display='block';img.onerror=()=>{wrap.style.display='none'};}else{wrap.style.display='none';}}
-function showMsg(text,type){const el=document.getElementById('formMsg');el.textContent=text;el.className='form-msg '+type;setTimeout(()=>{el.style.display='none';},4000);}
+var SUPABASE_URL = 'https://nphHgzjofhvboginDcwe.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
+var ADMIN_PASSWORD = 'nuvana2025';
+var allPrompts = [];
+var editingId = null;
+var headers = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=minimal'
+};
+
+function tryLogin() {
+  var pw = document.getElementById('pwInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    sessionStorage.setItem('nuvana_admin', '1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    loadPrompts();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('nuvana_admin');
+  location.reload();
+}
+
+document.getElementById('pwInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') tryLogin();
+});
+
+if (sessionStorage.getItem('nuvana_admin') === '1') {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminApp').style.display = 'block';
+  loadPrompts();
+}
+
+function loadPrompts() {
+  fetch(SUPABASE_URL + '/rest/v1/prompts?select=*&order=created_at.desc', { headers: headers })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      allPrompts = data;
+      document.getElementById('tbCount').textContent = allPrompts.length + ' prompts';
+      renderTable(allPrompts);
+    });
+}
+
+function escTitle(t) {
+  return t.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+}
+
+function renderTable(data) {
+  var tbody = document.getElementById('promptTableBody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No prompts yet.</td></tr>';
+    return;
+  }
+  var rows = '';
+  for (var i = 0; i < data.length; i++) {
+    var p = data[i];
+    var imgSrc = p.image_url || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&q=60';
+    var safeId = p.id;
+    var safeTitleAttr = escTitle(p.title);
+    rows += '<tr id="row-' + safeId + '">';
+    rows += '<td><img class="pt-img" src="' + imgSrc + '" alt="" onerror="this.style.display=&quot;none&quot;"></td>';
+    rows += '<td><div class="pt-title">' + p.title + '</div><div class="pt-prompt">' + p.prompt + '</div></td>';
+    rows += '<td><span class="pt-cat">' + (p.category || '-') + '</span></td>';
+    rows += '<td><span class="pt-tier tier-' + p.tier + '">' + p.tier + '</span></td>';
+    rows += '<td style="font-size:.68rem;color:var(--mid)">' + (p.model || '-') + '</td>';
+    rows += '<td><label class="toggle-active ' + (p.active ? 'on' : '') + '" onclick="toggleActive(' + JSON.stringify(safeId) + ',' + p.active + ')"><div class="toggle-dot"></div></label></td>';
+    rows += '<td><div class="row-actions"><button class="edit-btn" onclick="startEdit(' + JSON.stringify(safeId) + ')">Edit</button>';
+    rows += '<button class="del-btn" onclick="deletePrompt(' + JSON.stringify(safeId) + ',' + JSON.stringify(safeTitleAttr) + ')">Delete</button></div></td>';
+    rows += '</tr>';
+  }
+  tbody.innerHTML = rows;
+}
+
+function filterList(q) {
+  if (!q) { renderTable(allPrompts); return; }
+  var lq = q.toLowerCase();
+  renderTable(allPrompts.filter(function(p) {
+    return p.title.toLowerCase().includes(lq) ||
+           p.prompt.toLowerCase().includes(lq) ||
+           (p.category || '').toLowerCase().includes(lq) ||
+           (p.tier || '').toLowerCase().includes(lq);
+  }));
+}
+
+function submitPrompt() {
+  var title = document.getElementById('f-title').value.trim();
+  var prompt = document.getElementById('f-prompt').value.trim();
+  var image_url = document.getElementById('f-image').value.trim();
+  var category = document.getElementById('f-category').value;
+  var tier = document.getElementById('f-tier').value;
+  var model = document.getElementById('f-model').value;
+  if (!title || !prompt) { showMsg('Title and prompt text are required.', 'error'); return; }
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = editingId ? 'Saving...' : 'Adding...';
+  var body = JSON.stringify({ title: title, prompt: prompt, image_url: image_url || null, category: category, tier: tier, model: model });
+  var url = editingId ? SUPABASE_URL + '/rest/v1/prompts?id=eq.' + editingId : SUPABASE_URL + '/rest/v1/prompts';
+  var method = editingId ? 'PATCH' : 'POST';
+  fetch(url, { method: method, headers: headers, body: body })
+    .then(function(res) {
+      btn.disabled = false;
+      btn.textContent = editingId ? 'Save Changes' : 'Add Prompt';
+      if (res.ok) {
+        showMsg(editingId ? 'Prompt updated!' : 'Prompt added!', 'success');
+        cancelEdit(); clearForm(); loadPrompts();
+      } else {
+        res.text().then(function(err) { showMsg('Error: ' + err, 'error'); });
+      }
+    });
+}
+
+function startEdit(id) {
+  var p = allPrompts.find(function(x) { return x.id === id; });
+  if (!p) return;
+  editingId = id;
+  document.getElementById('f-title').value = p.title || '';
+  document.getElementById('f-prompt').value = p.prompt || '';
+  document.getElementById('f-image').value = p.image_url || '';
+  document.getElementById('f-category').value = p.category || 'General';
+  document.getElementById('f-tier').value = p.tier || 'free';
+  document.getElementById('f-model').value = p.model || 'General';
+  previewImg(p.image_url);
+  document.getElementById('editIndicator').style.display = 'flex';
+  document.getElementById('submitBtn').textContent = 'Save Changes';
+  document.querySelector('.panel-title').innerHTML = 'Edit <span>Prompt</span>';
+  document.querySelector('.add-panel').scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEdit() {
+  editingId = null;
+  document.getElementById('editIndicator').style.display = 'none';
+  document.getElementById('submitBtn').textContent = 'Add Prompt';
+  document.querySelector('.panel-title').innerHTML = 'Add <span>Prompt</span>';
+  clearForm();
+}
+
+function clearForm() {
+  ['f-title','f-prompt','f-image'].forEach(function(id) { document.getElementById(id).value = ''; });
+  document.getElementById('imgPreviewWrap').style.display = 'none';
+  document.getElementById('uploadZone').classList.remove('done');
+  document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Click to upload from computer';
+  document.getElementById('formMsg').style.display = 'none';
+}
+
+function deletePrompt(id, title) {
+  if (!confirm('Delete "' + title + '"? This cannot be undone.')) return;
+  fetch(SUPABASE_URL + '/rest/v1/prompts?id=eq.' + id, { method: 'DELETE', headers: headers })
+    .then(function(res) {
+      if (res.ok) { loadPrompts(); }
+      else { alert('Delete failed. Check Supabase RLS policies.'); }
+    });
+}
+
+function toggleActive(id, current) {
+  fetch(SUPABASE_URL + '/rest/v1/prompts?id=eq.' + id, {
+    method: 'PATCH',
+    headers: headers,
+    body: JSON.stringify({ active: !current })
+  }).then(function() { loadPrompts(); });
+}
+
+function handleFileUpload(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showMsg('Image must be under 5MB.', 'error'); return; }
+  document.getElementById('uploadIdle').style.display = 'none';
+  document.getElementById('uploadProgress').style.display = 'block';
+  document.getElementById('uploadStatusText').textContent = 'Uploading...';
+  document.getElementById('uploadZone').classList.remove('done');
+  var ext = file.name.split('.').pop().toLowerCase();
+  var fileName = 'prompt-' + Date.now() + '.' + ext;
+  fetch(SUPABASE_URL + '/storage/v1/object/prompt-images/' + fileName, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': file.type, 'x-upsert': 'true' },
+    body: file
+  }).then(function(res) {
+    if (!res.ok) { return res.text().then(function(e) { throw new Error(e); }); }
+    var publicUrl = SUPABASE_URL + '/storage/v1/object/public/prompt-images/' + fileName;
+    document.getElementById('f-image').value = publicUrl;
+    previewImg(publicUrl);
+    document.getElementById('uploadStatusText').textContent = 'Uploaded!';
+    document.getElementById('uploadZone').classList.add('done');
+    setTimeout(function() {
+      document.getElementById('uploadProgress').style.display = 'none';
+      document.getElementById('uploadIdle').style.display = 'block';
+      document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Done: ' + file.name;
+    }, 1200);
+  }).catch(function() {
+    document.getElementById('uploadProgress').style.display = 'none';
+    document.getElementById('uploadIdle').style.display = 'block';
+    showMsg('Upload failed. Make sure the prompt-images bucket exists in Supabase Storage.', 'error');
+  });
+  input.value = '';
+}
+
+var zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+zone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  zone.classList.remove('dragover');
+  var file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var inp = document.getElementById('fileInput');
+    inp.files = dt.files;
+    handleFileUpload(inp);
+  }
+});
+
+function removeImage() {
+  document.getElementById('f-image').value = '';
+  document.getElementById('imgPreviewWrap').style.display = 'none';
+  document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Click to upload from computer';
+  document.getElementById('uploadZone').classList.remove('done');
+}
+
+function previewImg(url) {
+  var wrap = document.getElementById('imgPreviewWrap');
+  var img = document.getElementById('imgPreview');
+  if (url && url.startsWith('http')) {
+    img.src = url;
+    wrap.style.display = 'block';
+    img.onerror = function() { wrap.style.display = 'none'; };
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+function showMsg(text, type) {
+  var el = document.getElementById('formMsg');
+  el.textContent = text;
+  el.className = 'form-msg ' + type;
+  setTimeout(function() { el.style.display = 'none'; }, 4000);
+}
 </script>
 </body>
 </html>
