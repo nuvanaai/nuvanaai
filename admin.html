@@ -12,45 +12,58 @@ body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:
 #loginScreen{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9999}
 .login-box{width:100%;max-width:420px;padding:48px}
 .login-logo{font-family:'Figtree';font-weight:900;font-size:1.4rem;letter-spacing:-.5px;margin-bottom:40px}
-.login-logo .n{color:var(--coral)}
-.login-logo .s{font-size:.6rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
+.login-logo .n{color:var(--coral)}.login-logo .s{font-size:.6rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
 .login-label{font-size:.52rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,248,246,.4);margin-bottom:10px;display:block}
 .login-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-family:'Inter';font-size:.85rem;font-weight:300;color:white;outline:none;margin-bottom:12px}
-.login-input::placeholder{color:rgba(255,255,255,.2)}
-.login-input:focus{border-color:var(--coral)}
+.login-input::placeholder{color:rgba(255,255,255,.2)}.login-input:focus{border-color:var(--coral)}
 .login-btn{width:100%;padding:14px;background:var(--coral);border:none;font-family:'Inter';font-size:.65rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer;transition:opacity .2s;margin-top:4px}
-.login-btn:hover{opacity:.85}
-.login-error{font-size:.62rem;color:var(--coral);margin-top:8px;display:none}
+.login-btn:hover{opacity:.85}.login-error{font-size:.62rem;color:var(--coral);margin-top:8px;display:none}
 #adminApp{display:none}
 .topbar{background:var(--black);padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .tb-logo{font-family:'Figtree';font-weight:900;font-size:1rem;letter-spacing:-.3px}
-.tb-logo .n{color:var(--coral)}
-.tb-logo .s{font-size:.48rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
+.tb-logo .n{color:var(--coral)}.tb-logo .s{font-size:.48rem;font-weight:900;color:rgba(249,248,246,.3);vertical-align:super;margin-left:1px}
 .tb-right{display:flex;align-items:center;gap:20px}
-.tb-link{font-size:.55rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:rgba(249,248,246,.35);text-decoration:none;transition:color .2s}
-.tb-link:hover{color:white}
+.tb-link{font-size:.55rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:rgba(249,248,246,.35);text-decoration:none;transition:color .2s}.tb-link:hover{color:white}
 .tb-count{font-size:.58rem;font-weight:300;color:rgba(249,248,246,.3)}
 .logout-btn{font-size:.52rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:6px 14px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(249,248,246,.4);cursor:pointer;transition:all .2s}
 .logout-btn:hover{background:var(--coral);border-color:var(--coral);color:white}
-.main{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 56px)}
+.main{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 56px)}
 .add-panel{background:white;padding:36px;border-right:1px solid var(--light);position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
-.panel-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--light)}
+.panel-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--light)}
 .panel-title span{color:var(--coral)}
-.form-group{margin-bottom:18px}
+.panel-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--light)}
+.panel-tab{font-size:.52rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:8px 16px;cursor:pointer;border:none;background:transparent;color:var(--mid);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.panel-tab.active{color:var(--black);border-bottom-color:var(--black)}
+.panel-tab:hover{color:var(--black)}
+.tab-content{display:none}.tab-content.active{display:block}
+.form-group{margin-bottom:16px}
 label{display:block;font-size:.5rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:7px}
 input[type=text],input[type=url],textarea,select{width:100%;padding:11px 14px;border:1px solid var(--light);font-family:'Inter';font-size:.78rem;font-weight:300;color:var(--black);outline:none;background:var(--off);transition:border-color .2s;resize:none}
 input:focus,textarea:focus,select:focus{border-color:var(--black)}
-textarea{height:100px;line-height:1.55}
-select{appearance:none;cursor:pointer}
+textarea{height:90px;line-height:1.55}select{appearance:none;cursor:pointer}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .submit-btn{width:100%;padding:14px;background:var(--black);border:none;font-family:'Inter';font-size:.62rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer;transition:background .2s;margin-top:4px}
-.submit-btn:hover{background:var(--coral)}
-.submit-btn:disabled{opacity:.4;cursor:not-allowed}
+.submit-btn:hover{background:var(--coral)}.submit-btn:disabled{opacity:.4;cursor:not-allowed}
 .form-msg{font-size:.62rem;font-weight:400;margin-top:10px;padding:10px 14px;display:none}
-.form-msg.success{background:#e8f5e9;color:#2e7d32;display:block}
-.form-msg.error{background:#fce4ec;color:#c62828;display:block}
+.form-msg.success{background:#e8f5e9;color:#2e7d32;display:block}.form-msg.error{background:#fce4ec;color:#c62828;display:block}
 .edit-indicator{background:var(--coral);color:white;padding:8px 14px;font-size:.58rem;font-weight:400;letter-spacing:.1em;margin-bottom:20px;display:none;align-items:center;justify-content:space-between}
 .cancel-edit{background:transparent;border:1px solid rgba(255,255,255,.4);color:white;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;cursor:pointer}
+.bulk-drop{border:2px dashed var(--light);padding:28px 16px;text-align:center;cursor:pointer;background:var(--off);transition:border-color .2s,background .2s;margin-bottom:16px}
+.bulk-drop:hover,.bulk-drop.dragover{border-color:var(--coral);background:rgba(255,45,85,.04)}
+.bulk-drop.ready{border-color:#2e7d32;border-style:solid;background:#f1f8e9}
+.bulk-preview{margin-bottom:16px;max-height:260px;overflow-y:auto}
+.bulk-row{display:grid;grid-template-columns:48px 1fr auto;gap:8px;align-items:center;padding:8px;border-bottom:1px solid var(--off);font-size:.68rem}
+.bulk-row img{width:44px;height:44px;object-fit:cover;border:1px solid var(--light)}
+.bulk-row-info{display:flex;flex-direction:column;gap:3px}
+.bulk-row-name{font-weight:500;font-size:.72rem}
+.bulk-row-status{font-size:.6rem;color:var(--mid)}
+.bulk-row-status.ok{color:#2e7d32}.bulk-row-status.err{color:var(--coral)}.bulk-row-status.uploading{color:#1976d2}
+.bulk-remove{background:none;border:none;cursor:pointer;color:var(--mid);font-size:.9rem;padding:2px 6px}
+.bulk-remove:hover{color:var(--coral)}
+.bulk-upload-btn{width:100%;padding:12px;background:#1976d2;border:none;font-family:'Inter';font-size:.62rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:white;cursor:pointer;transition:background .2s;margin-top:4px}
+.bulk-upload-btn:hover{background:#1565c0}.bulk-upload-btn:disabled{opacity:.4;cursor:not-allowed}
+.bulk-progress{height:4px;background:var(--light);margin-top:10px;display:none}
+.bulk-progress-bar{height:100%;background:var(--coral);width:0%;transition:width .3s}
 .list-panel{padding:36px}
 .list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
 .list-title{font-family:'Figtree';font-weight:900;font-size:1.1rem;letter-spacing:-.3px}
@@ -58,42 +71,37 @@ select{appearance:none;cursor:pointer}
 .list-search input{border:none;outline:none;font-size:.72rem;font-weight:300;width:200px;background:transparent}
 .prompt-table{width:100%;border-collapse:collapse;background:white}
 .prompt-table th{font-size:.48rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);padding:12px 16px;text-align:left;border-bottom:2px solid var(--light);white-space:nowrap}
-.prompt-table td{padding:16px;border-bottom:1px solid var(--off);font-size:.75rem;font-weight:300;vertical-align:middle}
+.prompt-table td{padding:14px 16px;border-bottom:1px solid var(--off);font-size:.75rem;font-weight:300;vertical-align:middle}
 .prompt-table tr:hover td{background:var(--off)}
 .pt-img{width:60px;height:44px;object-fit:cover;display:block}
 .pt-title{font-weight:500;font-size:.78rem;margin-bottom:3px}
-.pt-prompt{color:var(--mid);font-size:.68rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:320px;line-height:1.5}
+.pt-prompt{color:var(--mid);font-size:.68rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:300px;line-height:1.5}
 .pt-cat{font-size:.52rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
 .pt-tier{font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px}
-.tier-free{background:rgba(13,13,13,.07);color:var(--black)}
-.tier-starter{background:rgba(255,45,85,.1);color:var(--coral)}
-.tier-pro{background:rgba(13,13,13,.07);color:var(--black)}
-.tier-unlimited{background:rgba(255,45,85,.15);color:var(--coral)}
+.tier-free{background:rgba(13,13,13,.07);color:var(--black)}.tier-starter{background:rgba(255,45,85,.1);color:var(--coral)}
+.tier-pro{background:rgba(13,13,13,.07);color:var(--black)}.tier-unlimited{background:rgba(255,45,85,.15);color:var(--coral)}
 .row-actions{display:flex;gap:8px;white-space:nowrap}
 .edit-btn,.del-btn{font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border:none;cursor:pointer;transition:all .2s}
-.edit-btn{border:1px solid var(--light);background:white;color:var(--black)}
-.edit-btn:hover{background:var(--black);color:white;border-color:var(--black)}
-.del-btn{border:1px solid rgba(255,45,85,.2);background:transparent;color:var(--coral)}
-.del-btn:hover{background:var(--coral);color:white;border-color:var(--coral)}
+.edit-btn{border:1px solid var(--light);background:white;color:var(--black)}.edit-btn:hover{background:var(--black);color:white;border-color:var(--black)}
+.del-btn{border:1px solid rgba(255,45,85,.2);background:transparent;color:var(--coral)}.del-btn:hover{background:var(--coral);color:white;border-color:var(--coral)}
 .toggle-active{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.65rem;color:var(--mid)}
 .toggle-dot{width:28px;height:16px;border-radius:8px;background:var(--light);position:relative;transition:background .2s}
 .toggle-dot::after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:white;transition:transform .2s}
-.toggle-active.on .toggle-dot{background:var(--black)}
-.toggle-active.on .toggle-dot::after{transform:translateX(12px)}
-#uploadZone{border:2px dashed var(--light);padding:24px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--off)}
+.toggle-active.on .toggle-dot{background:var(--black)}.toggle-active.on .toggle-dot::after{transform:translateX(12px)}
+#uploadZone{border:2px dashed var(--light);padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--off)}
 #uploadZone:hover{border-color:var(--black);background:white}
 #uploadZone.dragover{border-color:var(--coral);background:rgba(255,45,85,.04)}
 #uploadZone.done{border-color:#2e7d32;border-style:solid;background:#f1f8e9}
-.upload-icon{font-size:1.4rem;color:var(--mid);margin-bottom:6px}
-.upload-text{font-size:.68rem;font-weight:400;color:var(--gray)}
-.upload-sub{font-size:.58rem;font-weight:300;color:var(--mid);margin-top:4px}
-.upload-spinner{width:24px;height:24px;border:2px solid var(--light);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 8px}
+.upload-icon{font-size:1.2rem;color:var(--mid);margin-bottom:4px}
+.upload-text{font-size:.68rem;font-weight:400;color:var(--gray)}.upload-sub{font-size:.58rem;font-weight:300;color:var(--mid);margin-top:3px}
+.upload-spinner{width:22px;height:22px;border:2px solid var(--light);border-top-color:var(--black);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 6px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.or-divider{display:flex;align-items:center;gap:10px;margin:12px 0 10px}
+.or-divider{display:flex;align-items:center;gap:10px;margin:10px 0 8px}
 .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--light)}
 .or-divider span{font-size:.52rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--mid)}
-.img-preview{width:100%;height:160px;object-fit:cover;display:block;border:1px solid var(--light)}
-.remove-img-btn{position:absolute;top:8px;right:8px;background:rgba(13,13,13,.7);color:white;border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.65rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.img-preview-wrap{position:relative;margin-top:8px;display:none}
+.img-preview{width:100%;height:140px;object-fit:cover;display:block;border:1px solid var(--light)}
+.remove-img-btn{position:absolute;top:6px;right:6px;background:rgba(13,13,13,.7);color:white;border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:.6rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .remove-img-btn:hover{background:var(--coral)}
 .table-empty{text-align:center;padding:60px;color:var(--mid);font-size:.75rem}
 .table-loading{text-align:center;padding:40px;color:var(--mid);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase}
@@ -120,73 +128,104 @@ select{appearance:none;cursor:pointer}
   </div>
   <div class="main">
     <div class="add-panel">
-      <div class="panel-title">Add <span>Prompt</span></div>
-      <div class="edit-indicator" id="editIndicator">
-        <span>Editing prompt</span>
-        <button class="cancel-edit" onclick="cancelEdit()">Cancel</button>
+      <div class="panel-title">Manage <span>Prompts</span></div>
+      <div class="panel-tabs">
+        <button class="panel-tab active" onclick="switchTab('single')">Add Single</button>
+        <button class="panel-tab" onclick="switchTab('bulk')">Bulk Upload</button>
       </div>
-      <div class="form-group">
-        <label>Title</label>
-        <input type="text" id="f-title" placeholder="e.g. Golden Hour Editorial">
-      </div>
-      <div class="form-group">
-        <label>Prompt Text</label>
-        <textarea id="f-prompt" placeholder="The full AI prompt text"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Image</label>
-        <div id="uploadZone" onclick="document.getElementById('fileInput').click()">
-          <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
-          <div id="uploadIdle">
-            <div class="upload-icon">up</div>
-            <div class="upload-text">Click to upload from computer</div>
-            <div class="upload-sub">JPG, PNG, WEBP max 5MB</div>
-          </div>
-          <div id="uploadProgress" style="display:none">
-            <div class="upload-spinner"></div>
-            <div class="upload-text" id="uploadStatusText">Uploading</div>
-          </div>
-        </div>
-        <div class="or-divider"><span>or paste URL</span></div>
-        <input type="url" id="f-image" placeholder="https://" oninput="previewImg(this.value)">
-        <div id="imgPreviewWrap" style="display:none;margin-top:10px;position:relative;">
-          <img id="imgPreview" class="img-preview show" alt="preview">
-          <button class="remove-img-btn" onclick="removeImage()">X</button>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Category</label>
-          <select id="f-category">
-            <option>Cinematic</option><option>Editorial</option><option>Product</option>
-            <option>Kling.3</option><option>Abstract</option><option>Nature</option>
-            <option>Portrait</option><option>Marketing</option><option>General</option>
-          </select>
+
+      <!-- SINGLE ADD TAB -->
+      <div id="tab-single" class="tab-content active">
+        <div class="edit-indicator" id="editIndicator">
+          <span>Editing prompt</span>
+          <button class="cancel-edit" onclick="cancelEdit()">Cancel</button>
         </div>
         <div class="form-group">
-          <label>Tier</label>
-          <select id="f-tier">
-            <option value="free">Free</option><option value="starter">Starter+</option>
-            <option value="pro">Pro</option><option value="unlimited">Unlimited</option>
+          <label>Title</label>
+          <input type="text" id="f-title" placeholder="e.g. Golden Hour Editorial">
+        </div>
+        <div class="form-group">
+          <label>Prompt Text</label>
+          <textarea id="f-prompt" placeholder="The full AI prompt text"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Image</label>
+          <div id="uploadZone" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+            <div id="uploadIdle">
+              <div class="upload-icon">↑</div>
+              <div class="upload-text">Click to upload from computer</div>
+              <div class="upload-sub">JPG, PNG, WEBP — max 5MB</div>
+            </div>
+            <div id="uploadProgress" style="display:none">
+              <div class="upload-spinner"></div>
+              <div class="upload-text" id="uploadStatusText">Uploading…</div>
+            </div>
+          </div>
+          <div class="or-divider"><span>or paste URL</span></div>
+          <input type="url" id="f-image" placeholder="https://…" oninput="previewImg(this.value)">
+          <div class="img-preview-wrap" id="imgPreviewWrap">
+            <img id="imgPreview" class="img-preview" alt="preview">
+            <button class="remove-img-btn" onclick="removeImage()">✕</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="f-category">
+              <option>Cinematic</option><option>Editorial</option><option>Product</option>
+              <option>Kling.3</option><option>Abstract</option><option>Nature</option>
+              <option>Portrait</option><option>Marketing</option><option>General</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tier</label>
+            <select id="f-tier">
+              <option value="free">Free</option><option value="starter">Starter+</option>
+              <option value="pro">Pro</option><option value="unlimited">Unlimited</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>AI Model</label>
+          <select id="f-model">
+            <option>Midjourney</option><option>Kling.3</option><option>Stable Diffusion</option>
+            <option>DALL-E 3</option><option>Firefly</option><option>Runway</option><option>General</option>
           </select>
         </div>
+        <button class="submit-btn" id="submitBtn" onclick="submitPrompt()">Add Prompt</button>
+        <div class="form-msg" id="formMsg"></div>
       </div>
-      <div class="form-group">
-        <label>AI Model</label>
-        <select id="f-model">
-          <option>Midjourney</option><option>Kling.3</option><option>Stable Diffusion</option>
-          <option>DALL-E 3</option><option>Firefly</option><option>Runway</option><option>General</option>
-        </select>
+
+      <!-- BULK UPLOAD TAB -->
+      <div id="tab-bulk" class="tab-content">
+        <p style="font-size:.7rem;color:var(--mid);margin-bottom:16px;line-height:1.6">
+          Drop multiple images below. Each image becomes a prompt entry. You can edit titles and details after uploading.
+        </p>
+        <div class="bulk-drop" id="bulkDrop" onclick="document.getElementById('bulkFileInput').click()">
+          <input type="file" id="bulkFileInput" accept="image/*" multiple style="display:none" onchange="handleBulkSelect(this)">
+          <div class="upload-icon">↑</div>
+          <div class="upload-text">Click or drag images here</div>
+          <div class="upload-sub">Select multiple JPG, PNG, WEBP files</div>
+        </div>
+        <div id="bulkPreview" class="bulk-preview" style="display:none"></div>
+        <div class="bulk-progress" id="bulkProgressWrap">
+          <div class="bulk-progress-bar" id="bulkProgressBar"></div>
+        </div>
+        <button class="bulk-upload-btn" id="bulkUploadBtn" onclick="startBulkUpload()" style="display:none">
+          Upload All Images
+        </button>
+        <div class="form-msg" id="bulkMsg"></div>
       </div>
-      <button class="submit-btn" id="submitBtn" onclick="submitPrompt()">Add Prompt</button>
-      <div class="form-msg" id="formMsg"></div>
     </div>
+
+    <!-- PROMPT LIST -->
     <div class="list-panel">
       <div class="list-header">
         <div class="list-title">All Prompts</div>
         <div class="list-search">
-          <span style="color:var(--mid)">Search</span>
-          <input type="text" id="listSearch" placeholder="Filter" oninput="filterList(this.value)">
+          <span style="color:var(--mid)">⌕</span>
+          <input type="text" id="listSearch" placeholder="Filter…" oninput="filterList(this.value)">
         </div>
       </div>
       <table class="prompt-table">
@@ -197,7 +236,7 @@ select{appearance:none;cursor:pointer}
           </tr>
         </thead>
         <tbody id="promptTableBody">
-          <tr><td colspan="7" class="table-loading">Loading</td></tr>
+          <tr><td colspan="7" class="table-loading">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -209,6 +248,7 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 var ADMIN_PASSWORD = 'nuvana2025';
 var allPrompts = [];
 var editingId = null;
+var bulkFiles = [];
 var headers = {
   'apikey': SUPABASE_KEY,
   'Authorization': 'Bearer ' + SUPABASE_KEY,
@@ -216,6 +256,7 @@ var headers = {
   'Prefer': 'return=minimal'
 };
 
+// ── AUTH ──
 function tryLogin() {
   var pw = document.getElementById('pwInput').value;
   if (pw === ADMIN_PASSWORD) {
@@ -227,25 +268,26 @@ function tryLogin() {
     document.getElementById('loginError').style.display = 'block';
   }
 }
-
-function logout() {
-  sessionStorage.removeItem('nuvana_admin');
-  location.reload();
-}
-
-document.getElementById('pwInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') tryLogin();
-});
-
+function logout() { sessionStorage.removeItem('nuvana_admin'); location.reload(); }
+document.getElementById('pwInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') tryLogin(); });
 if (sessionStorage.getItem('nuvana_admin') === '1') {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminApp').style.display = 'block';
   loadPrompts();
 }
 
+// ── TABS ──
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.panel-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── DATA ──
 function loadPrompts() {
   fetch(SUPABASE_URL + '/rest/v1/prompts?select=*&order=created_at.desc', { headers: headers })
-    .then(function(res) { return res.json(); })
+    .then(function(r) { return r.json(); })
     .then(function(data) {
       allPrompts = data;
       document.getElementById('tbCount').textContent = allPrompts.length + ' prompts';
@@ -253,47 +295,61 @@ function loadPrompts() {
     });
 }
 
-function escTitle(t) {
-  return t.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-}
-
 function renderTable(data) {
   var tbody = document.getElementById('promptTableBody');
-  if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No prompts yet.</td></tr>';
-    return;
-  }
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No prompts yet.</td></tr>'; return; }
   var rows = '';
   for (var i = 0; i < data.length; i++) {
     var p = data[i];
-    var imgSrc = p.image_url || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&q=60';
-    var safeId = p.id;
-    var safeTitleAttr = escTitle(p.title);
-    rows += '<tr id="row-' + safeId + '">';
-    rows += '<td><img class="pt-img" src="' + imgSrc + '" alt="" onerror="this.style.display=&quot;none&quot;"></td>';
-    rows += '<td><div class="pt-title">' + p.title + '</div><div class="pt-prompt">' + p.prompt + '</div></td>';
-    rows += '<td><span class="pt-cat">' + (p.category || '-') + '</span></td>';
+    var img = p.image_url || 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=120&q=60';
+    rows += '<tr>';
+    rows += '<td><img class="pt-img" src="' + img + '" alt="" onerror="this.style.display=\'none\'"></td>';
+    rows += '<td><div class="pt-title">' + escHtml(p.title) + '</div><div class="pt-prompt">' + escHtml(p.prompt) + '</div></td>';
+    rows += '<td><span class="pt-cat">' + escHtml(p.category || '') + '</span></td>';
     rows += '<td><span class="pt-tier tier-' + p.tier + '">' + p.tier + '</span></td>';
-    rows += '<td style="font-size:.68rem;color:var(--mid)">' + (p.model || '-') + '</td>';
-    rows += '<td><label class="toggle-active ' + (p.active ? 'on' : '') + '" onclick="toggleActive(' + JSON.stringify(safeId) + ',' + p.active + ')"><div class="toggle-dot"></div></label></td>';
-    rows += '<td><div class="row-actions"><button class="edit-btn" onclick="startEdit(' + JSON.stringify(safeId) + ')">Edit</button>';
-    rows += '<button class="del-btn" onclick="deletePrompt(' + JSON.stringify(safeId) + ',' + JSON.stringify(safeTitleAttr) + ')">Delete</button></div></td>';
-    rows += '</tr>';
+    rows += '<td style="font-size:.68rem;color:var(--mid)">' + escHtml(p.model || '') + '</td>';
+    rows += '<td><label class="toggle-active ' + (p.active ? 'on' : '') + '" data-id="' + p.id + '" data-active="' + p.active + '" onclick="handleToggle(this)"><div class="toggle-dot"></div></label></td>';
+    rows += '<td><div class="row-actions">';
+    rows += '<button class="edit-btn" data-id="' + p.id + '" onclick="startEdit(this.dataset.id)">Edit</button>';
+    rows += '<button class="del-btn" data-id="' + p.id + '" data-title="' + escAttr(p.title) + '" onclick="handleDelete(this)">Delete</button>';
+    rows += '</div></td></tr>';
   }
   tbody.innerHTML = rows;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function handleDelete(btn) {
+  var id = btn.getAttribute('data-id');
+  var title = btn.getAttribute('data-title');
+  if (!confirm('Delete "' + title + '"? This cannot be undone.')) return;
+  fetch(SUPABASE_URL + '/rest/v1/prompts?id=eq.' + id, { method: 'DELETE', headers: headers })
+    .then(function(r) { if (r.ok) { loadPrompts(); } else { alert('Delete failed. Check Supabase RLS policies.'); } });
+}
+
+function handleToggle(label) {
+  var id = label.getAttribute('data-id');
+  var current = label.getAttribute('data-active') === 'true';
+  fetch(SUPABASE_URL + '/rest/v1/prompts?id=eq.' + id, {
+    method: 'PATCH', headers: headers, body: JSON.stringify({ active: !current })
+  }).then(function() { loadPrompts(); });
 }
 
 function filterList(q) {
   if (!q) { renderTable(allPrompts); return; }
   var lq = q.toLowerCase();
   renderTable(allPrompts.filter(function(p) {
-    return p.title.toLowerCase().includes(lq) ||
-           p.prompt.toLowerCase().includes(lq) ||
-           (p.category || '').toLowerCase().includes(lq) ||
-           (p.tier || '').toLowerCase().includes(lq);
+    return p.title.toLowerCase().includes(lq) || p.prompt.toLowerCase().includes(lq) ||
+           (p.category||'').toLowerCase().includes(lq) || (p.tier||'').toLowerCase().includes(lq);
   }));
 }
 
+// ── ADD / EDIT ──
 function submitPrompt() {
   var title = document.getElementById('f-title').value.trim();
   var prompt = document.getElementById('f-prompt').value.trim();
@@ -301,30 +357,24 @@ function submitPrompt() {
   var category = document.getElementById('f-category').value;
   var tier = document.getElementById('f-tier').value;
   var model = document.getElementById('f-model').value;
-  if (!title || !prompt) { showMsg('Title and prompt text are required.', 'error'); return; }
+  if (!title || !prompt) { showMsg('Title and prompt text are required.', 'error', 'formMsg'); return; }
   var btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = editingId ? 'Saving...' : 'Adding...';
-  var body = JSON.stringify({ title: title, prompt: prompt, image_url: image_url || null, category: category, tier: tier, model: model });
-  var url = editingId ? SUPABASE_URL + '/rest/v1/prompts?id=eq.' + editingId : SUPABASE_URL + '/rest/v1/prompts';
-  var method = editingId ? 'PATCH' : 'POST';
-  fetch(url, { method: method, headers: headers, body: body })
-    .then(function(res) {
-      btn.disabled = false;
-      btn.textContent = editingId ? 'Save Changes' : 'Add Prompt';
-      if (res.ok) {
-        showMsg(editingId ? 'Prompt updated!' : 'Prompt added!', 'success');
-        cancelEdit(); clearForm(); loadPrompts();
-      } else {
-        res.text().then(function(err) { showMsg('Error: ' + err, 'error'); });
-      }
+  btn.disabled = true; btn.textContent = editingId ? 'Saving…' : 'Adding…';
+  var body = JSON.stringify({ title:title, prompt:prompt, image_url:image_url||null, category:category, tier:tier, model:model });
+  var url = editingId ? SUPABASE_URL+'/rest/v1/prompts?id=eq.'+editingId : SUPABASE_URL+'/rest/v1/prompts';
+  fetch(url, { method: editingId?'PATCH':'POST', headers: headers, body: body })
+    .then(function(r) {
+      btn.disabled = false; btn.textContent = editingId ? 'Save Changes' : 'Add Prompt';
+      if (r.ok) { showMsg(editingId?'Updated!':'Added!','success','formMsg'); cancelEdit(); clearForm(); loadPrompts(); }
+      else { r.text().then(function(e){ showMsg('Error: '+e,'error','formMsg'); }); }
     });
 }
 
 function startEdit(id) {
-  var p = allPrompts.find(function(x) { return x.id === id; });
+  var p = allPrompts.find(function(x){ return x.id===id; });
   if (!p) return;
   editingId = id;
+  switchTabDirect('single');
   document.getElementById('f-title').value = p.title || '';
   document.getElementById('f-prompt').value = p.prompt || '';
   document.getElementById('f-image').value = p.image_url || '';
@@ -336,116 +386,184 @@ function startEdit(id) {
   document.getElementById('submitBtn').textContent = 'Save Changes';
   document.querySelector('.panel-title').innerHTML = 'Edit <span>Prompt</span>';
   document.querySelector('.add-panel').scrollTop = 0;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function switchTabDirect(name) {
+  document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.panel-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.panel-tab').forEach(function(t){
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes(name)) t.classList.add('active');
+  });
 }
 
 function cancelEdit() {
   editingId = null;
   document.getElementById('editIndicator').style.display = 'none';
   document.getElementById('submitBtn').textContent = 'Add Prompt';
-  document.querySelector('.panel-title').innerHTML = 'Add <span>Prompt</span>';
+  document.querySelector('.panel-title').innerHTML = 'Manage <span>Prompts</span>';
   clearForm();
 }
 
 function clearForm() {
-  ['f-title','f-prompt','f-image'].forEach(function(id) { document.getElementById(id).value = ''; });
+  ['f-title','f-prompt','f-image'].forEach(function(id){ document.getElementById(id).value=''; });
   document.getElementById('imgPreviewWrap').style.display = 'none';
   document.getElementById('uploadZone').classList.remove('done');
   document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Click to upload from computer';
   document.getElementById('formMsg').style.display = 'none';
 }
 
-function deletePrompt(id, title) {
-  if (!confirm('Delete "' + title + '"? This cannot be undone.')) return;
-  fetch(SUPABASE_URL + '/rest/v1/prompts?id=eq.' + id, { method: 'DELETE', headers: headers })
-    .then(function(res) {
-      if (res.ok) { loadPrompts(); }
-      else { alert('Delete failed. Check Supabase RLS policies.'); }
-    });
-}
-
-function toggleActive(id, current) {
-  fetch(SUPABASE_URL + '/rest/v1/prompts?id=eq.' + id, {
-    method: 'PATCH',
-    headers: headers,
-    body: JSON.stringify({ active: !current })
-  }).then(function() { loadPrompts(); });
-}
-
+// ── SINGLE IMAGE UPLOAD ──
 function handleFileUpload(input) {
-  var file = input.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showMsg('Image must be under 5MB.', 'error'); return; }
+  var file = input.files[0]; if (!file) return;
+  if (file.size > 5*1024*1024) { showMsg('Image must be under 5MB.','error','formMsg'); return; }
   document.getElementById('uploadIdle').style.display = 'none';
   document.getElementById('uploadProgress').style.display = 'block';
-  document.getElementById('uploadStatusText').textContent = 'Uploading...';
+  document.getElementById('uploadStatusText').textContent = 'Uploading…';
   document.getElementById('uploadZone').classList.remove('done');
   var ext = file.name.split('.').pop().toLowerCase();
-  var fileName = 'prompt-' + Date.now() + '.' + ext;
-  fetch(SUPABASE_URL + '/storage/v1/object/prompt-images/' + fileName, {
-    method: 'POST',
-    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': file.type, 'x-upsert': 'true' },
-    body: file
-  }).then(function(res) {
-    if (!res.ok) { return res.text().then(function(e) { throw new Error(e); }); }
-    var publicUrl = SUPABASE_URL + '/storage/v1/object/public/prompt-images/' + fileName;
-    document.getElementById('f-image').value = publicUrl;
-    previewImg(publicUrl);
+  var fileName = 'prompt-'+Date.now()+'.'+ext;
+  fetch(SUPABASE_URL+'/storage/v1/object/prompt-images/'+fileName, {
+    method:'POST', headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':file.type,'x-upsert':'true'}, body:file
+  }).then(function(r){
+    if (!r.ok) return r.text().then(function(e){ throw new Error(e); });
+    var url = SUPABASE_URL+'/storage/v1/object/public/prompt-images/'+fileName;
+    document.getElementById('f-image').value = url; previewImg(url);
     document.getElementById('uploadStatusText').textContent = 'Uploaded!';
     document.getElementById('uploadZone').classList.add('done');
-    setTimeout(function() {
-      document.getElementById('uploadProgress').style.display = 'none';
-      document.getElementById('uploadIdle').style.display = 'block';
-      document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Done: ' + file.name;
+    setTimeout(function(){
+      document.getElementById('uploadProgress').style.display='none';
+      document.getElementById('uploadIdle').style.display='block';
+      document.getElementById('uploadIdle').querySelector('.upload-text').textContent='✓ '+file.name;
     }, 1200);
-  }).catch(function() {
-    document.getElementById('uploadProgress').style.display = 'none';
-    document.getElementById('uploadIdle').style.display = 'block';
-    showMsg('Upload failed. Make sure the prompt-images bucket exists in Supabase Storage.', 'error');
+  }).catch(function(){
+    document.getElementById('uploadProgress').style.display='none';
+    document.getElementById('uploadIdle').style.display='block';
+    showMsg('Upload failed. Check Supabase Storage bucket.','error','formMsg');
   });
-  input.value = '';
+  input.value='';
 }
 
 var zone = document.getElementById('uploadZone');
-zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
-zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
-zone.addEventListener('drop', function(e) {
-  e.preventDefault();
-  zone.classList.remove('dragover');
+zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('dragover'); });
+zone.addEventListener('dragleave', function(){ zone.classList.remove('dragover'); });
+zone.addEventListener('drop', function(e){
+  e.preventDefault(); zone.classList.remove('dragover');
   var file = e.dataTransfer.files[0];
   if (file && file.type.startsWith('image/')) {
-    var dt = new DataTransfer();
-    dt.items.add(file);
-    var inp = document.getElementById('fileInput');
-    inp.files = dt.files;
-    handleFileUpload(inp);
+    var dt=new DataTransfer(); dt.items.add(file);
+    var inp=document.getElementById('fileInput'); inp.files=dt.files; handleFileUpload(inp);
   }
 });
 
 function removeImage() {
-  document.getElementById('f-image').value = '';
-  document.getElementById('imgPreviewWrap').style.display = 'none';
-  document.getElementById('uploadIdle').querySelector('.upload-text').textContent = 'Click to upload from computer';
+  document.getElementById('f-image').value='';
+  document.getElementById('imgPreviewWrap').style.display='none';
+  document.getElementById('uploadIdle').querySelector('.upload-text').textContent='Click to upload from computer';
   document.getElementById('uploadZone').classList.remove('done');
 }
 
 function previewImg(url) {
-  var wrap = document.getElementById('imgPreviewWrap');
-  var img = document.getElementById('imgPreview');
+  var wrap=document.getElementById('imgPreviewWrap'), img=document.getElementById('imgPreview');
   if (url && url.startsWith('http')) {
-    img.src = url;
-    wrap.style.display = 'block';
-    img.onerror = function() { wrap.style.display = 'none'; };
-  } else {
-    wrap.style.display = 'none';
-  }
+    img.src=url; wrap.style.display='block';
+    img.onerror=function(){ wrap.style.display='none'; };
+  } else { wrap.style.display='none'; }
 }
 
-function showMsg(text, type) {
-  var el = document.getElementById('formMsg');
-  el.textContent = text;
-  el.className = 'form-msg ' + type;
-  setTimeout(function() { el.style.display = 'none'; }, 4000);
+// ── BULK UPLOAD ──
+var bulkDrop = document.getElementById('bulkDrop');
+bulkDrop.addEventListener('dragover', function(e){ e.preventDefault(); bulkDrop.classList.add('dragover'); });
+bulkDrop.addEventListener('dragleave', function(){ bulkDrop.classList.remove('dragover'); });
+bulkDrop.addEventListener('drop', function(e){
+  e.preventDefault(); bulkDrop.classList.remove('dragover');
+  addBulkFiles(Array.from(e.dataTransfer.files).filter(function(f){ return f.type.startsWith('image/'); }));
+});
+
+function handleBulkSelect(input) {
+  addBulkFiles(Array.from(input.files)); input.value='';
+}
+
+function addBulkFiles(files) {
+  files.forEach(function(f){
+    if (f.size > 5*1024*1024) return;
+    bulkFiles.push({ file:f, status:'pending', url:null });
+  });
+  renderBulkPreview();
+}
+
+function renderBulkPreview() {
+  var preview = document.getElementById('bulkPreview');
+  if (!bulkFiles.length) { preview.style.display='none'; document.getElementById('bulkUploadBtn').style.display='none'; return; }
+  preview.style.display='block'; document.getElementById('bulkUploadBtn').style.display='block';
+  document.getElementById('bulkDrop').classList.add('ready');
+  var html='';
+  for (var i=0; i<bulkFiles.length; i++) {
+    var item=bulkFiles[i];
+    var objUrl = item.objUrl || (item.objUrl=URL.createObjectURL(item.file));
+    var statusClass = item.status==='done'?'ok':item.status==='error'?'err':item.status==='uploading'?'uploading':'';
+    var statusText = item.status==='done'?'Uploaded':item.status==='error'?'Failed':item.status==='uploading'?'Uploading...':'Ready';
+    html += '<div class="bulk-row" id="brow-'+i+'">';
+    html += '<img src="'+objUrl+'" alt="">';
+    html += '<div class="bulk-row-info"><div class="bulk-row-name">'+escHtml(item.file.name)+'</div>';
+    html += '<div class="bulk-row-status '+statusClass+'">'+statusText+'</div></div>';
+    html += (item.status==='pending' ? '<button class="bulk-remove" data-idx="'+i+'" onclick="removeBulkFile(this)">&#x2715;</button>' : '');
+    html += '</div>';
+  }
+  preview.innerHTML = html;
+}
+
+function removeBulkFile(btn) {
+  var idx = parseInt(btn.getAttribute('data-idx'));
+  bulkFiles.splice(idx,1); renderBulkPreview();
+}
+
+function startBulkUpload() {
+  var btn = document.getElementById('bulkUploadBtn');
+  var pending = bulkFiles.filter(function(f){ return f.status==='pending'; });
+  if (!pending.length) return;
+  btn.disabled=true; btn.textContent='Uploading...';
+  document.getElementById('bulkProgressWrap').style.display='block';
+  var total=pending.length, done=0;
+  function next() {
+    if (!pending.length) {
+      btn.disabled=false; btn.textContent='Upload All Images';
+      document.getElementById('bulkProgressBar').style.width='100%';
+      showMsg('Done! '+total+' prompts created.','success','bulkMsg');
+      loadPrompts(); return;
+    }
+    var item=pending.shift(); item.status='uploading'; renderBulkPreview();
+    var ext=item.file.name.split('.').pop().toLowerCase();
+    var fileName='prompt-'+Date.now()+'-'+Math.random().toString(36).slice(2,6)+'.'+ext;
+    fetch(SUPABASE_URL+'/storage/v1/object/prompt-images/'+fileName, {
+      method:'POST', headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':item.file.type,'x-upsert':'true'}, body:item.file
+    }).then(function(r){
+      if (!r.ok) throw new Error('upload failed');
+      item.url=SUPABASE_URL+'/storage/v1/object/public/prompt-images/'+fileName;
+      var titleFromFile=item.file.name.replace(/.[^.]+$/,'').replace(/[-_]/g,' ');
+      return fetch(SUPABASE_URL+'/rest/v1/prompts', {
+        method:'POST', headers:headers,
+        body:JSON.stringify({ title:titleFromFile, prompt:'', image_url:item.url, category:'General', tier:'free', model:'General', active:true })
+      });
+    }).then(function(r){
+      if (!r.ok) throw new Error('db failed');
+      item.status='done'; done++;
+      document.getElementById('bulkProgressBar').style.width=Math.round((done/total)*100)+'%';
+      renderBulkPreview(); next();
+    }).catch(function(){
+      item.status='error'; done++;
+      document.getElementById('bulkProgressBar').style.width=Math.round((done/total)*100)+'%';
+      renderBulkPreview(); next();
+    });
+  }
+  next();
+}
+
+function showMsg(text, type, elId) {
+  var el=document.getElementById(elId||'formMsg');
+  el.textContent=text; el.className='form-msg '+type; el.style.display='block';
+  setTimeout(function(){ el.style.display='none'; }, 5000);
 }
 </script>
 </body>
