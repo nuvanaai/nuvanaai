@@ -141,29 +141,6 @@ body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:
 .save-btn{padding:11px 24px;background:var(--black);border:none;font-family:'Inter';font-size:.58rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:white;cursor:pointer;transition:background .2s}
 .save-btn:hover{background:var(--coral)}
 
-/* ── MEETINGS ── */
-.meetings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:40px}
-.meeting-card{background:white;border:1px solid var(--light);padding:0;overflow:hidden;transition:transform .2s,box-shadow .2s}
-.meeting-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(13,13,13,.08)}
-.meeting-top{display:flex;align-items:center;gap:14px;padding:22px 24px 0}
-.meeting-date-badge{min-width:52px;text-align:center;background:var(--black);padding:10px 12px;flex-shrink:0}
-.meeting-date-badge .mdb-month{font-size:.42rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
-.meeting-date-badge .mdb-day{font-family:'Figtree';font-weight:900;font-size:1.4rem;color:white;line-height:1.1}
-.meeting-date-badge .mdb-weekday{font-size:.4rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:rgba(249,248,246,.35);margin-top:2px}
-.meeting-info{flex:1;min-width:0}
-.meeting-agency{font-family:'Figtree';font-weight:900;font-size:.95rem;letter-spacing:-.2px;margin-bottom:4px}
-.meeting-time{font-size:.6rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
-.meeting-details{padding:16px 24px 22px}
-.meeting-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
-.meeting-row:last-child{margin-bottom:0}
-.meeting-row .mr-icon{font-size:.75rem;width:16px;flex-shrink:0;text-align:center;margin-top:1px;color:var(--mid)}
-.meeting-row .mr-text{font-size:.68rem;font-weight:300;color:var(--gray);line-height:1.5}
-.meeting-row .mr-text strong{font-weight:500;color:var(--black)}
-.meeting-row .mr-text a{color:var(--coral);text-decoration:none;border-bottom:1px solid rgba(255,45,85,.2);transition:border-color .2s}
-.meeting-row .mr-text a:hover{border-color:var(--coral)}
-.meeting-divider{height:1px;background:var(--off);margin:0 24px}
-.meetings-empty{text-align:center;padding:60px 40px;background:white;border:1px solid var(--light);color:var(--mid);font-size:.72rem}
-
 /* loading skeleton */
 .skel{background:var(--light);animation:pulse 1.4s ease-in-out infinite}
 .skel-img{height:160px}
@@ -216,9 +193,6 @@ body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:
       </button>
       <button class="sb-link" data-page="vault" onclick="showPage('vault', this)">
         <span class="icon">♡</span> My Vault
-      </button>
-      <button class="sb-link" data-page="meetings" onclick="showPage('meetings', this)">
-        <span class="icon">◈</span> Meetings
       </button>
 
       <div class="sb-section">Tools</div>
@@ -299,13 +273,6 @@ body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:
           </div>
         </div>
 
-        <!-- Upcoming Meetings -->
-        <div class="section-head">
-          <div class="section-title">Upcoming Meetings</div>
-          <button onclick="showPage('meetings', document.querySelector('[data-page=meetings]'))" class="section-link">View all →</button>
-        </div>
-        <div class="meetings-grid" id="homeMeetingsGrid"></div>
-
         <!-- Latest prompts -->
         <div class="section-head">
           <div class="section-title">Latest Prompts</div>
@@ -349,15 +316,6 @@ body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:
           <button onclick="showPage('library', document.querySelector('[data-page=library]'))" class="ve-btn">Browse Library →</button>
         </div>
         <div class="prompts-grid" id="vaultGrid" style="display:none"></div>
-      </div>
-
-      <!-- MEETINGS PAGE -->
-      <div class="page" id="page-meetings">
-        <div class="welcome-h">
-          <div class="welcome-greeting">Command Center</div>
-          <h1 class="welcome-title">Your <em>Meetings</em></h1>
-        </div>
-        <div class="meetings-grid" id="meetingsGrid"></div>
       </div>
 
       <!-- ACCOUNT PAGE -->
@@ -443,7 +401,6 @@ async function init() {
     populateUser();
     loadPrompts();
     loadSavedPrompts();
-    renderMeetings();
 
   } catch(e) {
     window.location.href = 'login.html';
@@ -622,7 +579,7 @@ function showPage(pageId, btn) {
   document.querySelectorAll('.sb-link').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + pageId).classList.add('active');
   if (btn) btn.classList.add('active');
-  const titles = { home: 'Dashboard', library: 'Prompt Library', vault: 'My Vault', meetings: 'Meetings', account: 'Account' };
+  const titles = { home: 'Dashboard', library: 'Prompt Library', vault: 'My Vault', account: 'Account' };
   document.getElementById('tbTitle').textContent = titles[pageId] || 'Dashboard';
 }
 
@@ -646,82 +603,6 @@ function signOut() {
   localStorage.removeItem('nuvana_refresh');
   localStorage.removeItem('nuvana_user');
   window.location.href = 'login.html';
-}
-
-// ── MEETINGS ──
-const meetings = [
-  {
-    id: 'm1',
-    agency: 'Fenton Models',
-    date: '2026-03-30',
-    month: 'Mar',
-    day: '30',
-    weekday: 'Mon',
-    time: '12:00 PM',
-    contact: 'Wendy',
-    role: 'Owner & Director',
-    address: '207 East 63rd Street, Suite 1W, New York, NY 10065',
-    mapUrl: 'https://www.google.com/maps/search/207+East+63rd+Street+Suite+1W+New+York+NY+10065'
-  },
-  {
-    id: 'm2',
-    agency: 'ONE Management',
-    date: '2026-03-30',
-    month: 'Mar',
-    day: '30',
-    weekday: 'Mon',
-    time: '3:30 PM',
-    contact: 'Jakub',
-    role: 'Director of Scouting & Development NY',
-    address: '42 Bond Street, 2nd Floor, New York, N.Y. 10012',
-    mapUrl: 'https://www.google.com/maps/search/42+Bond+Street+2nd+Floor+New+York+N.Y.+10012'
-  },
-  {
-    id: 'm3',
-    agency: 'Curve Management',
-    date: '2026-04-01',
-    month: 'Apr',
-    day: '1',
-    weekday: 'Wed',
-    time: '3:30 PM',
-    contact: '',
-    role: '',
-    address: '99 Madison Ave, 5th Floor, New York, NY',
-    mapUrl: 'https://www.google.com/maps/search/99+Madison+Ave+5th+floor'
-  }
-];
-
-function renderMeetingCard(m) {
-  let contactRow = '';
-  if (m.contact) {
-    contactRow = `<div class="meeting-row"><span class="mr-icon">◉</span><div class="mr-text">Meeting with <strong>${m.contact}</strong>${m.role ? ' — ' + m.role : ''}</div></div>`;
-  }
-  return `<div class="meeting-card">
-    <div class="meeting-top">
-      <div class="meeting-date-badge">
-        <div class="mdb-month">${m.month}</div>
-        <div class="mdb-day">${m.day}</div>
-        <div class="mdb-weekday">${m.weekday}</div>
-      </div>
-      <div class="meeting-info">
-        <div class="meeting-agency">${m.agency}</div>
-        <div class="meeting-time">${m.time}</div>
-      </div>
-    </div>
-    <div class="meeting-divider"></div>
-    <div class="meeting-details">
-      ${contactRow}
-      <div class="meeting-row"><span class="mr-icon">↗</span><div class="mr-text"><a href="${m.mapUrl}" target="_blank">${m.address}</a></div></div>
-    </div>
-  </div>`;
-}
-
-function renderMeetings() {
-  const allCards = meetings.map(m => renderMeetingCard(m)).join('');
-  document.getElementById('meetingsGrid').innerHTML = allCards;
-  // Show first 3 on home
-  const homeCards = meetings.slice(0, 3).map(m => renderMeetingCard(m)).join('');
-  document.getElementById('homeMeetingsGrid').innerHTML = homeCards;
 }
 
 // ── CURSOR ──
