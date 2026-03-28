@@ -1,0 +1,9 @@
+{
+    "redirects": [
+          {
+                  "source": "/nuvana-v5.html",
+                  "destination": "/#pricing",
+                  "permanent": true
+          }
+    ]
+}
