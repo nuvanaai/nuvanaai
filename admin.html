@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Nuvana AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Nuvana AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
 *,::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--black:#0D0D0D;--white:#F9F8F6;--coral:#FF2D55;--off:#F3F1EE;--light:#E8E5E0;--gray:#888;--mid:#BFBAB4}
 body{font-family:'Inter',sans-serif;font-weight:300;background:var(--off);color:var(--black);min-height:100vh}
@@ -105,150 +105,264 @@ textarea{height:90px;line-height:1.55}select{appearance:none;cursor:pointer}
 .remove-img-btn:hover{background:var(--coral)}
 .table-empty{text-align:center;padding:60px;color:var(--mid);font-size:.75rem}
 .table-loading{text-align:center;padding:40px;color:var(--mid);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase}
-</style>
+.section-toggle{display:flex;gap:0;margin-left:20px}
+.section-btn{font-size:.52rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:6px 16px;border:none;cursor:pointer;transition:all .2s;background:transparent;color:rgba(249,248,246,.35)}
+.section-btn.active{background:var(--coral);color:white}
+.section-btn:hover{color:white}
+#academy-section{display:none}
+#academy-section .main{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 56px)}
+.academy-table{width:100%;border-collapse:collapse;background:white}
+.academy-table th{font-size:.48rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);padding:12px 16px;text-align:left;border-bottom:2px solid var(--light);white-space:nowrap}
+.academy-table td{padding:14px 16px;border-bottom:1px solid var(--off);font-size:.75rem;font-weight:300;vertical-align:middle}
+.academy-table tr:hover td{background:var(--off)}
+.at-title{font-weight:500;font-size:.78rem;margin-bottom:3px}
+.at-desc{color:var(--mid);font-size:.68rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:260px;line-height:1.5}
+.at-cat{font-size:.52rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
+.at-level{font-size:.5rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px}
+.level-beginner{background:rgba(13,13,13,.07);color:var(--black)}
+.level-intermediate{background:rgba(255,45,85,.1);color:var(--coral)}
+  </style>
 </head>
 <body>
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo"><span class="n">n</span>uvana<span class="s">ai</span> <span style="font-size:.65rem;font-weight:300;color:rgba(249,248,246,.25);margin-left:8px;font-family:Inter">admin</span></div>
-    <label class="login-label">Password</label>
-    <input type="password" id="pwInput" class="login-input" placeholder="Enter admin password" autocomplete="current-password">
-    <button class="login-btn" onclick="tryLogin()">Enter Admin</button>
-    <div class="login-error" id="loginError">Incorrect password.</div>
-  </div>
-</div>
-<div id="adminApp">
-  <div class="topbar">
-    <div class="tb-logo"><span class="n">n</span>uvana<span class="s">ai</span></div>
-    <div class="tb-right">
-      <span class="tb-count" id="tbCount"></span>
-      <a href="library.html" target="_blank" class="tb-link">View Library</a>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+  <div id="loginScreen">
+    <div class="login-box">
+      <div class="login-logo"><span class="n">n</span>uvana<span class="s">ai</span> <span style="font-size:.65rem;font-weight:300;color:rgba(249,248,246,.25);margin-left:8px;font-family:Inter">admin</span></div>
+      <label class="login-label">Password</label>
+      <input type="password" id="pwInput" class="login-input" placeholder="Enter admin password" autocomplete="current-password">
+      <button class="login-btn" onclick="tryLogin()">Enter Admin</button>
+      <div class="login-error" id="loginError">Incorrect password.</div>
     </div>
   </div>
-  <div class="main">
-    <div class="add-panel">
-      <div class="panel-title">Manage <span>Prompts</span></div>
-      <div class="panel-tabs">
-        <button class="panel-tab active" onclick="switchTab('single')">Add Single</button>
-        <button class="panel-tab" onclick="switchTab('bulk')">Bulk Upload</button>
+
+  <div id="adminApp">
+    <div class="topbar">
+      <div class="tb-logo"><span class="n">n</span>uvana<span class="s">ai</span></div>
+      <div class="tb-right">
+        <div class="section-toggle">
+          <button class="section-btn active" onclick="switchSection('prompts')">Prompts</button>
+          <button class="section-btn" onclick="switchSection('academy')">Academy</button>
+        </div>
+        <span class="tb-count" id="tbCount"></span>
+        <a href="library.html" target="_blank" class="tb-link" id="tbViewLink">View Library</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- PROMPTS SECTION -->
+    <div id="prompts-section">
+    <div class="main">
+      <div class="add-panel">
+        <div class="panel-title">Manage <span>Prompts</span></div>
+        <div class="panel-tabs">
+          <button class="panel-tab active" onclick="switchTab('single')">Add Single</button>
+          <button class="panel-tab" onclick="switchTab('bulk')">Bulk Upload</button>
+        </div>
+
+        <!-- SINGLE ADD TAB -->
+        <div id="tab-single" class="tab-content active">
+          <div class="edit-indicator" id="editIndicator">
+            <span>Editing prompt</span>
+            <button class="cancel-edit" onclick="cancelEdit()">Cancel</button>
+          </div>
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="f-title" placeholder="e.g. Golden Hour Editorial">
+          </div>
+          <div class="form-group">
+            <label>Prompt Text</label>
+            <textarea id="f-prompt" placeholder="The full AI prompt text"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <div id="uploadZone" onclick="document.getElementById('fileInput').click()">
+              <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+              <div id="uploadIdle">
+                <div class="upload-icon">↑</div>
+                <div class="upload-text">Click to upload from computer</div>
+                <div class="upload-sub">JPG, PNG, WEBP — max 5MB</div>
+              </div>
+              <div id="uploadProgress" style="display:none">
+                <div class="upload-spinner"></div>
+                <div class="upload-text" id="uploadStatusText">Uploading…</div>
+              </div>
+            </div>
+            <div class="or-divider"><span>or paste URL</span></div>
+            <input type="url" id="f-image" placeholder="https://…" oninput="previewImg(this.value)">
+            <div class="img-preview-wrap" id="imgPreviewWrap">
+              <img id="imgPreview" class="img-preview" alt="preview">
+              <button class="remove-img-btn" onclick="removeImage()">✕</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Category</label>
+              <select id="f-category">
+                <option>Cinematic</option><option>Editorial</option><option>Product</option>
+                <option>Kling.3</option><option>Abstract</option><option>Nature</option>
+                <option>Portrait</option><option>Marketing</option><option>General</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tier</label>
+              <select id="f-tier">
+                <option value="free">Free</option><option value="starter">Starter+</option>
+                <option value="pro">Pro</option><option value="unlimited">Unlimited</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>AI Model</label>
+            <select id="f-model">
+              <option>Midjourney</option><option>Kling.3</option><option>Stable Diffusion</option>
+              <option>DALL-E 3</option><option>Firefly</option><option>Runway</option><option>General</option>
+            </select>
+          </div>
+          <button class="submit-btn" id="submitBtn" onclick="submitPrompt()">Add Prompt</button>
+          <div class="form-msg" id="formMsg"></div>
+        </div>
+
+        <!-- BULK UPLOAD TAB -->
+        <div id="tab-bulk" class="tab-content">
+          <p style="font-size:.7rem;color:var(--mid);margin-bottom:16px;line-height:1.6">
+            Drop multiple images below. Each image becomes a prompt entry. You can edit titles and details after uploading.
+          </p>
+          <div class="bulk-drop" id="bulkDrop" onclick="document.getElementById('bulkFileInput').click()">
+            <input type="file" id="bulkFileInput" accept="image/*" multiple style="display:none" onchange="handleBulkSelect(this)">
+            <div class="upload-icon">↑</div>
+            <div class="upload-text">Click or drag images here</div>
+            <div class="upload-sub">Select multiple JPG, PNG, WEBP files</div>
+          </div>
+          <div id="bulkPreview" class="bulk-preview" style="display:none"></div>
+          <div class="bulk-progress" id="bulkProgressWrap">
+            <div class="bulk-progress-bar" id="bulkProgressBar"></div>
+          </div>
+          <button class="bulk-upload-btn" id="bulkUploadBtn" onclick="startBulkUpload()" style="display:none">
+            Upload All Images
+          </button>
+          <div class="form-msg" id="bulkMsg"></div>
+        </div>
       </div>
 
-      <!-- SINGLE ADD TAB -->
-      <div id="tab-single" class="tab-content active">
-        <div class="edit-indicator" id="editIndicator">
-          <span>Editing prompt</span>
-          <button class="cancel-edit" onclick="cancelEdit()">Cancel</button>
+      <!-- PROMPT LIST -->
+      <div class="list-panel">
+        <div class="list-header">
+          <div class="list-title">All Prompts</div>
+          <div class="list-search">
+            <span style="color:var(--mid)">⌕</span>
+            <input type="text" id="listSearch" placeholder="Filter…" oninput="filterList(this.value)">
+          </div>
+        </div>
+        <table class="prompt-table">
+          <thead>
+            <tr>
+              <th>Image</th><th>Title / Prompt</th><th>Category</th>
+              <th>Tier</th><th>Model</th><th>Active</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="promptTableBody">
+            <tr><td colspan="7" class="table-loading">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div><!-- end prompts-section -->
+
+    <!-- ACADEMY SECTION -->
+    <div id="academy-section">
+    <div class="main">
+      <div class="add-panel">
+        <div class="panel-title" id="academyPanelTitle">Add <span>Tutorial</span></div>
+        <div class="edit-indicator" id="academyEditIndicator">
+          <span>Editing tutorial</span>
+          <button class="cancel-edit" onclick="cancelAcademyEdit()">Cancel</button>
         </div>
         <div class="form-group">
           <label>Title</label>
-          <input type="text" id="f-title" placeholder="e.g. Golden Hour Editorial">
+          <input type="text" id="a-title" placeholder="e.g. Lighting Masterclass">
         </div>
         <div class="form-group">
-          <label>Prompt Text</label>
-          <textarea id="f-prompt" placeholder="The full AI prompt text"></textarea>
+          <label>Description</label>
+          <textarea id="a-description" placeholder="What this tutorial covers"></textarea>
         </div>
         <div class="form-group">
-          <label>Image</label>
-          <div id="uploadZone" onclick="document.getElementById('fileInput').click()">
-            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
-            <div id="uploadIdle">
-              <div class="upload-icon">↑</div>
-              <div class="upload-text">Click to upload from computer</div>
-              <div class="upload-sub">JPG, PNG, WEBP — max 5MB</div>
-            </div>
-            <div id="uploadProgress" style="display:none">
-              <div class="upload-spinner"></div>
-              <div class="upload-text" id="uploadStatusText">Uploading…</div>
-            </div>
-          </div>
-          <div class="or-divider"><span>or paste URL</span></div>
-          <input type="url" id="f-image" placeholder="https://…" oninput="previewImg(this.value)">
-          <div class="img-preview-wrap" id="imgPreviewWrap">
-            <img id="imgPreview" class="img-preview" alt="preview">
-            <button class="remove-img-btn" onclick="removeImage()">✕</button>
-          </div>
+          <label>YouTube Video ID</label>
+          <input type="text" id="a-video-id" placeholder="e.g. dQw4w9WgXcQ">
+        </div>
+        <div class="form-group">
+          <label>Thumbnail URL</label>
+          <input type="url" id="a-thumbnail" placeholder="https://... (leave empty to auto-generate from YouTube)">
+        </div>
+        <div class="form-group">
+          <label>Duration</label>
+          <input type="text" id="a-duration" placeholder="e.g. 5:42">
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Category</label>
-            <select id="f-category">
-              <option>Cinematic</option><option>Editorial</option><option>Product</option>
-              <option>Kling.3</option><option>Abstract</option><option>Nature</option>
-              <option>Portrait</option><option>Marketing</option><option>General</option>
+            <select id="a-category">
+              <option value="getting-started">Getting Started</option>
+              <option value="image">Image Prompts</option>
+              <option value="video">Video & Kling.3</option>
+              <option value="marketing">Marketing</option>
+              <option value="workflows">Workflows</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Tier</label>
-            <select id="f-tier">
-              <option value="free">Free</option><option value="starter">Starter+</option>
-              <option value="pro">Pro</option><option value="unlimited">Unlimited</option>
+            <label>Level</label>
+            <select id="a-level">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label>AI Model</label>
-          <select id="f-model">
-            <option>Midjourney</option><option>Kling.3</option><option>Stable Diffusion</option>
-            <option>DALL-E 3</option><option>Firefly</option><option>Runway</option><option>General</option>
+          <label>Tier</label>
+          <select id="a-tier">
+            <option value="free">Free</option>
+            <option value="starter">Starter+</option>
+            <option value="pro">Pro</option>
+            <option value="unlimited">Unlimited</option>
           </select>
         </div>
-        <button class="submit-btn" id="submitBtn" onclick="submitPrompt()">Add Prompt</button>
-        <div class="form-msg" id="formMsg"></div>
+        <button class="submit-btn" id="academySubmitBtn" onclick="submitAcademy()">Add Tutorial</button>
+        <div class="form-msg" id="academyFormMsg"></div>
       </div>
 
-      <!-- BULK UPLOAD TAB -->
-      <div id="tab-bulk" class="tab-content">
-        <p style="font-size:.7rem;color:var(--mid);margin-bottom:16px;line-height:1.6">
-          Drop multiple images below. Each image becomes a prompt entry. You can edit titles and details after uploading.
-        </p>
-        <div class="bulk-drop" id="bulkDrop" onclick="document.getElementById('bulkFileInput').click()">
-          <input type="file" id="bulkFileInput" accept="image/*" multiple style="display:none" onchange="handleBulkSelect(this)">
-          <div class="upload-icon">↑</div>
-          <div class="upload-text">Click or drag images here</div>
-          <div class="upload-sub">Select multiple JPG, PNG, WEBP files</div>
+      <!-- ACADEMY LIST -->
+      <div class="list-panel">
+        <div class="list-header">
+          <div class="list-title">All Tutorials</div>
+          <div class="list-search">
+            <span style="color:var(--mid)">⌕</span>
+            <input type="text" id="academySearch" placeholder="Filter…" oninput="filterAcademyList(this.value)">
+          </div>
         </div>
-        <div id="bulkPreview" class="bulk-preview" style="display:none"></div>
-        <div class="bulk-progress" id="bulkProgressWrap">
-          <div class="bulk-progress-bar" id="bulkProgressBar"></div>
-        </div>
-        <button class="bulk-upload-btn" id="bulkUploadBtn" onclick="startBulkUpload()" style="display:none">
-          Upload All Images
-        </button>
-        <div class="form-msg" id="bulkMsg"></div>
+        <table class="academy-table">
+          <thead>
+            <tr>
+              <th>Title / Description</th><th>Category</th>
+              <th>Level</th><th>Tier</th><th>Duration</th><th>Active</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="academyTableBody">
+            <tr><td colspan="7" class="table-loading">Loading…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
+    </div><!-- end academy-section -->
 
-    <!-- PROMPT LIST -->
-    <div class="list-panel">
-      <div class="list-header">
-        <div class="list-title">All Prompts</div>
-        <div class="list-search">
-          <span style="color:var(--mid)">⌕</span>
-          <input type="text" id="listSearch" placeholder="Filter…" oninput="filterList(this.value)">
-        </div>
-      </div>
-      <table class="prompt-table">
-        <thead>
-          <tr>
-            <th>Image</th><th>Title / Prompt</th><th>Category</th>
-            <th>Tier</th><th>Model</th><th>Active</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="promptTableBody">
-          <tr><td colspan="7" class="table-loading">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
   </div>
-</div>
-<script>
+
+  <script>
 var SUPABASE_URL = 'https://nphHgzjofhvboginDcwe.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5waGhnempvZmh2Ym9naW5kY3dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDQwNzMsImV4cCI6MjA4NzkyMDA3M30.gWt7R2B7k9Pub_YjSlrelpwX1r6HHZt46l4zuzRa9_U';
 var ADMIN_PASSWORD = 'nuvana2025';
 var allPrompts = [];
 var editingId = null;
 var bulkFiles = [];
+var allAcademy = [];
+var academyEditingId = null;
 var headers = {
   'apikey': SUPABASE_KEY,
   'Authorization': 'Bearer ' + SUPABASE_KEY,
@@ -264,6 +378,7 @@ function tryLogin() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     loadPrompts();
+    loadAcademy();
   } else {
     document.getElementById('loginError').style.display = 'block';
   }
@@ -274,6 +389,26 @@ if (sessionStorage.getItem('nuvana_admin') === '1') {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminApp').style.display = 'block';
   loadPrompts();
+  loadAcademy();
+}
+
+// ── SECTION TOGGLE ──
+function switchSection(name) {
+  document.querySelectorAll('.section-btn').forEach(function(b){ b.classList.remove('active'); });
+  event.target.classList.add('active');
+  if (name === 'prompts') {
+    document.getElementById('prompts-section').style.display = 'block';
+    document.getElementById('academy-section').style.display = 'none';
+    document.getElementById('tbCount').textContent = allPrompts.length + ' prompts';
+    document.getElementById('tbViewLink').href = 'library.html';
+    document.getElementById('tbViewLink').textContent = 'View Library';
+  } else {
+    document.getElementById('prompts-section').style.display = 'none';
+    document.getElementById('academy-section').style.display = 'block';
+    document.getElementById('tbCount').textContent = allAcademy.length + ' tutorials';
+    document.getElementById('tbViewLink').href = 'academy.html';
+    document.getElementById('tbViewLink').textContent = 'View Academy';
+  }
 }
 
 // ── TABS ──
@@ -284,7 +419,7 @@ function switchTab(name) {
   event.target.classList.add('active');
 }
 
-// ── DATA ──
+// ── PROMPTS DATA ──
 function loadPrompts() {
   fetch(SUPABASE_URL + '/rest/v1/prompts?select=*&order=created_at.desc', { headers: headers })
     .then(function(r) { return r.json(); })
@@ -317,12 +452,8 @@ function renderTable(data) {
   tbody.innerHTML = rows;
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-function escAttr(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function handleDelete(btn) {
   var id = btn.getAttribute('data-id');
@@ -344,12 +475,11 @@ function filterList(q) {
   if (!q) { renderTable(allPrompts); return; }
   var lq = q.toLowerCase();
   renderTable(allPrompts.filter(function(p) {
-    return p.title.toLowerCase().includes(lq) || p.prompt.toLowerCase().includes(lq) ||
-           (p.category||'').toLowerCase().includes(lq) || (p.tier||'').toLowerCase().includes(lq);
+    return p.title.toLowerCase().includes(lq) || p.prompt.toLowerCase().includes(lq) || (p.category||'').toLowerCase().includes(lq) || (p.tier||'').toLowerCase().includes(lq);
   }));
 }
 
-// ── ADD / EDIT ──
+// ── ADD / EDIT PROMPT ──
 function submitPrompt() {
   var title = document.getElementById('f-title').value.trim();
   var prompt = document.getElementById('f-prompt').value.trim();
@@ -359,12 +489,14 @@ function submitPrompt() {
   var model = document.getElementById('f-model').value;
   if (!title || !prompt) { showMsg('Title and prompt text are required.', 'error', 'formMsg'); return; }
   var btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = editingId ? 'Saving…' : 'Adding…';
+  btn.disabled = true;
+  btn.textContent = editingId ? 'Saving…' : 'Adding…';
   var body = JSON.stringify({ title:title, prompt:prompt, image_url:image_url||null, category:category, tier:tier, model:model });
   var url = editingId ? SUPABASE_URL+'/rest/v1/prompts?id=eq.'+editingId : SUPABASE_URL+'/rest/v1/prompts';
   fetch(url, { method: editingId?'PATCH':'POST', headers: headers, body: body })
     .then(function(r) {
-      btn.disabled = false; btn.textContent = editingId ? 'Save Changes' : 'Add Prompt';
+      btn.disabled = false;
+      btn.textContent = editingId ? 'Save Changes' : 'Add Prompt';
       if (r.ok) { showMsg(editingId?'Updated!':'Added!','success','formMsg'); cancelEdit(); clearForm(); loadPrompts(); }
       else { r.text().then(function(e){ showMsg('Error: '+e,'error','formMsg'); }); }
     });
@@ -384,8 +516,8 @@ function startEdit(id) {
   previewImg(p.image_url);
   document.getElementById('editIndicator').style.display = 'flex';
   document.getElementById('submitBtn').textContent = 'Save Changes';
-  document.querySelector('.panel-title').innerHTML = 'Edit <span>Prompt</span>';
-  document.querySelector('.add-panel').scrollTop = 0;
+  document.querySelector('#prompts-section .panel-title').innerHTML = 'Edit <span>Prompt</span>';
+  document.querySelector('#prompts-section .add-panel').scrollTop = 0;
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 
@@ -402,7 +534,7 @@ function cancelEdit() {
   editingId = null;
   document.getElementById('editIndicator').style.display = 'none';
   document.getElementById('submitBtn').textContent = 'Add Prompt';
-  document.querySelector('.panel-title').innerHTML = 'Manage <span>Prompts</span>';
+  document.querySelector('#prompts-section .panel-title').innerHTML = 'Manage <span>Prompts</span>';
   clearForm();
 }
 
@@ -416,7 +548,8 @@ function clearForm() {
 
 // ── SINGLE IMAGE UPLOAD ──
 function handleFileUpload(input) {
-  var file = input.files[0]; if (!file) return;
+  var file = input.files[0];
+  if (!file) return;
   if (file.size > 5*1024*1024) { showMsg('Image must be under 5MB.','error','formMsg'); return; }
   document.getElementById('uploadIdle').style.display = 'none';
   document.getElementById('uploadProgress').style.display = 'block';
@@ -429,7 +562,8 @@ function handleFileUpload(input) {
   }).then(function(r){
     if (!r.ok) return r.text().then(function(e){ throw new Error(e); });
     var url = SUPABASE_URL+'/storage/v1/object/public/prompt-images/'+fileName;
-    document.getElementById('f-image').value = url; previewImg(url);
+    document.getElementById('f-image').value = url;
+    previewImg(url);
     document.getElementById('uploadStatusText').textContent = 'Uploaded!';
     document.getElementById('uploadZone').classList.add('done');
     setTimeout(function(){
@@ -466,10 +600,8 @@ function removeImage() {
 
 function previewImg(url) {
   var wrap=document.getElementById('imgPreviewWrap'), img=document.getElementById('imgPreview');
-  if (url && url.startsWith('http')) {
-    img.src=url; wrap.style.display='block';
-    img.onerror=function(){ wrap.style.display='none'; };
-  } else { wrap.style.display='none'; }
+  if (url && url.startsWith('http')) { img.src=url; wrap.style.display='block'; img.onerror=function(){ wrap.style.display='none'; }; }
+  else { wrap.style.display='none'; }
 }
 
 // ── BULK UPLOAD ──
@@ -481,22 +613,18 @@ bulkDrop.addEventListener('drop', function(e){
   addBulkFiles(Array.from(e.dataTransfer.files).filter(function(f){ return f.type.startsWith('image/'); }));
 });
 
-function handleBulkSelect(input) {
-  addBulkFiles(Array.from(input.files)); input.value='';
-}
+function handleBulkSelect(input) { addBulkFiles(Array.from(input.files)); input.value=''; }
 
 function addBulkFiles(files) {
-  files.forEach(function(f){
-    if (f.size > 5*1024*1024) return;
-    bulkFiles.push({ file:f, status:'pending', url:null });
-  });
+  files.forEach(function(f){ if (f.size > 5*1024*1024) return; bulkFiles.push({ file:f, status:'pending', url:null }); });
   renderBulkPreview();
 }
 
 function renderBulkPreview() {
   var preview = document.getElementById('bulkPreview');
   if (!bulkFiles.length) { preview.style.display='none'; document.getElementById('bulkUploadBtn').style.display='none'; return; }
-  preview.style.display='block'; document.getElementById('bulkUploadBtn').style.display='block';
+  preview.style.display='block';
+  document.getElementById('bulkUploadBtn').style.display='block';
   document.getElementById('bulkDrop').classList.add('ready');
   var html='';
   for (var i=0; i<bulkFiles.length; i++) {
@@ -514,10 +642,7 @@ function renderBulkPreview() {
   preview.innerHTML = html;
 }
 
-function removeBulkFile(btn) {
-  var idx = parseInt(btn.getAttribute('data-idx'));
-  bulkFiles.splice(idx,1); renderBulkPreview();
-}
+function removeBulkFile(btn) { var idx = parseInt(btn.getAttribute('data-idx')); bulkFiles.splice(idx,1); renderBulkPreview(); }
 
 function startBulkUpload() {
   var btn = document.getElementById('bulkUploadBtn');
@@ -560,11 +685,122 @@ function startBulkUpload() {
   next();
 }
 
+// ── ACADEMY DATA ──
+function loadAcademy() {
+  fetch(SUPABASE_URL + '/rest/v1/academy?select=*&order=created_at.desc', { headers: headers })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      allAcademy = data;
+      renderAcademyTable(allAcademy);
+    });
+}
+
+function renderAcademyTable(data) {
+  var tbody = document.getElementById('academyTableBody');
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No tutorials yet.</td></tr>'; return; }
+  var rows = '';
+  for (var i = 0; i < data.length; i++) {
+    var a = data[i];
+    rows += '<tr>';
+    rows += '<td><div class="at-title">' + escHtml(a.title) + '</div><div class="at-desc">' + escHtml(a.description || '') + '</div></td>';
+    rows += '<td><span class="at-cat">' + escHtml(a.category || '') + '</span></td>';
+    rows += '<td><span class="at-level level-' + (a.level||'beginner') + '">' + escHtml(a.level || '') + '</span></td>';
+    rows += '<td><span class="pt-tier tier-' + (a.tier||'free') + '">' + (a.tier||'free') + '</span></td>';
+    rows += '<td style="font-size:.68rem;color:var(--mid)">' + escHtml(a.duration || '') + '</td>';
+    rows += '<td><label class="toggle-active ' + (a.active ? 'on' : '') + '" data-id="' + a.id + '" data-active="' + a.active + '" onclick="handleAcademyToggle(this)"><div class="toggle-dot"></div></label></td>';
+    rows += '<td><div class="row-actions">';
+    rows += '<button class="edit-btn" data-id="' + a.id + '" onclick="startAcademyEdit(this.dataset.id)">Edit</button>';
+    rows += '<button class="del-btn" data-id="' + a.id + '" data-title="' + escAttr(a.title) + '" onclick="handleAcademyDelete(this)">Delete</button>';
+    rows += '</div></td></tr>';
+  }
+  tbody.innerHTML = rows;
+}
+
+function submitAcademy() {
+  var title = document.getElementById('a-title').value.trim();
+  var description = document.getElementById('a-description').value.trim();
+  var video_id = document.getElementById('a-video-id').value.trim();
+  var thumbnail_url = document.getElementById('a-thumbnail').value.trim();
+  var duration = document.getElementById('a-duration').value.trim();
+  var category = document.getElementById('a-category').value;
+  var level = document.getElementById('a-level').value;
+  var tier = document.getElementById('a-tier').value;
+  if (!title) { showMsg('Title is required.', 'error', 'academyFormMsg'); return; }
+  if (!thumbnail_url && video_id) { thumbnail_url = 'https://img.youtube.com/vi/' + video_id + '/maxresdefault.jpg'; }
+  var btn = document.getElementById('academySubmitBtn');
+  btn.disabled = true;
+  btn.textContent = academyEditingId ? 'Saving…' : 'Adding…';
+  var body = JSON.stringify({ title:title, description:description, video_id:video_id||null, thumbnail_url:thumbnail_url||null, duration:duration||null, category:category, level:level, tier:tier });
+  var url = academyEditingId ? SUPABASE_URL+'/rest/v1/academy?id=eq.'+academyEditingId : SUPABASE_URL+'/rest/v1/academy';
+  fetch(url, { method: academyEditingId?'PATCH':'POST', headers: headers, body: body })
+    .then(function(r) {
+      btn.disabled = false;
+      btn.textContent = academyEditingId ? 'Save Changes' : 'Add Tutorial';
+      if (r.ok) { showMsg(academyEditingId?'Updated!':'Added!','success','academyFormMsg'); cancelAcademyEdit(); clearAcademyForm(); loadAcademy(); }
+      else { r.text().then(function(e){ showMsg('Error: '+e,'error','academyFormMsg'); }); }
+    });
+}
+
+function startAcademyEdit(id) {
+  var a = allAcademy.find(function(x){ return x.id===id; });
+  if (!a) return;
+  academyEditingId = id;
+  document.getElementById('a-title').value = a.title || '';
+  document.getElementById('a-description').value = a.description || '';
+  document.getElementById('a-video-id').value = a.video_id || '';
+  document.getElementById('a-thumbnail').value = a.thumbnail_url || '';
+  document.getElementById('a-duration').value = a.duration || '';
+  document.getElementById('a-category').value = a.category || 'getting-started';
+  document.getElementById('a-level').value = a.level || 'beginner';
+  document.getElementById('a-tier').value = a.tier || 'free';
+  document.getElementById('academyEditIndicator').style.display = 'flex';
+  document.getElementById('academySubmitBtn').textContent = 'Save Changes';
+  document.getElementById('academyPanelTitle').innerHTML = 'Edit <span>Tutorial</span>';
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function cancelAcademyEdit() {
+  academyEditingId = null;
+  document.getElementById('academyEditIndicator').style.display = 'none';
+  document.getElementById('academySubmitBtn').textContent = 'Add Tutorial';
+  document.getElementById('academyPanelTitle').innerHTML = 'Add <span>Tutorial</span>';
+  clearAcademyForm();
+}
+
+function clearAcademyForm() {
+  ['a-title','a-description','a-video-id','a-thumbnail','a-duration'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('academyFormMsg').style.display = 'none';
+}
+
+function handleAcademyDelete(btn) {
+  var id = btn.getAttribute('data-id');
+  var title = btn.getAttribute('data-title');
+  if (!confirm('Delete "' + title + '"? This cannot be undone.')) return;
+  fetch(SUPABASE_URL + '/rest/v1/academy?id=eq.' + id, { method: 'DELETE', headers: headers })
+    .then(function(r) { if (r.ok) { loadAcademy(); } else { alert('Delete failed. Check Supabase RLS policies.'); } });
+}
+
+function handleAcademyToggle(label) {
+  var id = label.getAttribute('data-id');
+  var current = label.getAttribute('data-active') === 'true';
+  fetch(SUPABASE_URL + '/rest/v1/academy?id=eq.' + id, {
+    method: 'PATCH', headers: headers, body: JSON.stringify({ active: !current })
+  }).then(function() { loadAcademy(); });
+}
+
+function filterAcademyList(q) {
+  if (!q) { renderAcademyTable(allAcademy); return; }
+  var lq = q.toLowerCase();
+  renderAcademyTable(allAcademy.filter(function(a) {
+    return a.title.toLowerCase().includes(lq) || (a.description||'').toLowerCase().includes(lq) || (a.category||'').toLowerCase().includes(lq) || (a.level||'').toLowerCase().includes(lq);
+  }));
+}
+
 function showMsg(text, type, elId) {
   var el=document.getElementById(elId||'formMsg');
   el.textContent=text; el.className='form-msg '+type; el.style.display='block';
   setTimeout(function(){ el.style.display='none'; }, 5000);
 }
-</script>
+  </script>
 </body>
 </html>
